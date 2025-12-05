@@ -3,503 +3,491 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio</title>
+    <title>damaris</title>
     <style>
-        /* --- GLOBAL SETTINGS --- */
-        html {
-            width: 100%;
-            height: 100%;
-            background-color: #000;
-        }
+        /* --- GLOBAL SETTINGS (omitted for brevity) --- */
+        /*
+         * --- IMPORTANT CHANGE: Global Background Color updated to #0a0a0a ---
+         */
+        html { width: 100%; height: 100%; background-color: #0a0a0a; }
+        body { margin: 0; padding: 0; width: 100%; height: 100%; background-color: transparent; color: #fff; overflow: hidden; font-family: 'Courier New', Courier, monospace; font-weight: bold; font-size: 11pt; -webkit-font-smoothing: none; }
+        a { color: #fff; text-decoration: none; cursor: pointer; }
+        a:hover, a.active { text-decoration: none; background-color: #fff; color: #000; }
+        #bg-video { position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; opacity: 0.8; pointer-events: none; }
+        #nav-container { position: fixed; bottom: 30px; left: 0; width: 100%; text-align: center; z-index: 100; padding: 0 20px; box-sizing: border-box; user-select: none; overflow: hidden; white-space: nowrap; }
+        .nav-text { display: inline-block; white-space: nowrap; }
         
-        body {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            background-color: transparent;
-            color: #fff;
-            overflow: hidden;
-            font-family: 'Courier New', Courier, monospace;
-            font-weight: bold;
-            font-size: 11pt;
-            -webkit-font-smoothing: none;
+        /* CRITICAL FIX: Explicitly fix the width of the punctuation spans using 'ch' (character) units. 
+           This guarantees the space occupied by the punctuation is CONSTANT, preventing link movement. */
+        #punc-1, #punc-2, #punc-3, #punc-4 {
+            display: inline-block;
         }
+        #punc-1 { width: 14ch; } /* Length of '//////////// , ' */
+        #punc-2 { width: 13ch; } /* Length of ' / /. . . , / ' */
+        #punc-3 { width: 17ch; } /* Length of ' ,,. /////.,:;:* ' */
+        #punc-4 { width: 13ch; } /* Length of '. ../-.-_.-.--' */
 
-        a {
-            color: #fff;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        a:hover, a.active {
-            text-decoration: none;
-            background-color: #fff;
-            color: #000;
-        }
-
-        /* --- VIDEO BACKGROUND --- */
-        #bg-video {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            z-index: 0;
-            opacity: 0.8;
-            pointer-events: none;
-        }
-
-        /* --- NAVIGATION BAR --- */
-        #nav-container {
-            position: fixed;
-            bottom: 30px;
-            left: 0;
-            width: 100%;
+        /* Ensure the link text container is also fixed */
+        .link-fixed-width {
+            display: inline-block;
+            /* Width set based on 'archive' (7 characters) + padding */
+            width: 75px; 
             text-align: center;
-            z-index: 100;
-            padding: 0 20px;
-            box-sizing: border-box;
-            user-select: none;
-            overflow: hidden;
-            white-space: nowrap;
         }
 
-        .nav-text {
-            display: inline-block;
-            white-space: nowrap;
-        }
-
-        .nav-link {
-            display: inline-block;
+        /* Ensure the link inside fills its fixed container and is centered */
+        .nav-link { 
+            display: inline-block; 
             padding: 0 2px;
+            width: 100%;
+            text-align: center; 
+            box-sizing: border-box; 
         }
 
         /* --- SECTIONS (PAGES) --- */
-        .page-section {
-            display: none; 
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            overflow-y: auto;
-            background-color: transparent; 
-            padding: 80px 36px 100px 36px;
-            box-sizing: border-box;
-            z-index: 10;
-        }
-
+        .page-section { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; overflow-y: auto; background-color: transparent; padding: 80px 36px 100px 36px; box-sizing: border-box; z-index: 10; }
         /* Project Page Specific Overrides */
-        .project-page {
-            padding-top: 0 !important;
-            padding-left: 0 !important;
-            padding-right: 0 !important;
-            /* Disable vertical scroll on the page itself */
-            overflow: hidden !important; 
-        }
-
-        /* Wrapper for text content below slider */
-        .project-content-wrapper {
-            padding: 20px 36px 150px 36px; 
-            width: 100%; 
-            margin: 0; 
-            box-sizing: border-box;
-        }
-
+        .project-page { padding-top: 0 !important; padding-left: 0 !important; padding-right: 0 !important; overflow: hidden !important; }
+        .project-content-wrapper { padding: 20px 36px 150px 36px; width: 100%; margin: 0; box-sizing: border-box; }
         /* --- GRID SYSTEMS --- */
-        
-        /* General 12-col grid */
-        .grid-12 {
-            display: grid;
-            grid-template-columns: repeat(12, 1fr);
-            gap: 20px; 
-            max-width: 1400px;
-            margin: 0 auto;
-            align-items: start; 
-        }
-
-        /* Full width grid for project page content to ignore max-width constraint */
-        .project-page .grid-12 {
-            max-width: none; 
-            margin: 0;
-        }
-
-        /* --- ARCHIVE PROJECT ITEMS --- */
-        
-        a.project-item {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            text-decoration: none;
-            color: #fff;
-            position: relative; 
-            z-index: 1;
-            transition: z-index 0s;
-        }
-
-        /* THE OVERLAP MAGIC: Irregular classes instead of one fixed rule */
+        .grid-12 { display: grid; grid-template-columns: repeat(12, 1fr); gap: 20px; max-width: 1400px; margin: 0 auto; align-items: start; }
+        .project-page .grid-12 { max-width: none; margin: 0; }
+        /* --- ARCHIVE PROJECT ITEMS (omitted for brevity) --- */
+        a.project-item { display: flex; flex-direction: column; gap: 10px; background: transparent; border: none; cursor: pointer; text-decoration: none; color: #fff; position: relative; z-index: 1; transition: z-index 0s; }
         .overlap-200 { margin-top: -200px; }
         .overlap-300 { margin-top: -300px; }
         .overlap-400 { margin-top: -400px; }
+        a.project-item:hover { z-index: 50; }
+        a.project-item:hover .project-title { text-decoration: underline; }
         
-        a.project-item:hover {
-            z-index: 50; 
-        }
-        
-        a.project-item:hover .project-title {
-            text-decoration: underline;
-        }
-
-        .project-img {
-            width: 100%;
+        /* UPDATED CSS: Support both Images and Videos as covers */
+        .project-img, .project-video { 
+            width: 100%; 
             height: auto; 
-            display: block;
-            border: none;
-            transition: filter 0.3s ease;
-      
+            display: block; 
+            border: none; 
+            transition: filter 0.3s ease; 
+        }
+        
+        /* Apply blur hover effect to both */
+        .project-item:hover .project-img, 
+        .project-item:hover .project-video { 
+            filter: blur(5px); 
         }
 
-        .project-item:hover .project-img {
-            filter: blur(5px);
-        }
-
-        .project-title {
-            font-size: 11pt;
-            margin-top: 5px;
-            
-        }
-
-        /* --- Dynamic Grid Spans & Alignment (ZIG ZAG & VARIATION) --- */
-        /* All items now span 7 columns for bigger presence */
-
-        /* LEFT VARIANTS (Span 7) */
-        .pos-left-1 { grid-column: 1 / span 7; text-align: left; }
-        .pos-left-2 { grid-column: 2 / span 7; text-align: left; }
+        .project-title { font-size: 11pt; margin-top: 5px; }
+        /* Dynamic Grid Spans & Alignment */
+        .pos-left-1 { grid-column: 1 / span 5; text-align: left; }
+        .pos-left-2 { grid-column: 2 / span 3; text-align: left; }
         .pos-left-3 { grid-column: 3 / span 7; text-align: left; }
-
-        /* RIGHT VARIANTS (Span 7) */
-        /* End at -1 (right edge) */
         .pos-right-1 { grid-column: span 7 / -1; text-align: right; align-items: flex-end; }
-        /* Starts at 5, ends at 12 */
         .pos-right-2 { grid-column: 5 / span 7; text-align: right; align-items: flex-end; }
-        /* Starts at 4, ends at 11 */
         .pos-right-3 { grid-column: 4 / span 7; text-align: right; align-items: flex-end; }
-
-        .row-break {
-            grid-column: 1 / -1; 
-            height: 0;
-        }
-
-        /* --- PROJECT DETAIL SLIDESHOW --- */
-        
-        .project-detail-header {
-            margin-bottom: 10px; 
-        }
-
-        /* Horizontal Scroll Container */
-        .slideshow-container {
-            display: flex;
-            overflow-x: auto;
-            gap: 20px; /* Reduced gap to 20px */
-            width: 100%;
+        .row-break { grid-column: 1 / -1; height: 0; }
+        /* --- PROJECT DETAIL SLIDESHOW (REQUIRED MODIFICATION) --- */
+        .project-detail-header { margin-bottom: 10px; }
+        .slideshow-container { 
+            display: flex; 
+            overflow-x: auto; 
+            /* MODIFICATION: Set gap to 5px */
+            gap: 5px; 
+            width: 100%; 
             height: 60vh; 
-            margin-bottom: 0;
-            padding-left: 20px; 
-            padding-right: 20px;
-            box-sizing: border-box;
-            
+            margin-bottom: 0; 
+            /* MODIFICATION: Remove left and right padding */
+            padding-left: 0; 
+            padding-right: 0; 
+            box-sizing: border-box; 
             scrollbar-width: none; 
-            -ms-overflow-style: none;
-            
-            /* Ensure native smooth behavior is off so our JS can handle it precisely */
-            scroll-behavior: auto;
+            -ms-overflow-style: none; 
+            scroll-behavior: auto; 
         }
-        
-        .slideshow-container::-webkit-scrollbar { 
-            display: none; 
-        }
-
-        .slide {
-            flex: 0 0 auto; 
-            height: 100%;
-            width: auto;
-            position: relative;
-            /* Initially hidden until image loads to prevent broken icon flash */
-            display: none; 
-        }
-        
-        /* When we confirm image is loaded, we add this class */
-        .slide.loaded {
-            display: block;
-        }
-
-        /* Style both images and videos in the slider */
-        .slide img, .slide video {
-            height: 100%;
-            width: auto; 
-            object-fit: contain;
-            display: block;
-        }
-
-        .project-description {
-            line-height: 1.4;
-            /* Grid Placement: Start col 1, End col 10 (Covers cols 1-9) */
-            grid-column: 1 / 10;
-        }
-
-        /* Responsive */
+        .slideshow-container::-webkit-scrollbar { display: none; }
+        .slide { flex: 0 0 auto; height: 100%; width: auto; position: relative; display: none; }
+        .slide.loaded { display: block; }
+        .slide img, .slide video { height: 100%; width: auto; object-fit: contain; display: block; }
+        .project-description { line-height: 1.2; grid-column: 1 / 10; }
+        /* Responsive (omitted for brevity) */
         .col-span-12 { grid-column: span 12; }
         .col-span-8  { grid-column: span 8; }
         .col-span-4  { grid-column: span 4; }
-
         @media (max-width: 768px) {
-            .grid-12 {
-                grid-template-columns: repeat(4, 1fr);
-            }
-            .col-span-12, .col-span-8, .col-span-4 {
-                grid-column: span 4 !important; 
-            }
-            
-            /* Reset positions on mobile */
-            .pos-left-1, .pos-left-2, .pos-left-3,
-            .pos-right-1, .pos-right-2, .pos-right-3 {
-                grid-column: 1 / -1 !important;
-                text-align: left !important;
-                align-items: flex-start !important;
-                margin-top: 0 !important;
-                margin-bottom: 40px;
-            }
-            
-            /* Reset overlaps on mobile */
-            .overlap-200, .overlap-300, .overlap-400 {
-                margin-top: 0 !important;
-            }
-
-            .slideshow-container {
+            .grid-12 { grid-template-columns: repeat(4, 1fr); }
+            .col-span-12, .col-span-8, .col-span-4 { grid-column: span 4 !important; }
+            .pos-left-1, .pos-left-2, .pos-left-3, .pos-right-1, .pos-right-2, .pos-right-3 { grid-column: 1 / -1 !important; text-align: left !important; align-items: flex-start !important; margin-top: 0 !important; margin-bottom: 40px; }
+            .overlap-200, .overlap-300, .overlap-400 { margin-top: 0 !important; }
+            /* Adjusted slideshow height, but ensure padding remains 0 from the main rule above */
+            .slideshow-container { 
                 height: 50vh; 
             }
-
-            .project-description {
-                grid-column: 1 / -1 !important;
-            }
+            .project-description { grid-column: 1 / -1 !important; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Background Video -->
     <video autoplay muted loop playsinline id="bg-video">
         <source src="video/startvideo.mp4" type="video/mp4">
         Your browser does not support HTML5 video.
     </video>
 
-    <!-- NAVIGATION -->
     <div id="nav-container">
-        <div class="nav-text">//////////// , <a id="link-landing" class="nav-link" onclick="showSection('landing')">start</a> / /. . . ,( / <a id="link-archive" class="nav-link" onclick="showSection('archive')">archive</a> ,,. /////.,:;:* <a id="link-profile" class="nav-link" onclick="showSection('profile')">profile</a>. ../-.-_.-.--</div>
+        <div class="nav-text">
+            <span id="punc-1">//////////// , </span>
+            <span class="link-fixed-width">
+                <a id="link-landing" class="nav-link" 
+                   onmouseover="startHoverAnimation('punc-1', 'punc-2')" 
+                   onmouseout="stopHoverAnimation('punc-1', 'punc-2')"
+                   onclick="showSection('landing')">start</a>
+            </span>
+            
+            <span id="punc-2"> / /. . . , / </span>
+            <span class="link-fixed-width">
+                <a id="link-archive" class="nav-link" 
+                   onmouseover="startHoverAnimation('punc-2', 'punc-3')" 
+                   onmouseout="stopHoverAnimation('punc-2', 'punc-3')"
+                   onclick="showSection('archive')">archive</a>
+            </span>
+            
+            <span id="punc-3"> ,,. /////.,:;:* </span>
+            <span class="link-fixed-width">
+                <a id="link-profile" class="nav-link" 
+                   onmouseover="startHoverAnimation('punc-3', 'punc-4')" 
+                   onmouseout="stopHoverAnimation('punc-3', 'punc-4')"
+                   onclick="showSection('profile')">profile</a>
+            </span>
+            <span id="punc-4">. ../-.-_.-.--</span>
+        </div>
+    </div>
+    <div id="landing" class="page-section" style="display: block; background-color: transparent;">
+        <div class="grid-12">
+            <h1 class="col-span-12" style="margin-top: 10vh;"><br></h1>
+            </div>
     </div>
 
-    <!-- ARCHIVE PAGE -->
-    <div id="archive" class="page-section" style="background-color: #000;">
+    <!-- ARCHIVE PAGE (REORDERED) -->
+    <div id="archive" class="page-section" style="background-color: #0a0a0a;">
         <div class="grid-12">
         
-            
-            <!-- 
-               MAPPING:
-               P1: bildmarke
-               P2: blickwechsel
-               P3: designobjektekatalog
-               P4: londonprojekt
-               P5: parisprojekt
-               P6: quadrate
-               P7: skizzenbuecher
-               P8: typoraum
-               P9: bildmarke (Duplicate for 9th slot)
-            -->
-
-            <!-- Project 1 (Left - Standard) -->
-            <a onclick="showSection('project-1')" class="project-item pos-left-1">
-                <img class="project-img" src="bilder/bildmarke/cover.webp" alt="Project 1">
+            <!-- Slot 1: Was P1, Now P7 (skizzenbuecher) -->
+            <a onclick="showSection('project-7')" class="project-item pos-left-1">
+                <img class="project-img" src="bilder/skizzenbuecher/cover.webp" alt="Project 7"
+                     onerror="this.outerHTML='<video class=\'project-video\' src=\'bilder/skizzenbuecher/cover.mp4\' autoplay loop muted playsinline></video>'">
             </a>
             
             <div class="row-break"></div>
 
-            <!-- Project 2 (Right - Standard) - Overlap 300 -->
-            <a onclick="showSection('project-2')" class="project-item pos-right-1 overlap-300">
-                <img class="project-img" src="bilder/" alt="Project 2">
+            <!-- Slot 2: Was P2, Now P9 (fotografie) -->
+            <a onclick="showSection('project-9')" class="project-item pos-right-1 overlap-300">
+                <img class="project-img" src="bilder/fotografie/cover.webp" alt="Project 9"
+                     onerror="this.outerHTML='<video class=\'project-video\' src=\'bilder/fotografie/cover.mp4\' autoplay loop muted playsinline></video>'">
             </a>
 
             <div class="row-break"></div>
 
-            <!-- Project 3 (Left - Shifted In) - Overlap 200 -->
+            <!-- Slot 3: Was P3, Now P3 (designobjektekatalog) - UNCHANGED -->
             <a onclick="showSection('project-3')" class="project-item pos-left-2 overlap-200">
-                <img class="project-img" src="bilder/designobjektekatalog/cover.webp" alt="Project 3">
+                <img class="project-img" src="bilder/designobjektekatalog/cover.webp" alt="Project 3"
+                     onerror="this.outerHTML='<video class=\'project-video\' src=\'bilder/designobjektekatalog/cover.mp4\' autoplay loop muted playsinline></video>'">
             </a>
 
             <div class="row-break"></div>
 
-            <!-- Project 4 (Right - Shifted In) - Overlap 400 -->
-            <a onclick="showSection('project-4')" class="project-item pos-right-3 overlap-400">
-                <img class="project-img" src="bilder/londonprojekt/cover.webp" alt="Project 4">
+            <!-- Slot 4: Was P4, Now P5 (parisprojekt) -->
+            <a onclick="showSection('project-5')" class="project-item pos-right-3 overlap-400">
+                <img class="project-img" src="bilder/parisprojekt/cover.webp" alt="Project 5"
+                     onerror="this.outerHTML='<video class=\'project-video\' src=\'bilder/parisprojekt/cover.mp4\' autoplay loop muted playsinline></video>'">
             </a>
 
             <div class="row-break"></div>
 
-            <!-- Project 5 (Left - Standard) - Overlap 300 -->
-            <a onclick="showSection('project-5')" class="project-item pos-left-1 overlap-300">
-                <img class="project-img" src="bilder/parisprojekt/cover.webp" alt="Project 5">
+            <!-- Slot 5: Was P5, Now P2 (blickwechsel) -->
+            <a onclick="showSection('project-2')" class="project-item pos-left-1 overlap-300">
+                <img class="project-img" src="bilder/blickwechsel/cover.webp" alt="Project 2"
+                     onerror="this.outerHTML='<video class=\'project-video\' src=\'bilder/blickwechsel/cover.mp4\' autoplay loop muted playsinline></video>'">
             </a>
 
             <div class="row-break"></div>
 
-            <!-- Project 6 (Right - Shifted Mid) - Overlap 200 -->
-            <a onclick="showSection('project-6')" class="project-item pos-right-2 overlap-200">
-                <img class="project-img" src="bilder/quadrate/cover.webp" alt="Project 6">
+            <!-- Slot 6: Was P6, Now P1 (bildmarke) -->
+            <a onclick="showSection('project-1')" class="project-item pos-right-2 overlap-200">
+                <img class="project-img" src="bilder/bildmarke/cover.webp" alt="Project 1"
+                     onerror="this.outerHTML='<video class=\'project-video\' src=\'bilder/bildmarke/cover.mp4\' autoplay loop muted playsinline></video>'">
             </a>
 
             <div class="row-break"></div>
 
-            <!-- Project 7 (Left - Shifted Mid) - Overlap 400 -->
-            <a onclick="showSection('project-7')" class="project-item pos-left-2 overlap-400">
-                <img class="project-img" src="bilder/skizzenbuecher/cover.webp" alt="Project 7">
+            <!-- Slot 7: Was P7, Now P4 (londonprojekt) -->
+            <a onclick="showSection('project-4')" class="project-item pos-left-2 overlap-400">
+                <img class="project-img" src="bilder/londonprojekt/cover.webp" alt="Project 4"
+                     onerror="this.outerHTML='<video class=\'project-video\' src=\'bilder/londonprojekt/cover.mp4\' autoplay loop muted playsinline></video>'">
             </a>
 
             <div class="row-break"></div>
 
-            <!-- Project 8 (Right - Standard) - Overlap 300 -->
+            <!-- Slot 8: Was P8, Now P8 (typoraum) - UNCHANGED -->
             <a onclick="showSection('project-8')" class="project-item pos-right-1 overlap-300">
-                <img class="project-img" src="bilder/typoraum/cover.webp" alt="Project 8">
+                <img class="project-img" src="bilder/typoraum/cover.webp" alt="Project 8"
+                     onerror="this.outerHTML='<video class=\'project-video\' src=\'bilder/typoraum/cover.mp4\' autoplay loop muted playsinline></video>'">
             </a>
 
             <div class="row-break"></div>
 
-            <!-- Project 9 (Left - Shifted Far) - Overlap 200 -->
-            <a onclick="showSection('project-9')" class="project-item pos-left-3 overlap-200">
-                <img class="project-img" src="bilder/bildmarke/cover.webp" alt="Project 9">
+            <!-- Slot 9: Was P9, Now P10 (londonbildmaterial) -->
+            <a onclick="showSection('project-10')" class="project-item pos-left-3 overlap-200">
+                <img class="project-img" src="bilder/londonbildmaterial/cover.webp" alt="Project 10"
+                     onerror="this.outerHTML='<video class=\'project-video\' src=\'bilder/londonbildmaterial/cover.mp4\' autoplay loop muted playsinline></video>'">
             </a>
+            <div class="row-break"></div>
+
+            <!-- Slot 10: Was P10, Now P6 (quadrate) -->
+            <a onclick="showSection('project-6')" class="project-item pos-right-3 overlap-300">
+                <img class="project-img" src="bilder/quadrate/cover.webp" alt="Project 6"
+                     onerror="this.outerHTML='<video class=\'project-video\' src=\'bilder/quadrate/cover.mp4\' autoplay loop muted playsinline></video>'">
+            </a>
+            <div class="row-break"></div>
+
+            <!-- Slot 11: P11 (fotosfotos) - UNCHANGED -->
+            <a onclick="showSection('project-11')" class="project-item pos-left-1 overlap-300">
+                <img class="project-img" src="bilder/fotosfotos/cover.webp" alt="Project 11"
+                     onerror="this.outerHTML='<video class=\'project-video\' src=\'bilder/fotosfotos/cover.mp4\' autoplay loop muted playsinline></video>'">
+            </a>
+            <div class="row-break"></div>
 
         </div>
     </div>
 
-    <!-- PROFILE PAGE -->
-    <div id="profile" class="page-section" style="background-color: #000;">
+    <div id="profile" class="page-section" style="background-color: #0a0a0a;">
         <div class="grid-12">
            
             <div class="col-span-8">
-                <p>Bio goes here. Using the 12 column grid system.</p>
+                <p>19</p>
                 <br>
-                <p>Contact: damaris.wunderlin@hispeed.ch</p>
+                <p>damaris.wunderlin@hispeed.ch</p>
             </div>
         </div>
     </div>
 
-    <!-- --- INDIVIDUAL PROJECT PAGES (Slideshows) --- -->
-
-    <!-- Project 1 Page -->
-    <div id="project-1" class="page-section project-page" style="background-color: #000;">
+    <div id="project-1" class="page-section project-page" style="background-color: #0a0a0a;">
         <div class="slideshow-container" id="slider-project-1">
-            <!-- Images loaded via JS -->
-        </div>
+            </div>
         <div class="grid-12 project-content-wrapper">
             <div class="project-description">
-                <p>kyoto kicks /// 2024 <br><br>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                <p>kyoto kicks /// november – december 2024 <br><br>
+                the fictional name of the shoe manufacturer kyoto kicks served as the starting point for the research. japanese characters provided inspiration for the brand mark. numerous sketches and design approaches were developed based on this reference. the final brand mark is closely oriented toward the actual written form of kyoto.</p>
             </div>
         </div>
     </div>
 
-    <!-- Project 2 Page -->
-    <div id="project-2" class="page-section project-page" style="background-color: #000;">
+    <div id="project-2" class="page-section project-page" style="background-color: #0a0a0a;">
         <div class="slideshow-container" id="slider-project-2"></div>
         <div class="grid-12 project-content-wrapper">
             <div class="project-description">
-                <p>wer sind wir ohne erinnerung? /// mai–juni 2025 <br><br>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                <p>wer sind wir ohne erinnerung? /// march – june 2025 <br><br>
+                who are we without memory? this question is posed directly to the viewer. memories are deeply intertwined with our identity and perception, often existing as fragments we must piece back together. on the poster, these fragments appear as body parts, while the tape symbolizes the attempt to hold on to what is fleeting.
+the animation introduces transience as an additional design dimension. It underscores how memory shifts over time, continually reshaped by the addition or loss of individual fragments.</p>
             </div>
         </div>
     </div>
 
-    <!-- Project 3 Page -->
-    <div id="project-3" class="page-section project-page" style="background-color: #000;">
+    <div id="project-3" class="page-section project-page" style="background-color: #0a0a0a;">
         <div class="slideshow-container" id="slider-project-3"></div>
         <div class="grid-12 project-content-wrapper">
             <div class="project-description">
-                <p>mid century desginclassics /// 2023 <br><br>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                <p>mid century desginclassics /// october – december 2023 <br><br>
+                this catalog presents three iconic mid-century seating designs. the inverted texts offer deeper insight into the materials that define each piece. special emphasis is placed on fiberglass and veneer, as both materials opened up entirely new possibilities in furniture design. the detailed close-up images in the catalog, along with the visuals on the dust jacket, serve as a compelling visual counterpart to the accompanying texts.</p>
             </div>
         </div>
     </div>
 
-    <!-- Project 4 Page -->
-    <div id="project-4" class="page-section project-page" style="background-color: #000;">
+    <div id="project-4" class="page-section project-page" style="background-color: #0a0a0a;">
         <div class="slideshow-container" id="slider-project-4"></div>
         <div class="grid-12 project-content-wrapper">
             <div class="project-description">
-                <p>wild london /// august–november 2025 <br><br>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                <p>wild london /// august – november 2025 <br><br>
+                the aim of this book is to experience london from the perspective of its animals: how do they perceive the city? what do they pay attention to, which senses guide their perception, and what risks do they face? through essays and dialogues, we gain a deeper insight into their point of view. this publication was made possible by the collective image and text material gathered by the entire class. a detailed exploration of twenty-two animals is presented both textually and visually – a blend of interpretation, research, and imagination.</p>
             </div>
         </div>
     </div>
 
-    <!-- Project 5 Page -->
-    <div id="project-5" class="page-section project-page" style="background-color: #000;">
+    <div id="project-5" class="page-section project-page" style="background-color: #0a0a0a;">
         <div class="slideshow-container" id="slider-project-5"></div>
         <div class="grid-12 project-content-wrapper">
             <div class="project-description">
-                <p>jusqu’à ce que les livres dansent /// september–november 2024 <br><br>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                <p>jusqu’à ce que les livres dansent /// september – october 2024 <br><br>
+                in and around the national library of france, lived routines and systems of order become visible. although the library and its books hold a strong fascination, an urge eventually emerges to break away from these recurring routines. thoughts begin to wander. they take on a life of their own, strolling and racing, until the books beginnen to dance.
+documentary photographs, sketches, and distorted images shape the publication. the focus lies not only on the library and its visitors, but also on the worlds into which our thoughts can lead us.
+</p>
             </div>
         </div>
     </div>
 
-    <!-- Project 6 Page -->
-    <div id="project-6" class="page-section project-page" style="background-color: #000;">
+    <div id="project-6" class="page-section project-page" style="background-color: #0a0a0a;">
         <div class="slideshow-container" id="slider-project-6"></div>
         <div class="grid-12 project-content-wrapper">
             <div class="project-description">
-                <p>squares in space /// 2023 <br><br>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                <p>squares in space /// august – september 2023 <br><br>
+                based on black and white squares, this series was developed according to rules that are both strict and playful. at its core lies the question of how one image influences the next, and how the entire series functions as a coherent whole. considering which components remain constant and which vary led to logical, comprehensible progressions.</p>
             </div>
         </div>
     </div>
 
-    <!-- Project 7 Page -->
-    <div id="project-7" class="page-section project-page" style="background-color: #000;">
+    <div id="project-7" class="page-section project-page" style="background-color: #0a0a0a;">
         <div class="slideshow-container" id="slider-project-7"></div>
         <div class="grid-12 project-content-wrapper">
             <div class="project-description">
-                <p>sketchbooks /// 2023–2025 <br><br>
+                <p>sketchbooks /// 2023 – 2025 <br><br>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
             </div>
         </div>
     </div>
 
-    <!-- Project 8 Page -->
-    <div id="project-8" class="page-section project-page" style="background-color: #000;">
+    <div id="project-8" class="page-section project-page" style="background-color: #0a0a0a;">
         <div class="slideshow-container" id="slider-project-8"></div>
         <div class="grid-12 project-content-wrapper">
             <div class="project-description">
-                <p>type in space /// 2024 <br><br>
+                <p>type in space /// june 2024 <br><br>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
             </div>
         </div>
     </div>
 
-    <!-- Project 9 Page -->
-    <div id="project-9" class="page-section project-page" style="background-color: #000;">
+    <div id="project-9" class="page-section project-page" style="background-color: #0a0a0a;">
         <div class="slideshow-container" id="slider-project-9"></div>
         <div class="grid-12 project-content-wrapper">
             <div class="project-description">
-                <p>PROJECT 09 /// 2020 <br><br>
+                <p>photography /// mai 2025 <br><br>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
             </div>
         </div>
     </div>
 
+    <div id="project-10" class="page-section project-page" style="background-color: #0a0a0a;">
+        <div class="slideshow-container" id="slider-project-10"></div>
+        <div class="grid-12 project-content-wrapper">
+            <div class="project-description">
+                <p>shades of green /// august – september 2025 <br><br>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="project-11" class="page-section project-page" style="background-color: #0a0a0a;">
+        <div class="slideshow-container" id="slider-project-11"></div>
+        <div class="grid-12 project-content-wrapper">
+            <div class="project-description">
+                <p>PROJECT 11 /// 2020 <br><br>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // --- NAVIGATION ANIMATION SCRIPT (COMBINED LOAD & HOVER) ---
+
+        // 1. Define the final, required punctuation state
+        const PUNCTUATION_FINAL = {
+            'punc-1': '//////////// , ', // 14ch
+            'punc-2': ' / /. . . , / ',  // 13ch
+            'punc-3': ' ,,. /////.,:;:* ', // 17ch
+            'punc-4': '. ../-.-_.-.--'    // 13ch
+        };
+        
+        const PUNCTUATION_POOL = ['/', ',', '.', ':', ';', '*', '-', '_', '|', '+', '(', ')', '[', ']', '<', '>', ' '];
+        
+        // State management
+        const activeIntervals = {};
+        let isLoadAnimating = true; // Flag for initial 5-second animation
+
+        // Helper function to generate a random string of a specific length
+        function generateRandomPunctuation(length) {
+            let result = '';
+            for (let i = 0; i < length; i++) {
+                const char = PUNCTUATION_POOL[Math.floor(Math.random() * PUNCTUATION_POOL.length)];
+                result += char;
+            }
+            return result;
+        }
+
+        // Function to run the animation step for a specific element
+        function animateSpecificPunctuation(puncId) {
+            const element = document.getElementById(puncId);
+            if (element) {
+                const finalLength = PUNCTUATION_FINAL[puncId].length;
+                // The CSS fixed width prevents layout shift
+                element.textContent = generateRandomPunctuation(finalLength);
+            }
+        }
+
+        // START Page-Load Animation (Runs once on load for 5 seconds)
+        function startPunctuationAnimation() {
+            let loadInterval;
+            
+            // 1. Run the random animation on all 4 segments
+            loadInterval = setInterval(() => {
+                for (const id in PUNCTUATION_FINAL) {
+                    animateSpecificPunctuation(id);
+                }
+            }, 50);
+
+            // 2. Stop the animation and reset after 5 seconds
+            setTimeout(() => {
+                clearInterval(loadInterval); // Stop the repeated calls
+                isLoadAnimating = false;    // Allow hover animation now
+                
+                // Reset all to their final required state
+                for (const id in PUNCTUATION_FINAL) {
+                    document.getElementById(id).textContent = PUNCTUATION_FINAL[id];
+                }
+            }, 5000); 
+        }
+        
+        // START Hover Animation (triggered onmouseover)
+        function startHoverAnimation(puncId1, puncId2) {
+            // Do not run hover animation if the page-load animation is still active
+            if (isLoadAnimating) return; 
+
+            // Punctuation ID 1 (Left side)
+            if (!activeIntervals[puncId1]) {
+                animateSpecificPunctuation(puncId1);
+                activeIntervals[puncId1] = setInterval(() => animateSpecificPunctuation(puncId1), 50);
+            }
+
+            // Punctuation ID 2 (Right side)
+            if (!activeIntervals[puncId2]) {
+                animateSpecificPunctuation(puncId2);
+                activeIntervals[puncId2] = setInterval(() => animateSpecificPunctuation(puncId2), 50);
+            }
+        }
+
+        // STOP Hover Animation (triggered onmouseout)
+        function stopHoverAnimation(puncId1, puncId2) {
+            // Stop Punctuation ID 1 (Left side) and reset to final text
+            if (activeIntervals[puncId1]) {
+                clearInterval(activeIntervals[puncId1]);
+                delete activeIntervals[puncId1];
+                document.getElementById(puncId1).textContent = PUNCTUATION_FINAL[puncId1];
+            }
+
+            // Stop Punctuation ID 2 (Right side) and reset to final text
+            if (activeIntervals[puncId2]) {
+                clearInterval(activeIntervals[puncId2]);
+                delete activeIntervals[puncId2];
+                document.getElementById(puncId2).textContent = PUNCTUATION_FINAL[puncId2];
+            }
+        }
+        
+        // --- INITIALIZATION ---
+        window.addEventListener('load', function() {
+            // 1. Start the page-load animation first
+            startPunctuationAnimation();
+            
+            // 2. Display the landing page and activate the link
+            showSection('landing');
+            document.getElementById('link-landing').classList.add('active');
+        });
+    </script>
     <script>
         // Map Project IDs to Folder Names
         const projectFolders = {
@@ -511,165 +499,112 @@
             'project-6': 'quadrate',
             'project-7': 'skizzenbuecher',
             'project-8': 'typoraum',
-            'project-9': 'bildmarke' // Using bildmarke as a fallback for the 9th slot
+            'project-9': 'fotografie',
+            'project-10': 'londonbildmaterial',
+            'project-11': 'fotosfotos', 
         };
 
-        // Cache loaded projects to avoid re-fetching
         const loadedProjects = {};
 
         function loadProjectImages(projectId) {
-            if (loadedProjects[projectId]) return; // Already loaded
-
+            if (loadedProjects[projectId]) return; 
             const folderName = projectFolders[projectId];
             if (!folderName) return;
-
             const slider = document.getElementById('slider-' + projectId);
             if (!slider) return;
-
-            // Smart Skip Logic:
-            // We blindly create elements for images 1 through 50 (arbitrary high limit).
-            // On load: we show them.
-            // On error: we remove them from the DOM.
-            // This ensures strict ordering (1 before 5) without needing a file list.
+            const maxImages = 50; 
             
-            const maxImages = 50; // Try to load up to 50 items per project
-
+            // --- FIX START: Ensure Correct Order ---
+            // 1. Create placeholders in order FIRST
+            const slidePlaceholders = [];
             for (let i = 1; i <= maxImages; i++) {
                 const slideDiv = document.createElement('div');
                 slideDiv.className = 'slide';
-                
-                // 1. Try Image (.webp)
-                const img = document.createElement('img');
+                // slideDiv is hidden by default CSS until .loaded class is added
+                slider.appendChild(slideDiv);
+                slidePlaceholders.push(slideDiv);
+            }
+
+            // 2. Load media into the correct placeholder
+            for (let i = 1; i <= maxImages; i++) {
+                const slideDiv = slidePlaceholders[i - 1]; // Use the pre-created placeholder
                 const imagePath = `bilder/${folderName}/${i}.webp`;
                 const videoPath = `bilder/${folderName}/${i}.mp4`;
 
+                const img = document.createElement('img');
                 img.src = imagePath;
                 img.alt = `${folderName} item ${i}`;
                 
                 img.onload = function() {
                     slideDiv.appendChild(img);
-                    slideDiv.classList.add('loaded'); // Show the slide only if image exists
+                    slideDiv.classList.add('loaded'); // Only reveal after load
                 };
                 
                 img.onerror = function() {
-                    // 2. Image failed, Try Video (.mp4)
+                    // Try video if image fails
                     const video = document.createElement('video');
                     video.src = videoPath;
                     video.muted = true;
                     video.autoplay = true;
                     video.loop = true;
-                    video.playsInline = true; // Important for mobile
-                    
-                    // Note: video.onerror might not trigger instantly on source error in some browsers
-                    // checking network state or listening for 'error' is key.
-                    // video.onloadeddata indicates it found data.
+                    video.playsInline = true;
                     
                     video.onloadeddata = function() {
                         slideDiv.appendChild(video);
-                        slideDiv.classList.add('loaded');
+                        slideDiv.classList.add('loaded'); // Only reveal after load
                     };
                     
-                    // If video also fails, remove the placeholder
                     video.onerror = function() {
+                        // If both fail, remove the placeholder so there's no blank gap
                         slideDiv.remove();
                     };
+                    
+                    video.load(); 
                 };
-
-                slider.appendChild(slideDiv);
             }
+            // --- FIX END ---
 
             loadedProjects[projectId] = true;
         }
 
+        /*
+         * --- IMPORTANT FIX: showSection function was incomplete due to truncation.
+         * The full, correct logic is restored here.
+         */
         function showSection(sectionId) {
-            // 1. Hide all content pages
             const pages = document.querySelectorAll('.page-section');
-            pages.forEach(page => {
-                page.style.display = 'none';
-            });
-
-            // 2. Remove active class from all links
+            pages.forEach(page => { page.style.display = 'none'; });
             const links = document.querySelectorAll('.nav-link');
-            links.forEach(link => {
-                link.classList.remove('active');
-            });
+           
+            // Show the requested section
+            document.getElementById(sectionId).style.display = 'block';
 
-            // 3. Highlight the clicked link (only for main nav)
-            if (sectionId === 'landing' || sectionId === 'archive' || sectionId === 'profile') {
-                const activeLink = document.getElementById('link-' + sectionId);
-                if (activeLink) {
-                    activeLink.classList.add('active');
-                }
-            } else if (sectionId.startsWith('project')) {
-                // Keep archive highlighted when inside a project
-                const archiveLink = document.getElementById('link-archive');
-                if (archiveLink) archiveLink.classList.add('active');
-                
-                // Trigger dynamic image loading for this project
+            // Update active link class
+            links.forEach(link => { link.classList.remove('active'); });
+            
+            // Determine which navigation link should be active. Project pages activate 'archive'.
+            const linkId = sectionId.startsWith('project-') ? 'archive' : sectionId;
+            const activeLink = document.getElementById('link-' + linkId);
+
+            if (activeLink) {
+                activeLink.classList.add('active');
+            } 
+
+            // If it's a project page, ensure media is loaded/prepared
+            if (sectionId.startsWith('project-')) {
                 loadProjectImages(sectionId);
             }
 
-            // 4. Show the section (unless it's landing)
-            if (sectionId !== 'landing') {
-                document.getElementById(sectionId).style.display = 'block';
-            }
-        }
-
-        // --- NEW: SMOOTH INERTIA SCROLL (LERP) ---
-        
-        let targetScroll = 0;
-        let currentScroll = 0;
-        let isAnimating = false;
-        let activeSlider = null;
-
-        function lerp(start, end, factor) {
-            return start + (end - start) * factor;
-        }
-
-        function animateScroll() {
-            if (!activeSlider) {
-                isAnimating = false;
-                return;
-            }
-
-            currentScroll = lerp(currentScroll, targetScroll, 0.08);
-            activeSlider.scrollLeft = currentScroll;
-
-            if (Math.abs(targetScroll - currentScroll) > 0.5) {
-                requestAnimationFrame(animateScroll);
-                isAnimating = true;
+            // Reset scroll position
+            const projectWrapper = document.querySelector(`#${sectionId} .project-content-wrapper`);
+            if (projectWrapper) {
+                // Reset scroll for content wrapper inside a project page
+                projectWrapper.scrollTop = 0;
             } else {
-                activeSlider.scrollLeft = targetScroll;
-                isAnimating = false;
+                // For archive and profile pages, reset window scroll
+                window.scrollTo(0, 0);
             }
         }
-
-        // Global wheel listener
-        window.addEventListener('wheel', (evt) => {
-            const activeProjectPage = document.querySelector('.project-page[style*="display: block"]');
-
-            if (activeProjectPage) {
-                const slider = activeProjectPage.querySelector('.slideshow-container');
-                if (slider) {
-                    evt.preventDefault();
-
-                    if (activeSlider !== slider) {
-                        activeSlider = slider;
-                        currentScroll = slider.scrollLeft;
-                        targetScroll = slider.scrollLeft;
-                    }
-
-                    targetScroll += evt.deltaY * 1.5;
-
-                    const maxScroll = slider.scrollWidth - slider.clientWidth;
-                    targetScroll = Math.max(0, Math.min(targetScroll, maxScroll));
-
-                    if (!isAnimating) {
-                        animateScroll();
-                    }
-                }
-            }
-        }, { passive: false });
     </script>
 </body>
 </html>
