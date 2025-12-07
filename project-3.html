@@ -6,13 +6,21 @@
     <title>Mid Century Designclassics - Designobjektekatalog</title>
     <style>
         /* --- GLOBAL STYLES (Copied from index.html) --- */
-        html { width: 100%; height: 100%; background-color: #000; }
+        
+        /* === BACKGROUND COLOR CHANGE APPLIED HERE === */
+        html { 
+            width: 100%; 
+            height: 100%; 
+            /* Changed from #000 (black) or background image to #111111 (dark gray) */
+            background-color: #111111; 
+        }
         body { 
             margin: 0; 
             padding: 0; 
             width: 100%; 
             height: 100%; 
-            background-color: #000; 
+            /* Changed from #000 (black) or transparent to #111111 (dark gray) */
+            background-color: #111111; 
             color: #fff; 
             overflow-y: auto; 
             overflow-x: hidden; 
@@ -22,6 +30,7 @@
             -webkit-font-smoothing: none; 
             transition: background-color 0.5s ease;
         }
+        /* ====================================== */
 
         a { color: #fff; text-decoration: none; cursor: pointer; }
         a:hover, a.active { text-decoration: none; background-color: #fff; color: #000; }
