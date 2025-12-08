@@ -24,48 +24,18 @@
 
         a { color: #fff; text-decoration: none; cursor: pointer; }
         a:hover, a.active { text-decoration: none; background-color: #fff; color: #000; }
-        /* Removed: #bg-video CSS rule */
+
+        /* --- NAVIGATION (UNCHANGED) --- */
         #nav-container { position: fixed; bottom: 30px; left: 0; width: 100%; text-align: center; z-index: 100; padding: 0 20px; box-sizing: border-box; user-select: none; overflow: hidden; white-space: nowrap; }
         .nav-text { display: inline-block; white-space: nowrap; }
         
-        /* Punctuation Fixes */
+        /* Punctuation Fixes (UNCHANGED) */
         #punc-1, #punc-2, #punc-3, #punc-4 { display: inline-block; }
         #punc-1 { width: 14ch; } 
         #punc-2 { width: 13ch; } 
         #punc-3 { width: 17ch; } 
         #punc-4 { width: 13ch; } 
         
-        /* --- NEW MOBILE WARNING STYLES (Visible by default) --- */
-        #mobile-warning {
-            display: flex; /* SHOW THE WARNING by default (mobile-first) */
-            position: fixed; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%; 
-            background-color: #000; 
-            z-index: 200; 
-            text-align: center;
-            justify-content: center;
-            align-items: center;
-            padding: 0 20px;
-            box-sizing: border-box;
-            user-select: none;
-        }
-
-        #mobile-warning .nav-text {
-            white-space: nowrap;
-            display: flex;
-            align-items: center;
-        }
-        
-        /* Define widths for the mobile warning punctuation placeholders */
-        #punc-mobile-left, #punc-mobile-right { 
-            display: inline-block; 
-            width: 15ch; 
-        }
-        /* End NEW MOBILE WARNING STYLES */
-
         .link-fixed-width { display: inline-block; width: 75px; text-align: center; }
         .nav-link { display: inline-block; padding: 0 2px; width: 100%; text-align: center; box-sizing: border-box; }
 
@@ -86,104 +56,204 @@
         
         .project-content-wrapper { padding: 20px 36px 150px 36px; width: 100%; margin: 0; box-sizing: border-box; }
         
-        /* --- GRID SYSTEMS --- */
+        /* --- GRID SYSTEMS (Used for Landing and Profile pages, UNCHANGED) --- */
         .grid-12 { display: grid; grid-template-columns: repeat(12, 1fr); gap: 20px; max-width: 1400px; margin: 0 auto; align-items: start; }
         .project-page .grid-12 { max-width: none; margin: 0; }
         
-        /* --- ARCHIVE PROJECT ITEMS --- */
-        a.project-item { display: flex; flex-direction: column; gap: 10px; background: transparent; border: none; cursor: pointer; text-decoration: none; color: #fff; position: relative; z-index: 1; transition: z-index 0s; }
-        .overlap-200 { margin-top: -200px; }
-        .overlap-300 { margin-top: -300px; }
-        .overlap-400 { margin-top: -400px; }
-        a.project-item:hover { z-index: 50; }
-        a.project-item:hover .project-title { text-decoration: underline; }
+        /* --- ARCHIVE LAYOUT MODIFICATIONS (NEW STRUCTURE) --- */
+
+        /* This is the new container for the archive page. It MUST have position: relative 
+           and a sufficient height to contain the absolutely positioned project items. */
+        .archive-free-layout {
+            position: relative; 
+            width: 100%;
+            min-height: 5000px; /* IMPORTANT: Increase this value if your design needs more vertical space */
+            max-width: 100%; 
+            margin: 0 auto;
+        }
+
+        /* --- ARCHIVE PROJECT ITEMS (Modified to enable absolute positioning) --- */
+        a.project-item { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 10px; 
+            background: transparent; 
+            border: none; 
+            cursor: pointer; 
+            text-decoration: none; 
+            color: #fff; 
+            position: absolute; /* CRUCIAL: Enables free positioning and overlap */
+            z-index: 1; /* Default z-index */
+            transition: none; /* Remove transitions that conflict with position changes */
+        }
         
-        /* --- Image alignment correction --- */
+        a.project-item:hover { z-index: 50; } /* Retained hover behavior */
+        /* Removed .project-title hover style as titles are removed */
+        
+        /* --- EDITABLE AREA: PROJECT SLOT STYLES --- */
+        /* YOU CAN MODIFY THE TOP, LEFT/RIGHT, WIDTH, AND Z-INDEX OF THESE CLASSES 
+           TO ACHIEVE YOUR DESIRED FREE LAYOUT. */
+
+        .archive-slot-1 { /* Project 7 */
+            top: 0px; 
+            right: 0px; 
+            width: 55%; 
+            z-index: 3;
+            text-align: right; 
+            align-items: flex-end;
+        }
+
+        .archive-slot-2 { /* Project 9 */
+            top: 300px; 
+            left: 180px; 
+            width: 50%; 
+            z-index: 10; /* Overlaps Slot 1 */
+        }
+        
+        .archive-slot-3 { /* Project 3 */
+            top: 650px; 
+            left: 20%; 
+            width: 60%; 
+            z-index: 5;
+        }
+
+        .archive-slot-4 { /* Project 5 */
+            top: 950px; 
+            right: 0%; 
+            width: 50%; 
+            z-index: 8;
+            text-align: right; 
+            align-items: flex-end;
+        }
+
+        .archive-slot-5 { /* Project 2 */
+            top: 1500px; 
+            left: 0; 
+            width: 40%; 
+            z-index: 4;
+        }
+
+        .archive-slot-6 { /* Project 1 */
+            top: 1800px; 
+            right: 5%; 
+            width: 25%; 
+            z-index: 7;
+            text-align: right; 
+            align-items: flex-end;
+        }
+
+        .archive-slot-7 { /* Project 4 */
+            top: 2200px; 
+            left: 15%; 
+            width: 60%; 
+            z-index: 2;
+        }
+        
+        .archive-slot-8 { /* Project 8 */
+            top: 2500px; 
+            right: 2%; 
+            width: 40%; 
+            z-index: 9;
+            text-align: right; 
+            align-items: flex-end;
+        }
+        
+        .archive-slot-9 { /* Project 10 */
+            top: 3000px; 
+            left: 50%; 
+            width: 45%; 
+            z-index: 6;
+        }
+        
+        .archive-slot-10 { /* Project 6 */
+            top: 3500px; 
+            left: 0; 
+            width: 25%; 
+            z-index: 1;
+        }
+        
+        .archive-slot-11 { /* Project 11 */
+            top: 3800px; 
+            right: 15%; 
+            width: 50%; 
+            z-index: 11;
+            text-align: right; 
+            align-items: flex-end;
+        }
+        /* --- END EDITABLE AREA --- */
+
+        /* --- Image alignment correction (MODIFIED) --- */
         .project-img, .project-video { 
             height: auto; 
             display: block; 
             border: none; 
-            transition: filter 0.3s ease; 
+            transition: none; /* Changed from 'filter 0.3s ease' to 'none' as filter is removed */
         }
         
+        /* ARCHIVE BLUR EFFECT REMOVED: The project item hover no longer applies a blur filter. */
+        /*
         .project-item:hover .project-img, 
         .project-item:hover .project-video { 
             filter: blur(5px); 
         }
+        */
 
-        .project-title { font-size: 11pt; margin-top: 5px; }
+        /* Removed: .project-title { font-size: 11pt; margin-top: 5px; } */
         
-        /* Dynamic Grid Spans */
-        .pos-left-1 { grid-column: 1 / span 5; text-align: left; }
-        .pos-left-2 { grid-column: 2 / span 3; text-align: left; }
-        .pos-left-3 { grid-column: 3 / span 7; text-align: left; }
-        .pos-right-1 { grid-column: span 7 / -1; text-align: right; align-items: flex-end; }
-        .pos-right-2 { grid-column: 5 / span 7; text-align: right; align-items: flex-end; }
-        .pos-right-3 { grid-column: 4 / span 7; text-align: right; align-items: flex-end; }
-        .row-break { grid-column: 1 / -1; height: 0; }
-        
-        /* --- PROJECT DETAIL SLIDESHOW (Removed styles related to internal slideshow) --- */
+        /* --- Project Detail and Responsive Styles (Grid specific rules REMOVED/OVERRIDDEN) --- */
         .project-detail-header { margin-bottom: 10px; }
         .project-description { line-height: 1.2; grid-column: 1 / 10; }
         
-        /* Responsive */
+        /* Responsive (UNCHANGED, but modified for archive) */
         .col-span-12 { grid-column: span 12; }
         .col-span-8  { grid-column: span 8; }
         .col-span-4  { grid-column: span 4; }
+        
         @media (max-width: 768px) {
+            /* Keep grid-12 responsive rules for landing/profile */
             .grid-12 { grid-template-columns: repeat(4, 1fr); }
             .col-span-12, .col-span-8, .col-span-4 { grid-column: span 4 !important; }
-            .pos-left-1, .pos-left-2, .pos-left-3, .pos-right-1, .pos-right-2, .pos-right-3 { grid-column: 1 / -1 !important; text-align: left !important; align-items: flex-start !important; margin-top: 0 !important; margin-bottom: 40px; }
-            .overlap-200, .overlap-300, .overlap-400 { margin-top: 0 !important; }
             .project-description { grid-column: 1 / -1 !important; }
+
+            /* New Mobile-First fallback for Archive Page */
+            .archive-free-layout {
+                min-height: auto; /* Allow height to collapse */
+            }
+            .archive-free-layout a.project-item {
+                position: static !important; /* Forces items into the normal document flow */
+                width: 100% !important; /* Full width for mobile stacking */
+                top: auto !important;
+                left: auto !important;
+                right: auto !important;
+                margin-bottom: 40px; /* Add spacing between stacked projects */
+                z-index: 1; /* Reset z-index */
+                text-align: left !important;
+                align-items: flex-start !important;
+            }
+
+            /* Resetting inline width styles to ensure 100% mobile width */
+            .archive-free-layout a.project-item img,
+            .archive-free-layout a.project-item video {
+                width: 100% !important; 
+            }
         }
 
-        /* --- DESKTOP/MOBILE TOGGLE LOGIC --- */
-        /* By default (for small screens): #desktop-content-wrapper is HIDDEN */
-        #desktop-content-wrapper {
-            display: none; 
-            width: 100%;
-            height: 100%;
-        }
-
-        /* Desktop view: SHOW DESKTOP, HIDE MOBILE WARNING */
+        /* --- DESKTOP/MOBILE TOGGLE LOGIC (MODIFIED: Mobile warning removed) --- */
+        #desktop-content-wrapper { display: none; width: 100%; height: 100%; }
         @media (min-width: 1025px) {
-            #desktop-content-wrapper {
-                display: block !important; /* SHOW ALL DESKTOP CONTENT */
-            }
-            #mobile-warning {
-                display: none !important; /* HIDE THE WARNING */
-            }
+            #desktop-content-wrapper { display: block !important; } 
+            /* mobile-warning display rule removed */
         }
         /* End DESKTOP/MOBILE TOGGLE LOGIC */
     </style>
 </head>
 <body>
 
-    <!-- NEW MOBILE ONLY WARNING BLOCK (Visible by default on screens < 1025px) -->
-    <div id="mobile-warning">
-        <div class="nav-text">
-            <!-- Punctuation placeholder 1 (will be animated by JS) -->
-            <span id="punc-mobile-left"></span>
-            <span class="link-fixed-width">
-                <!-- The message text -->
-                <span class="nav-link" 
-                   onmouseover="startHoverAnimation('punc-mobile-left', 'punc-mobile-right')" 
-                   onmouseout="stopHoverAnimation('punc-mobile-left', 'punc-mobile-right')">
-                   error open on desktop please
-                </span>
-            </span>
-            <!-- Punctuation placeholder 2 (will be animated by JS) -->
-            <span id="punc-mobile-right"></span>
-        </div>
-    </div>
-    <!-- END NEW MOBILE ONLY WARNING BLOCK -->
+    <!-- MOBILE WARNING BLOCK REMOVED -->
 
-    <!-- WRAPPER FOR ALL DESKTOP CONTENT (Hidden by default on screens < 1025px) -->
     <div id="desktop-content-wrapper">
 
-        <!-- Removed: <video id="bg-video"> element and its contents -->
-
+        <!-- NAVIGATION CONTAINER (UNCHANGED) -->
         <div id="nav-container">
             <div class="nav-text">
                 <span id="punc-1">//////////// , </span>
@@ -213,102 +283,131 @@
             </div>
         </div>
         
-        <!-- LANDING PAGE -->
+        <!-- LANDING PAGE (UNCHANGED) -->
         <div id="landing" class="page-section" style="display: block;">
             <div class="grid-12">
                 <h1 class="col-span-12" style="margin-top: 10vh;"><br></h1>
                 </div>
         </div>
 
-        <!-- ARCHIVE PAGE -->
+        <!-- ARCHIVE PAGE (Structural Change Applied Here) -->
         <div id="archive" class="page-section">
-            <div class="grid-12">
+            <!-- ARCHIVE-FREE-LAYOUT: This container is set to position: relative; in the CSS
+                 to enable absolute positioning of all project links inside it. -->
+            <div id="archive-content-wrapper" class="archive-free-layout">
+            
+                <!-- 
+                    /////////////////////////////////////////////////////////////////////////////
+                    // V V V V V V V V V V V V V V V V V V V V V V V V V V V V V V V V V V V //
+                    //                                                                       //
+                    //                     !!! START EDITABLE DESIGN AREA !!!                //
+                    //                                                                       //
+                    // YOU CAN:                                                              //
+                    // 1. Change the order of these links.                                   //
+                    // 2. Modify the "archive-slot-N" classes in the <style> block above.    //
+                    // 3. Add inline styles for width, top, left, right, bottom, and z-index.//
+                    // 4. Change the text alignment (e.g., add style="text-align: right;").  //
+                    //                                                                       //
+                    // DO NOT change the "href" attribute.                                   //
+                    //                                                                       //
+                    // \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ //
+                    /////////////////////////////////////////////////////////////////////////////
+                -->
             
                 <!-- Slot 1: P7 - LINK FIXED to project-7.html -->
-                <a href="project-7.html" class="project-item pos-right-1">
+                <!-- Uses placeholder class .archive-slot-1 -->
+                <a href="project-7.html" class="project-item archive-slot-1">
                     <img class="project-img" style="width: 75%;" src="bilder/skizzenbuecher/cover.webp" alt="Project 7"
                          onerror="this.outerHTML='<video class=\'project-video\' style=\'width: 75%;\' src=\'bilder/skizzenbuecher/cover.mp4\' autoplay loop muted playsinline></video>'">
                 </a>
-                <div class="row-break"></div>
 
                 <!-- Slot 2: P9 - LINK FIXED to project-9.html -->
-                <a href="project-9.html" class="project-item pos-left-1 overlap-100">
+                <!-- Uses placeholder class .archive-slot-2 -->
+                <a href="project-9.html" class="project-item archive-slot-2">
                     <img class="project-img" style="width: 50%;" src="bilder/fotografie/cover.webp" alt="Project 9"
                          onerror="this.outerHTML='<video class=\'project-video\' style=\'width: 50%;\' src=\'bilder/fotografie/cover.mp4\' autoplay loop muted playsinline></video>'">
                 </a>
-                <div class="row-break"></div>
 
                 <!-- Slot 3: P3 - LINK FIXED to project-3.html -->
-                <a href="project-3.html" class="project-item pos-left-2 overlap-200">
+                <!-- Uses placeholder class .archive-slot-3 -->
+                <a href="project-3.html" class="project-item archive-slot-3">
                     <img class="project-img" style="width: 100%;" src="bilder/designobjektekatalog/cover.webp" alt="Project 3"
                          onerror="this.outerHTML='<video class=\'project-video\' style=\'width: 100%;\' src=\'bilder/designobjektekatalog/cover.mp4\' autoplay loop muted playsinline></video>'">
                 </a>
-                <div class="row-break"></div>
 
                 <!-- Slot 4: P5 - LINK FIXED to project-5.html -->
-                <a href="project-5.html" class="project-item pos-right-3 overlap-400">
+                <!-- Uses placeholder class .archive-slot-4 -->
+                <a href="project-5.html" class="project-item archive-slot-4">
                     <img class="project-img" style="width: 100%;" src="bilder/parisprojekt/cover.webp" alt="Project 5"
                          onerror="this.outerHTML='<video class=\'project-video\' style=\'width: 100%;\' src=\'bilder/parisprojekt/cover.mp4\' autoplay loop muted playsinline></video>'">
                 </a>
-                <div class="row-break"></div>
 
                 <!-- Slot 5: P2 - LINK FIXED to project-2.html -->
-                <a href="project-2.html" class="project-item pos-left-1 overlap-300">
+                <!-- Uses placeholder class .archive-slot-5 -->
+                <a href="project-2.html" class="project-item archive-slot-5">
                     <img class="project-img" style="width: 80%;" src="bilder/blickwechsel/cover.webp" alt="Project 2"
                          onerror="this.outerHTML='<video class=\'project-video\' style=\'width: 80%;\'  src=\'bilder/blickwechsel/cover.mp4\' autoplay loop muted playsinline></video>'">
                 </a>
-                <div class="row-break"></div>
 
                 <!-- Slot 6: P1 - LINK FIXED to project-1.html -->
-                <a href="project-1.html" class="project-item pos-right-2 overlap-200">
+                <!-- Uses placeholder class .archive-slot-6 -->
+                <a href="project-1.html" class="project-item archive-slot-6">
                     <img class="project-img" style="width: 50%;" src="bilder/bildmarke/cover.webp" alt="Project 1"
                          onerror="this.outerHTML='<video class=\'project-video\' style=\'width: 50%;\' src=\'bilder/bildmarke/cover.mp4\' autoplay loop muted playsinline></video>'">
                 </a>
-                <div class="row-break"></div>
 
                 <!-- Slot 7: P4 - LINK FIXED to project-4.html -->
-                <a href="project-4.html" class="project-item pos-left-2 overlap-400">
+                <!-- Uses placeholder class .archive-slot-7 -->
+                <a href="project-4.html" class="project-item archive-slot-7">
                     <img class="project-img" style="width: 100%;" src="bilder/londonprojekt/cover.webp" alt="Project 4"
                          onerror="this.outerHTML='<video class=\'project-video\' style=\'width: 100%;\' src=\'bilder/londonprojekt/cover.mp4\' autoplay loop muted playsinline></video>'">
                 </a>
-                <div class="row-break"></div>
 
                 <!-- Slot 8: P8 - LINK FIXED to project-8.html -->
-                <a href="project-8.html" class="project-item pos-right-1 overlap-300">
+                <!-- Uses placeholder class .archive-slot-8 -->
+                <a href="project-8.html" class="project-item archive-slot-8">
                     <img class="project-img" style="width: 50%;" src="bilder/typoraum/cover.webp" alt="Project 8"
                          onerror="this.outerHTML='<video class=\'project-video\' style=\'width: 50%;\'src=\'bilder/typoraum/cover.mp4\' autoplay loop muted playsinline></video>'">
                 </a>
-                <div class="row-break"></div>
 
                 <!-- Slot 9: P10 - LINK FIXED to project-10.html -->
-                <a href="project-10.html" class="project-item pos-left-3 overlap-200">
+                <!-- Uses placeholder class .archive-slot-9 -->
+                <a href="project-10.html" class="project-item archive-slot-9">
                     <img class="project-img" style="width: 100%;" src="bilder/londonbildmaterial/cover.webp" alt="Project 10"
                          onerror="this.outerHTML='<video class=\'project-video\' style=\'width: 100%;\'src=\'bilder/londonbildmaterial/cover.mp4\' autoplay loop muted playsinline></video>'">
                 </a>
-                <div class="row-break"></div>
 
                 <!-- Slot 10: P6 - LINK FIXED to project-6.html -->
-                <a href="project-6.html" class="project-item pos-right-3 overlap-300">
+                <!-- Uses placeholder class .archive-slot-10 -->
+                <a href="project-6.html" class="project-item archive-slot-10">
                     <img class="project-img" style="width: 50%;"src="bilder/quadrate/cover.webp" alt="Project 6"
                          onerror="this.outerHTML='<video class=\'project-video\' style=\'width: 40%;\'src=\'bilder/quadrate/cover.mp4\' autoplay loop muted playsinline></video>'">
                 </a>
-                <div class="row-break"></div>
 
                 <!-- Slot 11: P11 - LINK FIXED to project-11.html -->
-                <a href="project-11.html" class="project-item pos-left-1 overlap-300">
+                <!-- Uses placeholder class .archive-slot-11 -->
+                <a href="project-11.html" class="project-item archive-slot-11">
                     <img class="project-img" style="width: 50%;" src="bilder/fotosfotos/cover.webp" alt="Project 11"
                          onerror="this.outerHTML='<video class=\'project-video\' style=\'width: 50%;\'src=\'bilder/fotosfotos/cover.mp4\' autoplay loop muted playsinline></video>'">
                 </a>
-                <div class="row-break"></div>
+
+                <!-- 
+                    /////////////////////////////////////////////////////////////////////////////
+                    // ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ //
+                    //                                                                       //
+                    //                      !!! END EDITABLE DESIGN AREA !!!                 //
+                    //                                                                       //
+                    /////////////////////////////////////////////////////////////////////////////
+                -->
 
             </div>
         </div>
 
-        <!-- PROFILE PAGE -->
+        <!-- PROFILE PAGE (UNCHANGED) -->
         <div id="profile" class="page-section">
             <div class="grid-12">
                 <div class="col-span-8">
-                    <p>19</p>
+                    <p>i’m passionate about experimenting with different approaches and exploring the interaction between analog and digital techniques. my work focuses on materiality, typography, and the relationship between content and form. i enjoy discovering new subjects and testing creative possibilities. i’m particularly drawn to the intersections of different creative fields and love connecting graphic design with new disciplines while continually learning and developing my skills.</p>
                     <br>
                     <p>damaris.wunderlin@hispeed.ch</p>
                 </div>
@@ -321,17 +420,13 @@
         // Check if the current device is considered a desktop based on the CSS media query breakpoint
         const IS_DESKTOP = window.innerWidth >= 1025;
         
-        // Removed: RESOURCE KILLER FOR MOBILE (FIX) block, as the element it targeted no longer exists.
-
-        // --- NAVIGATION ANIMATION SCRIPT ---
+        // --- NAVIGATION ANIMATION SCRIPT (MODIFIED: Mobile punctuation removed) ---
         const PUNCTUATION_FINAL = {
             'punc-1': '//////////// , ',
             'punc-2': ' / /. . . , / ',
             'punc-3': ' ,,. /////.,:;:* ',
             'punc-4': '. ../-.-_.-.--',
-            // Punctuation for the mobile warning, 15 characters long
-            'punc-mobile-left': '<<<<<<<<<|*|*| ', 
-            'punc-mobile-right': ' |*|*|>>>>>>>>>' 
+            /* Mobile warning punctuation removed */
         };
         const PUNCTUATION_POOL = ['/', ',', '.', ':', ';', '*', '-', '_', '|', '+', '(', ')', '[', ']', '<', '>', ' '];
         const activeIntervals = {};
@@ -347,15 +442,13 @@
 
         function animateSpecificPunctuation(puncId) {
             const element = document.getElementById(puncId);
-            // Only animate if the element exists in the DOM (it may be null on the opposite device type)
             if (element) {
-                element.textContent = generateRandomPunctuation(PUNCTUATION_FINAL[puncId].length);
+                element.textContent = PUNCTUATION_FINAL[puncId].length > 0 ? generateRandomPunctuation(PUNCTUATION_FINAL[puncId].length) : '';
             }
         }
 
         function startPunctuationAnimation() {
             let loadInterval = setInterval(() => {
-                // Animate all relevant punctuation IDs
                 for (const id in PUNCTUATION_FINAL) {
                     animateSpecificPunctuation(id);
                 }
@@ -364,7 +457,6 @@
             setTimeout(() => {
                 clearInterval(loadInterval); 
                 isLoadAnimating = false;    
-                // Set final static punctuation after animation is done
                 for (const id in PUNCTUATION_FINAL) {
                     const element = document.getElementById(id);
                     if (element) {
@@ -403,31 +495,22 @@
             startPunctuationAnimation();
             
             if (IS_DESKTOP) {
-                // Only initialize desktop navigation if on desktop
                 showSection('landing');
                 document.getElementById('link-landing').classList.add('active');
             } 
-            // The mobile punctuation will be set to static by the general startPunctuationAnimation setTimeout block
         });
     </script>
     <script>
         function showSection(sectionId) {
-            // Only handles navigation for the internal sections: landing, archive, profile.
-            
             const pages = document.querySelectorAll('.page-section');
             pages.forEach(page => { page.style.display = 'none'; });
             const links = document.querySelectorAll('.nav-link');
 
-            // Show the requested section
             document.getElementById(sectionId).style.display = 'block';
 
-            // Update active link class
             links.forEach(l => l.classList.remove('active'));
             const activeLink = document.getElementById('link-' + sectionId);
             if (activeLink) activeLink.classList.add('active');
-            
-            // Note: External project links (in the archive) use standard HREFs 
-            // and do not call this function.
         }
     </script>
 </body>
