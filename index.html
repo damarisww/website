@@ -54,6 +54,23 @@
             z-index: 10; 
         }
         
+        /* --- NEW VIDEO STYLES --- */
+        #landing-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Ensures video covers the screen without stretching */
+            z-index: 0;
+        }
+
+        /* Ensure landing content sits on top of video */
+        #landing .grid-12 {
+            position: relative;
+            z-index: 1;
+        }
+
         .project-content-wrapper { padding: 20px 36px 150px 36px; width: 100%; margin: 0; box-sizing: border-box; }
         
         /* --- GRID SYSTEMS (Used for Landing and Profile pages, UNCHANGED) --- */
@@ -104,9 +121,9 @@
         }
 
         .archive-slot-2 { /* Project 9 */
-            top: 2400px; 
-            left: 920px; 
-            width: 50%; 
+            top: 2300px; 
+            left: 720px; 
+            width: 75%; 
             z-index: 10; /* Overlaps Slot 1 */
         }
         
@@ -118,23 +135,23 @@
         }
 
         .archive-slot-4 { /* Project 5 */
-            top: 950px; 
+            top: 1000px; 
             left: 60px; 
-            width: 50%; 
+            width: 70%; 
             z-index: 8;
             text-align: left; 
             align-items: flex-end;
         }
 
         .archive-slot-5 { /* Project 2 */
-            top: 3500px; 
-            right: 20px;
+            top: 3000px; 
+            right: 0px;
             width: 100%; 
             z-index: 4;
         }
 
         .archive-slot-6 { /* Project 1 */
-            top: 1000px; 
+            top: 1200px; 
             right: 0px; 
             width: 100%; 
             z-index: 7;
@@ -149,14 +166,7 @@
             z-index: 2;
         }
         
-        .archive-slot-8 { /* Project 8 */
-            top: 2500px; 
-            right: 300px; 
-            width: 70%; 
-            z-index: 9;
-            text-align: right; 
-            align-items: flex-end;
-        }
+        /* Archive slot 8 removed */
         
         .archive-slot-9 { /* Project 10 */
             top: 1500px; 
@@ -166,14 +176,14 @@
         }
         
         .archive-slot-10 { /* Project 6 */
-            top: 2500px; 
-            left: 100px; 
-            width: 50%; 
+            top: 3500px; 
+            left: 500px; 
+            width: 80%; 
             z-index: 1;
         }
         
         .archive-slot-11 { /* Project 11 */
-            top: 2070px; 
+            top: 3500px; 
             right: 15%; 
             width: 50%; 
             z-index: 11;
@@ -258,7 +268,7 @@
             <div class="nav-text">
                 <span id="punc-1">//////////// , </span>
                 <span class="link-fixed-width">
-                    <a id="link-landing" class="nav-link" 
+                    <a id="link-landing" class="nav-link" href="#landing"
                        onmouseover="startHoverAnimation('punc-1', 'punc-2')" 
                        onmouseout="stopHoverAnimation('punc-1', 'punc-2')"
                        onclick="showSection('landing')">start</a>
@@ -266,7 +276,7 @@
                 
                 <span id="punc-2"> / /. . . , / </span>
                 <span class="link-fixed-width">
-                    <a id="link-archive" class="nav-link" 
+                    <a id="link-archive" class="nav-link" href="#archive"
                        onmouseover="startHoverAnimation('punc-2', 'punc-3')" 
                        onmouseout="stopHoverAnimation('punc-2', 'punc-3')"
                        onclick="showSection('archive')">archive</a>
@@ -274,7 +284,7 @@
                 
                 <span id="punc-3"> ,,. /////.,:;:* </span>
                 <span class="link-fixed-width">
-                    <a id="link-profile" class="nav-link" 
+                    <a id="link-profile" class="nav-link" href="#profile"
                        onmouseover="startHoverAnimation('punc-3', 'punc-4')" 
                        onmouseout="stopHoverAnimation('punc-3', 'punc-4')"
                        onclick="showSection('profile')">profile</a>
@@ -283,11 +293,17 @@
             </div>
         </div>
         
-        <!-- LANDING PAGE (UNCHANGED) -->
+        <!-- LANDING PAGE (MODIFIED) -->
         <div id="landing" class="page-section" style="display: block;">
+            
+            <!-- BACKGROUND VIDEO ADDED HERE -->
+            <video autoplay loop muted playsinline id="landing-video">
+                <source src="video/startvideo.mp4" type="video/mp4">
+            </video>
+
             <div class="grid-12">
                 <h1 class="col-span-12" style="margin-top: 10vh;"><br></h1>
-                </div>
+            </div>
         </div>
 
         <!-- ARCHIVE PAGE (Structural Change Applied Here) -->
@@ -363,12 +379,7 @@
                          onerror="this.outerHTML='<video class=\'project-video\' style=\'width: 100%;\' src=\'bilder/londonprojekt/cover.mp4\' autoplay loop muted playsinline></video>'">
                 </a>
 
-                <!-- Slot 8: P8 - LINK FIXED to project-8.html -->
-                <!-- Uses placeholder class .archive-slot-8 -->
-                <a href="project-8.html" class="project-item archive-slot-8">
-                    <img class="project-img" style="width: 50%;" src="bilder/typoraum/cover.webp" alt="Project 8"
-                         onerror="this.outerHTML='<video class=\'project-video\' style=\'width: 50%;\'src=\'bilder/typoraum/cover.mp4\' autoplay loop muted playsinline></video>'">
-                </a>
+                <!-- Slot 8 Removed -->
 
                 <!-- Slot 9: P10 - LINK FIXED to project-10.html -->
                 <!-- Uses placeholder class .archive-slot-9 -->
@@ -407,10 +418,8 @@
         <div id="profile" class="page-section">
             <div class="grid-12">
                 <div class="col-span-8">
-                    <p>i’m passionate about experimenting with different approaches and exploring the interaction between analog and digital techniques. my work focuses on materiality, typography, and the relationship between content and form. i enjoy discovering new subjects and testing creative possibilities. i’m particularly drawn to the intersections of different creative fields and love connecting graphic design with new disciplines while continually learning and developing my skills.
-                    </p>
-                    <br>
-                    <p>damaris.wunderlin@hispeed.ch</p>
+                    <p>i’m passionate about experimenting with different approaches and exploring the interaction between analog and digital techniques. my work focuses on materiality, typography, and the relationship between content and form. i enjoy discovering new subjects and testing creative possibilities. i’m particularly drawn to the intersections of different creative fields and love connecting graphic design with new disciplines while continually learning and developing my abilities. <br> <br> skills in indesign, photoshop, illustrator, figma, german, english, french
+                    <br> <br> damaris.wunderlin@hispeed.ch</p>
                 </div>
             </div>
         </div>
@@ -496,8 +505,18 @@
             startPunctuationAnimation();
             
             if (IS_DESKTOP) {
-                showSection('landing');
-                document.getElementById('link-landing').classList.add('active');
+                // Determine which section to show based on URL hash or Session Storage
+                let sectionToShow = 'landing'; // Default
+                const hash = window.location.hash.substring(1); // Get hash without '#'
+                const savedSection = window.sessionStorage ? sessionStorage.getItem('damaris_active_section') : null;
+
+                if (hash && document.getElementById(hash) && document.getElementById(hash).classList.contains('page-section')) {
+                    sectionToShow = hash; // Priority 1: URL Hash
+                } else if (savedSection && document.getElementById(savedSection)) {
+                    sectionToShow = savedSection; // Priority 2: Last visited section
+                }
+
+                showSection(sectionToShow);
             } 
         });
     </script>
@@ -512,6 +531,11 @@
             links.forEach(l => l.classList.remove('active'));
             const activeLink = document.getElementById('link-' + sectionId);
             if (activeLink) activeLink.classList.add('active');
+
+            // Save active section to sessionStorage for persistence across page reloads/navigation
+            if (window.sessionStorage) {
+                sessionStorage.setItem('damaris_active_section', sectionId);
+            }
         }
     </script>
 </body>
