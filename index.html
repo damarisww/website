@@ -25,6 +25,30 @@
         a { color: #fff; text-decoration: none; cursor: pointer; }
         a:hover, a.active { text-decoration: none; background-color: #fff; color: #000; }
 
+        /* --- MOBILE ERROR OVERLAY --- */
+        #mobile-error { 
+            display: none; 
+            position: fixed; 
+            top: 0; left: 0; 
+            width: 100%; height: 100%; 
+            background-color: #000; 
+            z-index: 9999; 
+            flex-direction: column; 
+            justify-content: flex-end; /* Position at the bottom */
+            align-items: center; 
+            text-align: center;
+            padding-bottom: 30px; /* Match nav-container bottom spacing */
+            box-sizing: border-box;
+        }
+        #punc-error-left { width: 14ch; display: inline-block; }
+        #punc-error-right { width: 13ch; display: inline-block; }
+
+        @media (max-width: 1024px) {
+            #mobile-error { display: flex; }
+            #desktop-content-wrapper { display: none !important; }
+            body { overflow: hidden !important; } /* Stop any scrolling on mobile */
+        }
+
         /* --- NAVIGATION (UNCHANGED) --- */
         #nav-container { position: fixed; bottom: 30px; left: 0; width: 100%; text-align: center; z-index: 100; padding: 0 20px; box-sizing: border-box; user-select: none; overflow: hidden; white-space: nowrap; }
         .nav-text { display: inline-block; white-space: nowrap; }
@@ -79,17 +103,14 @@
         
         /* --- ARCHIVE LAYOUT MODIFICATIONS (NEW STRUCTURE) --- */
 
-        /* This is the new container for the archive page. It MUST have position: relative 
-           and a sufficient height to contain the absolutely positioned project items. */
         .archive-free-layout {
             position: relative; 
             width: 100%;
-            min-height: 5000px; /* IMPORTANT: Increase this value if your design needs more vertical space */
+            min-height: 5000px; 
             max-width: 100%; 
             margin: 0 auto;
         }
 
-        /* --- ARCHIVE PROJECT ITEMS (Modified to enable absolute positioning) --- */
         a.project-item { 
             display: flex; 
             flex-direction: column; 
@@ -99,171 +120,74 @@
             cursor: pointer; 
             text-decoration: none; 
             color: #fff; 
-            position: absolute; /* CRUCIAL: Enables free positioning and overlap */
-            z-index: 1; /* Default z-index */
-            transition: none; /* Remove transitions that conflict with position changes */
+            position: absolute; 
+            z-index: 1; 
+            transition: none; 
         }
         
-        a.project-item:hover { z-index: 50; } /* Retained hover behavior */
-        /* Removed .project-title hover style as titles are removed */
-        
-        /* --- EDITABLE AREA: PROJECT SLOT STYLES --- */
-        /* YOU CAN MODIFY THE TOP, LEFT/RIGHT, WIDTH, AND Z-INDEX OF THESE CLASSES 
-           TO ACHIEVE YOUR DESIRED FREE LAYOUT. */
+        a.project-item:hover { z-index: 50; } 
 
-        .archive-slot-1 { /* Project 7 */
-            top: 0px; 
-            right: 0px; 
-            width: 50%; 
-            z-index: 3;
-            text-align: right; 
-            align-items: flex-end;
-        }
+        .archive-slot-1 { top: 0px; right: 0px; width: 50%; z-index: 3; text-align: right; align-items: flex-end; }
+        .archive-slot-2 { top: 2300px; left: 720px; width: 75%; z-index: 10; }
+        .archive-slot-3 { top: 650px; left: 20px; width: 60%; z-index: 5; }
+        .archive-slot-4 { top: 1000px; left: 60px; width: 70%; z-index: 8; text-align: left; align-items: flex-end; }
+        .archive-slot-5 { top: 3000px; right: 0px; width: 100%; z-index: 4; }
+        .archive-slot-6 { top: 1200px; right: 0px; width: 100%; z-index: 7; text-align: right; align-items: flex-end; }
+        .archive-slot-7 { top: 1600px; left: 0px; width: 80%; z-index: 2; }
+        .archive-slot-9 { top: 1500px; right: 200px; width: 50%; z-index: 6; }
+        .archive-slot-10 { top: 3500px; left: 500px; width: 80%; z-index: 1; }
+        .archive-slot-11 { top: 3500px; right: 15%; width: 50%; z-index: 11; text-align: right; align-items: flex-end; }
 
-        .archive-slot-2 { /* Project 9 */
-            top: 2300px; 
-            left: 720px; 
-            width: 75%; 
-            z-index: 10; /* Overlaps Slot 1 */
-        }
+        .project-img, .project-video { height: auto; display: block; border: none; transition: none; }
         
-        .archive-slot-3 { /* Project 3 */
-            top: 650px; 
-            left: 20px; 
-            width: 60%; 
-            z-index: 5;
-        }
-
-        .archive-slot-4 { /* Project 5 */
-            top: 1000px; 
-            left: 60px; 
-            width: 70%; 
-            z-index: 8;
-            text-align: left; 
-            align-items: flex-end;
-        }
-
-        .archive-slot-5 { /* Project 2 */
-            top: 3000px; 
-            right: 0px;
-            width: 100%; 
-            z-index: 4;
-        }
-
-        .archive-slot-6 { /* Project 1 */
-            top: 1200px; 
-            right: 0px; 
-            width: 100%; 
-            z-index: 7;
-            text-align: right; 
-            align-items: flex-end;
-        }
-
-        .archive-slot-7 { /* Project 4 */
-            top: 1600px; 
-            left: 0px; 
-            width: 80%; 
-            z-index: 2;
-        }
-        
-        /* Archive slot 8 removed */
-        
-        .archive-slot-9 { /* Project 10 */
-            top: 1500px; 
-            right: 200px; 
-            width: 50%; 
-            z-index: 6;
-        }
-        
-        .archive-slot-10 { /* Project 6 */
-            top: 3500px; 
-            left: 500px; 
-            width: 80%; 
-            z-index: 1;
-        }
-        
-        .archive-slot-11 { /* Project 11 */
-            top: 3500px; 
-            right: 15%; 
-            width: 50%; 
-            z-index: 11;
-            text-align: right; 
-            align-items: flex-end;
-        }
-        /* --- END EDITABLE AREA --- */
-
-        /* --- Image alignment correction (MODIFIED) --- */
-        .project-img, .project-video { 
-            height: auto; 
-            display: block; 
-            border: none; 
-            transition: none; /* Changed from 'filter 0.3s ease' to 'none' as filter is removed */
-        }
-        
-        /* ARCHIVE BLUR EFFECT REMOVED: The project item hover no longer applies a blur filter. */
-        /*
-        .project-item:hover .project-img, 
-        .project-item:hover .project-video { 
-            filter: blur(5px); 
-        }
-        */
-
-        /* Removed: .project-title { font-size: 11pt; margin-top: 5px; } */
-        
-        /* --- Project Detail and Responsive Styles (Grid specific rules REMOVED/OVERRIDDEN) --- */
         .project-detail-header { margin-bottom: 10px; }
         .project-description { line-height: 1.2; grid-column: 1 / 10; }
         
-        /* Responsive (UNCHANGED, but modified for archive) */
         .col-span-12 { grid-column: span 12; }
         .col-span-8  { grid-column: span 8; }
         .col-span-4  { grid-column: span 4; }
         
         @media (max-width: 768px) {
-            /* Keep grid-12 responsive rules for landing/profile */
             .grid-12 { grid-template-columns: repeat(4, 1fr); }
             .col-span-12, .col-span-8, .col-span-4 { grid-column: span 4 !important; }
             .project-description { grid-column: 1 / -1 !important; }
-
-            /* New Mobile-First fallback for Archive Page */
-            .archive-free-layout {
-                min-height: auto; /* Allow height to collapse */
-            }
+            .archive-free-layout { min-height: auto; }
             .archive-free-layout a.project-item {
-                position: static !important; /* Forces items into the normal document flow */
-                width: 100% !important; /* Full width for mobile stacking */
+                position: static !important;
+                width: 100% !important;
                 top: auto !important;
                 left: auto !important;
                 right: auto !important;
-                margin-bottom: 40px; /* Add spacing between stacked projects */
-                z-index: 1; /* Reset z-index */
+                margin-bottom: 40px;
+                z-index: 1;
                 text-align: left !important;
                 align-items: flex-start !important;
             }
-
-            /* Resetting inline width styles to ensure 100% mobile width */
             .archive-free-layout a.project-item img,
             .archive-free-layout a.project-item video {
                 width: 100% !important; 
             }
         }
 
-        /* --- DESKTOP/MOBILE TOGGLE LOGIC (MODIFIED: Mobile warning removed) --- */
         #desktop-content-wrapper { display: none; width: 100%; height: 100%; }
         @media (min-width: 1025px) {
             #desktop-content-wrapper { display: block !important; } 
-            /* mobile-warning display rule removed */
         }
-        /* End DESKTOP/MOBILE TOGGLE LOGIC */
     </style>
 </head>
 <body>
 
-    <!-- MOBILE WARNING BLOCK REMOVED -->
+    <!-- MOBILE ERROR MESSAGE -->
+    <div id="mobile-error">
+        <div class="nav-text">
+            <span id="punc-error-left">//////////// , </span>
+            <span style="padding: 0 10px;">only open on desktop</span>
+            <span id="punc-error-right"> / /. . . , / </span>
+        </div>
+    </div>
 
     <div id="desktop-content-wrapper">
 
-        <!-- NAVIGATION CONTAINER (UNCHANGED) -->
         <div id="nav-container">
             <div class="nav-text">
                 <span id="punc-1">//////////// , </span>
@@ -293,128 +217,60 @@
             </div>
         </div>
         
-        <!-- LANDING PAGE (MODIFIED) -->
         <div id="landing" class="page-section" style="display: block;">
-            
-            <!-- BACKGROUND VIDEO ADDED HERE -->
             <video autoplay loop muted playsinline id="landing-video">
                 <source src="video/startvideo.mp4" type="video/mp4">
             </video>
-
             <div class="grid-12">
                 <h1 class="col-span-12" style="margin-top: 10vh;"><br></h1>
             </div>
         </div>
 
-        <!-- ARCHIVE PAGE (Structural Change Applied Here) -->
         <div id="archive" class="page-section">
-            <!-- ARCHIVE-FREE-LAYOUT: This container is set to position: relative; in the CSS
-                 to enable absolute positioning of all project links inside it. -->
             <div id="archive-content-wrapper" class="archive-free-layout">
-            
-                <!-- 
-                    /////////////////////////////////////////////////////////////////////////////
-                    // V V V V V V V V V V V V V V V V V V V V V V V V V V V V V V V V V V V //
-                    //                                                                       //
-                    //                     !!! START EDITABLE DESIGN AREA !!!                //
-                    //                                                                       //
-                    // YOU CAN:                                                              //
-                    // 1. Change the order of these links.                                   //
-                    // 2. Modify the "archive-slot-N" classes in the <style> block above.    //
-                    // 3. Add inline styles for width, top, left, right, bottom, and z-index.//
-                    // 4. Change the text alignment (e.g., add style="text-align: right;").  //
-                    //                                                                       //
-                    // DO NOT change the "href" attribute.                                   //
-                    //                                                                       //
-                    // \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ //
-                    /////////////////////////////////////////////////////////////////////////////
-                -->
-            
-                <!-- Slot 1: P7 - LINK FIXED to project-7.html -->
-                <!-- Uses placeholder class .archive-slot-1 -->
                 <a href="project-7.html" class="project-item archive-slot-1">
                     <img class="project-img" style="width: 75%;" src="bilder/skizzenbuecher/cover.webp" alt="Project 7"
                          onerror="this.outerHTML='<video class=\'project-video\' style=\'width: 75%;\' src=\'bilder/skizzenbuecher/cover.mp4\' autoplay loop muted playsinline></video>'">
                 </a>
-
-                <!-- Slot 2: P9 - LINK FIXED to project-9.html -->
-                <!-- Uses placeholder class .archive-slot-2 -->
                 <a href="project-9.html" class="project-item archive-slot-2">
                     <img class="project-img" style="width: 50%;" src="bilder/fotografie/cover.webp" alt="Project 9"
                          onerror="this.outerHTML='<video class=\'project-video\' style=\'width: 50%;\' src=\'bilder/fotografie/cover.mp4\' autoplay loop muted playsinline></video>'">
                 </a>
-
-                <!-- Slot 3: P3 - LINK FIXED to project-3.html -->
-                <!-- Uses placeholder class .archive-slot-3 -->
                 <a href="project-3.html" class="project-item archive-slot-3">
                     <img class="project-img" style="width: 100%;" src="bilder/designobjektekatalog/cover.webp" alt="Project 3"
                          onerror="this.outerHTML='<video class=\'project-video\' style=\'width: 100%;\' src=\'bilder/designobjektekatalog/cover.mp4\' autoplay loop muted playsinline></video>'">
                 </a>
-
-                <!-- Slot 4: P5 - LINK FIXED to project-5.html -->
-                <!-- Uses placeholder class .archive-slot-4 -->
                 <a href="project-5.html" class="project-item archive-slot-4">
                     <img class="project-img" style="width: 100%;" src="bilder/parisprojekt/cover.webp" alt="Project 5"
                          onerror="this.outerHTML='<video class=\'project-video\' style=\'width: 100%;\' src=\'bilder/parisprojekt/cover.mp4\' autoplay loop muted playsinline></video>'">
                 </a>
-
-                <!-- Slot 5: P2 - LINK FIXED to project-2.html -->
-                <!-- Uses placeholder class .archive-slot-5 -->
                 <a href="project-2.html" class="project-item archive-slot-5">
                     <img class="project-img" style="width: 80%;" src="bilder/blickwechsel/cover.webp" alt="Project 2"
                          onerror="this.outerHTML='<video class=\'project-video\' style=\'width: 80%;\'  src=\'bilder/blickwechsel/cover.mp4\' autoplay loop muted playsinline></video>'">
                 </a>
-
-                <!-- Slot 6: P1 - LINK FIXED to project-1.html -->
-                <!-- Uses placeholder class .archive-slot-6 -->
                 <a href="project-1.html" class="project-item archive-slot-6">
                     <img class="project-img" style="width: 50%;" src="bilder/bildmarke/cover.webp" alt="Project 1"
                          onerror="this.outerHTML='<video class=\'project-video\' style=\'width: 50%;\' src=\'bilder/bildmarke/cover.mp4\' autoplay loop muted playsinline></video>'">
                 </a>
-
-                <!-- Slot 7: P4 - LINK FIXED to project-4.html -->
-                <!-- Uses placeholder class .archive-slot-7 -->
                 <a href="project-4.html" class="project-item archive-slot-7">
                     <img class="project-img" style="width: 100%;" src="bilder/londonprojekt/cover.webp" alt="Project 4"
                          onerror="this.outerHTML='<video class=\'project-video\' style=\'width: 100%;\' src=\'bilder/londonprojekt/cover.mp4\' autoplay loop muted playsinline></video>'">
                 </a>
-
-                <!-- Slot 8 Removed -->
-
-                <!-- Slot 9: P10 - LINK FIXED to project-10.html -->
-                <!-- Uses placeholder class .archive-slot-9 -->
                 <a href="project-10.html" class="project-item archive-slot-9">
                     <img class="project-img" style="width: 100%;" src="bilder/londonbildmaterial/cover.webp" alt="Project 10"
                          onerror="this.outerHTML='<video class=\'project-video\' style=\'width: 100%;\'src=\'bilder/londonbildmaterial/cover.mp4\' autoplay loop muted playsinline></video>'">
                 </a>
-
-                <!-- Slot 10: P6 - LINK FIXED to project-6.html -->
-                <!-- Uses placeholder class .archive-slot-10 -->
                 <a href="project-6.html" class="project-item archive-slot-10">
                     <img class="project-img" style="width: 50%;"src="bilder/quadrate/cover.webp" alt="Project 6"
                          onerror="this.outerHTML='<video class=\'project-video\' style=\'width: 40%;\'src=\'bilder/quadrate/cover.mp4\' autoplay loop muted playsinline></video>'">
                 </a>
-
-                <!-- Slot 11: P11 - LINK FIXED to project-11.html -->
-                <!-- Uses placeholder class .archive-slot-11 -->
                 <a href="project-11.html" class="project-item archive-slot-11">
                     <img class="project-img" style="width: 50%;" src="bilder/fotosfotos/cover.webp" alt="Project 11"
                          onerror="this.outerHTML='<video class=\'project-video\' style=\'width: 50%;\'src=\'bilder/fotosfotos/cover.mp4\' autoplay loop muted playsinline></video>'">
                 </a>
-
-                <!-- 
-                    /////////////////////////////////////////////////////////////////////////////
-                    // ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ //
-                    //                                                                       //
-                    //                      !!! END EDITABLE DESIGN AREA !!!                 //
-                    //                                                                       //
-                    /////////////////////////////////////////////////////////////////////////////
-                -->
-
             </div>
         </div>
 
-        <!-- PROFILE PAGE (UNCHANGED) -->
         <div id="profile" class="page-section">
             <div class="grid-12">
                 <div class="col-span-8">
@@ -424,19 +280,18 @@
             </div>
         </div>
     </div>
-    <!-- END WRAPPER FOR ALL DESKTOP CONTENT -->
     
     <script>
-        // Check if the current device is considered a desktop based on the CSS media query breakpoint
         const IS_DESKTOP = window.innerWidth >= 1025;
         
-        // --- NAVIGATION ANIMATION SCRIPT (MODIFIED: Mobile punctuation removed) ---
+        // --- NAVIGATION ANIMATION SCRIPT ---
         const PUNCTUATION_FINAL = {
             'punc-1': '//////////// , ',
             'punc-2': ' / /. . . , / ',
             'punc-3': ' ,,. /////.,:;:* ',
             'punc-4': '. ../-.-_.-.--',
-            /* Mobile warning punctuation removed */
+            'punc-error-left': '//////////// , ',
+            'punc-error-right': ' / /. . . , / '
         };
         const PUNCTUATION_POOL = ['/', ',', '.', ':', ';', '*', '-', '_', '|', '+', '(', ')', '[', ']', '<', '>', ' '];
         const activeIntervals = {};
@@ -464,16 +319,19 @@
                 }
             }, 50);
 
-            setTimeout(() => {
-                clearInterval(loadInterval); 
-                isLoadAnimating = false;    
-                for (const id in PUNCTUATION_FINAL) {
-                    const element = document.getElementById(id);
-                    if (element) {
-                        element.textContent = PUNCTUATION_FINAL[id];
+            // Requirement: Loop continuously on mobile
+            if (IS_DESKTOP) {
+                setTimeout(() => {
+                    clearInterval(loadInterval); 
+                    isLoadAnimating = false;    
+                    for (const id in PUNCTUATION_FINAL) {
+                        const element = document.getElementById(id);
+                        if (element) {
+                            element.textContent = PUNCTUATION_FINAL[id];
+                        }
                     }
-                }
-            }, 5000); 
+                }, 5000); 
+            }
         }
         
         function startHoverAnimation(puncId1, puncId2) {
@@ -505,22 +363,29 @@
             startPunctuationAnimation();
             
             if (IS_DESKTOP) {
-                // Determine which section to show based on URL hash or Session Storage
-                let sectionToShow = 'landing'; // Default
-                const hash = window.location.hash.substring(1); // Get hash without '#'
+                let sectionToShow = 'landing'; 
+                const hash = window.location.hash.substring(1); 
                 const savedSection = window.sessionStorage ? sessionStorage.getItem('damaris_active_section') : null;
 
                 if (hash && document.getElementById(hash) && document.getElementById(hash).classList.contains('page-section')) {
-                    sectionToShow = hash; // Priority 1: URL Hash
+                    sectionToShow = hash; 
                 } else if (savedSection && document.getElementById(savedSection)) {
-                    sectionToShow = savedSection; // Priority 2: Last visited section
+                    sectionToShow = savedSection; 
                 }
-
                 showSection(sectionToShow);
-            } 
+            } else {
+                // STOP BACKGROUND ASSETS ON MOBILE (Requirement: no background loading/assets)
+                const landingVid = document.getElementById('landing-video');
+                if (landingVid) {
+                    landingVid.pause();
+                    landingVid.src = ""; // Stop the browser from downloading the video
+                    landingVid.load();
+                }
+                // Hide any scrollbars that might be triggered by hidden content
+                document.body.style.overflow = 'hidden';
+            }
         });
-    </script>
-    <script>
+
         function showSection(sectionId) {
             const pages = document.querySelectorAll('.page-section');
             pages.forEach(page => { page.style.display = 'none'; });
@@ -532,7 +397,6 @@
             const activeLink = document.getElementById('link-' + sectionId);
             if (activeLink) activeLink.classList.add('active');
 
-            // Save active section to sessionStorage for persistence across page reloads/navigation
             if (window.sessionStorage) {
                 sessionStorage.setItem('damaris_active_section', sectionId);
             }
