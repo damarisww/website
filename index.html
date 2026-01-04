@@ -1,415 +1,309 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>damaris</title>
-    <style>
-        /* --- GLOBAL SETTINGS --- */
-        html { width: 100%; height: 100%; background-color: #000; overflow-x: hidden; }
-        body { 
-            margin: 0; 
-            padding: 0; 
-            width: 100%; 
-            height: 100%; 
-            background-color: #000; 
-            color: #fff; 
-            overflow: hidden; /* Original desktop overflow rule */
-            overflow-x: hidden; /* Global horizontal lock */
-            font-family: 'Courier New', Courier, monospace; 
-            font-weight: bold; 
-            font-size: 11pt; 
-            -webkit-font-smoothing: none; 
-            transition: background-color 0.5s ease;
+
+<html lang="en"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>damaris</title> <style> /* --- GLOBAL SETTINGS --- */ html { width: 100%; height: 100%; background-color: #000; overflow-x: hidden; } body { margin: 0; padding: 0; width: 100%; height: 100%; background-color: #000; color: #fff; overflow: hidden; overflow-x: hidden; font-family: 'Courier New', Courier, monospace; font-weight: bold; font-size: 11pt; -webkit-font-smoothing: none; transition: background-color 0.5s ease; }
+
+    a { color: #fff; text-decoration: none; cursor: pointer; }
+    a:hover, a.active { text-decoration: none; background-color: #fff; color: #000; }
+
+    /* --- MOBILE ERROR OVERLAY --- */
+    #mobile-error { 
+        display: none; 
+        position: fixed; 
+        top: 0; left: 0; 
+        width: 100%; height: 100%; 
+        background-color: #000; 
+        z-index: 9999; 
+        flex-direction: column; 
+        justify-content: flex-end; 
+        align-items: center; 
+        text-align: center;
+        padding-bottom: 30px; 
+        box-sizing: border-box;
+    }
+    #punc-error-left { width: 14ch; display: inline-block; }
+    #punc-error-right { width: 13ch; display: inline-block; }
+
+    @media (max-width: 1024px) {
+        #mobile-error { display: flex; }
+        #desktop-content-wrapper { display: none !important; }
+        body { overflow: hidden !important; } 
+    }
+
+    /* --- NAVIGATION --- */
+    #nav-container { position: fixed; bottom: 30px; left: 0; width: 100%; text-align: center; z-index: 100; padding: 0 20px; box-sizing: border-box; user-select: none; overflow: hidden; white-space: nowrap; }
+    .nav-text { display: inline-block; white-space: nowrap; }
+    
+    #punc-1 { width: 14ch; display: inline-block; } 
+    #punc-2 { width: 13ch; display: inline-block; } 
+    #punc-3 { width: 17ch; display: inline-block; } 
+    #punc-4 { width: 13ch; display: inline-block; } 
+    
+    .link-fixed-width { display: inline-block; width: 75px; text-align: center; }
+    .nav-link { display: inline-block; padding: 0 2px; width: 100%; text-align: center; box-sizing: border-box; }
+
+    /* --- SECTIONS (PAGES) --- */
+    .page-section { 
+        display: none; 
+        position: fixed; 
+        top: 0; 
+        left: 0; 
+        width: 100%; 
+        height: 100%; 
+        overflow-y: auto; 
+        overflow-x: hidden; 
+        overscroll-behavior-x: none; 
+        background-color: #000; 
+        padding: 80px 0 100px 0; 
+        box-sizing: border-box; 
+        z-index: 10; 
+        animation: fadeIn 0.4s ease-out forwards; 
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    
+    #landing-video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover; 
+        z-index: 0;
+    }
+
+    #landing .grid-12 {
+        position: relative;
+        z-index: 1;
+    }
+
+    /* --- GRID SYSTEMS --- */
+    .grid-12 { display: grid; grid-template-columns: repeat(12, 1fr); gap: 20px; max-width: none; margin: 0; align-items: start; }
+    .project-content-wrapper { padding: 20px 36px 150px 36px; width: 100%; margin: 0; box-sizing: border-box; }
+    
+    /* --- SLIDESHOW (From Project Pages) --- */
+    .slideshow-container { display: flex; overflow-x: auto; gap: 5px; width: 100%; height: 60vh; margin-bottom: 0; padding-left: 0; padding-right: 0; box-sizing: border-box; scrollbar-width: none; -ms-overflow-style: none; scroll-behavior: auto; }
+    .slideshow-container::-webkit-scrollbar { display: none; }
+    .slide { flex: 0 0 auto; height: 100%; width: auto; position: relative; }
+    .slide img, .slide video { height: 100%; width: auto; object-fit: contain; display: block; }
+
+    /* --- ARCHIVE LAYOUT --- */
+    .archive-free-layout {
+        position: relative; 
+        width: 100%;
+        min-height: 5000px; 
+        max-width: 100%; 
+        margin: 0 auto;
+    }
+
+    a.project-item { 
+        display: flex; 
+        flex-direction: column; 
+        gap: 10px; 
+        background: transparent; 
+        border: none; 
+        cursor: pointer; 
+        text-decoration: none; 
+        color: #fff; 
+        position: absolute; 
+        z-index: 1; 
+    }
+    
+    a.project-item:hover { z-index: 50; } 
+
+    .archive-slot-1 { top: 0px; right: 0px; width: 50%; z-index: 3; text-align: right; align-items: flex-end; }
+    .archive-slot-2 { top: 2300px; left: 720px; width: 75%; z-index: 10; }
+    .archive-slot-3 { top: 650px; left: 20px; width: 60%; z-index: 5; }
+    .archive-slot-4 { top: 1000px; left: 60px; width: 70%; z-index: 8; text-align: left; align-items: flex-end; }
+    .archive-slot-5 { top: 3000px; right: 0px; width: 100%; z-index: 4; }
+    .archive-slot-6 { top: 1200px; right: 0px; width: 100%; z-index: 7; text-align: right; align-items: flex-end; }
+    .archive-slot-7 { top: 1600px; left: 0px; width: 80%; z-index: 2; }
+    .archive-slot-8 { top: 2000px; left: 100px; width: 40%; z-index: 9; }
+    .archive-slot-9 { top: 1500px; right: 200px; width: 50%; z-index: 6; }
+    .archive-slot-10 { top: 3500px; left: 500px; width: 80%; z-index: 1; }
+    .archive-slot-11 { top: 3500px; right: 15%; width: 50%; z-index: 11; text-align: right; align-items: flex-end; }
+
+    .project-img, .project-video { height: auto; display: block; border: none; }
+    
+    .project-description { line-height: 1.2; grid-column: 1 / 10; }
+    
+    .col-span-12 { grid-column: span 12; }
+    
+    @media (max-width: 768px) {
+        .grid-12 { grid-template-columns: repeat(4, 1fr); }
+        .col-span-12 { grid-column: span 4 !important; }
+        .project-description { grid-column: 1 / -1 !important; }
+        .slideshow-container { height: 50vh; }
+        .archive-free-layout { min-height: auto; padding: 0 36px; }
+        .archive-free-layout a.project-item {
+            position: static !important;
+            width: 100% !important;
+            margin-bottom: 40px;
+            text-align: left !important;
+            align-items: flex-start !important;
         }
+    }
 
-        a { color: #fff; text-decoration: none; cursor: pointer; }
-        a:hover, a.active { text-decoration: none; background-color: #fff; color: #000; }
+    #desktop-content-wrapper { display: none; width: 100%; height: 100%; }
+    @media (min-width: 1025px) {
+        #desktop-content-wrapper { display: block !important; } 
+    }
+</style>
+</head> <body>
 
-        /* --- MOBILE ERROR OVERLAY --- */
-        #mobile-error { 
-            display: none; 
-            position: fixed; 
-            top: 0; left: 0; 
-            width: 100%; height: 100%; 
-            background-color: #000; 
-            z-index: 9999; 
-            flex-direction: column; 
-            justify-content: flex-end; /* Position at the bottom */
-            align-items: center; 
-            text-align: center;
-            padding-bottom: 30px; /* Match nav-container bottom spacing */
-            box-sizing: border-box;
-        }
-        #punc-error-left { width: 14ch; display: inline-block; }
-        #punc-error-right { width: 13ch; display: inline-block; }
-
-        @media (max-width: 1024px) {
-            #mobile-error { display: flex; }
-            #desktop-content-wrapper { display: none !important; }
-            body { overflow: hidden !important; } /* Stop any scrolling on mobile */
-        }
-
-        /* --- NAVIGATION (UNCHANGED) --- */
-        #nav-container { position: fixed; bottom: 30px; left: 0; width: 100%; text-align: center; z-index: 100; padding: 0 20px; box-sizing: border-box; user-select: none; overflow: hidden; white-space: nowrap; }
-        .nav-text { display: inline-block; white-space: nowrap; }
-        
-        /* Punctuation Fixes (UNCHANGED) */
-        #punc-1, #punc-2, #punc-3, #punc-4 { display: inline-block; }
-        #punc-1 { width: 14ch; } 
-        #punc-2 { width: 13ch; } 
-        #punc-3 { width: 17ch; } 
-        #punc-4 { width: 13ch; } 
-        
-        .link-fixed-width { display: inline-block; width: 75px; text-align: center; }
-        .nav-link { display: inline-block; padding: 0 2px; width: 100%; text-align: center; box-sizing: border-box; }
-
-        /* --- SECTIONS (PAGES) --- */
-        .page-section { 
-            display: none; 
-            position: fixed; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%; 
-            overflow-y: auto; 
-            overflow-x: hidden; 
-            overscroll-behavior-x: none; /* FIX: Removes horizontal scroll indicators/bounce arrows */
-            background-color: #000; 
-            padding: 80px 36px 100px 36px; 
-            box-sizing: border-box; 
-            z-index: 10; 
-            animation: fadeIn 0.4s ease-out forwards; /* FIX: Smoother transition between pages */
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        /* --- NEW VIDEO STYLES --- */
-        #landing-video {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover; /* Ensures video covers the screen without stretching */
-            z-index: 0;
-        }
-
-        /* Ensure landing content sits on top of video */
-        #landing .grid-12 {
-            position: relative;
-            z-index: 1;
-        }
-
-        .project-content-wrapper { padding: 20px 36px 150px 36px; width: 100%; margin: 0; box-sizing: border-box; }
-        
-        /* --- GRID SYSTEMS (Used for Landing and Profile pages, UNCHANGED) --- */
-        .grid-12 { display: grid; grid-template-columns: repeat(12, 1fr); gap: 20px; max-width: 1400px; margin: 0 auto; align-items: start; }
-        .project-page .grid-12 { max-width: none; margin: 0; }
-        
-        /* --- ARCHIVE LAYOUT MODIFICATIONS (NEW STRUCTURE) --- */
-
-        .archive-free-layout {
-            position: relative; 
-            width: 100%;
-            min-height: 5000px; 
-            max-width: 100%; 
-            margin: 0 auto;
-        }
-
-        a.project-item { 
-            display: flex; 
-            flex-direction: column; 
-            gap: 10px; 
-            background: transparent; 
-            border: none; 
-            cursor: pointer; 
-            text-decoration: none; 
-            color: #fff; 
-            position: absolute; 
-            z-index: 1; 
-            transition: none; 
-        }
-        
-        a.project-item:hover { z-index: 50; } 
-
-        .archive-slot-1 { top: 0px; right: 0px; width: 50%; z-index: 3; text-align: right; align-items: flex-end; }
-        .archive-slot-2 { top: 2300px; left: 720px; width: 75%; z-index: 10; }
-        .archive-slot-3 { top: 650px; left: 20px; width: 60%; z-index: 5; }
-        .archive-slot-4 { top: 1000px; left: 60px; width: 70%; z-index: 8; text-align: left; align-items: flex-end; }
-        .archive-slot-5 { top: 3000px; right: 0px; width: 100%; z-index: 4; }
-        .archive-slot-6 { top: 1200px; right: 0px; width: 100%; z-index: 7; text-align: right; align-items: flex-end; }
-        .archive-slot-7 { top: 1600px; left: 0px; width: 80%; z-index: 2; }
-        .archive-slot-9 { top: 1500px; right: 200px; width: 50%; z-index: 6; }
-        .archive-slot-10 { top: 3500px; left: 500px; width: 80%; z-index: 1; }
-        .archive-slot-11 { top: 3500px; right: 15%; width: 50%; z-index: 11; text-align: right; align-items: flex-end; }
-
-        .project-img, .project-video { height: auto; display: block; border: none; transition: none; }
-        
-        .project-detail-header { margin-bottom: 10px; }
-        .project-description { line-height: 1.2; grid-column: 1 / 10; }
-        
-        .col-span-12 { grid-column: span 12; }
-        .col-span-8  { grid-column: span 8; }
-        .col-span-4  { grid-column: span 4; }
-        
-        @media (max-width: 768px) {
-            .grid-12 { grid-template-columns: repeat(4, 1fr); }
-            .col-span-12, .col-span-8, .col-span-4 { grid-column: span 4 !important; }
-            .project-description { grid-column: 1 / -1 !important; }
-            .archive-free-layout { min-height: auto; }
-            .archive-free-layout a.project-item {
-                position: static !important;
-                width: 100% !important;
-                top: auto !important;
-                left: auto !important;
-                right: auto !important;
-                margin-bottom: 40px;
-                z-index: 1;
-                text-align: left !important;
-                align-items: flex-start !important;
-            }
-            .archive-free-layout a.project-item img,
-            .archive-free-layout a.project-item video {
-                width: 100% !important; 
-            }
-        }
-
-        #desktop-content-wrapper { display: none; width: 100%; height: 100%; }
-        @media (min-width: 1025px) {
-            #desktop-content-wrapper { display: block !important; } 
-        }
-    </style>
-</head>
-<body>
-
-    <!-- MOBILE ERROR MESSAGE -->
-    <div id="mobile-error">
-        <div class="nav-text">
-            <span id="punc-error-left">//////////// , </span>
-            <span style="padding: 0 10px;">only open on desktop</span>
-            <span id="punc-error-right"> / /. . . , / </span>
-        </div>
+<div id="mobile-error">
+    <div class="nav-text">
+        <span id="punc-error-left">//////////// , </span>
+        <span style="padding: 0 10px;">only open on desktop</span>
+        <span id="punc-error-right"> / /. . . , / </span>
     </div>
+</div>
 
-    <div id="desktop-content-wrapper">
+<div id="desktop-content-wrapper">
 
-        <div id="nav-container">
-            <div class="nav-text">
-                <span id="punc-1">//////////// , </span>
-                <span class="link-fixed-width">
-                    <a id="link-landing" class="nav-link" href="#landing"
-                       onmouseover="startHoverAnimation('punc-1', 'punc-2')" 
-                       onmouseout="stopHoverAnimation('punc-1', 'punc-2')"
-                       onclick="showSection('landing')">start</a>
-                </span>
-                
-                <span id="punc-2"> / /. . . , / </span>
-                <span class="link-fixed-width">
-                    <a id="link-archive" class="nav-link" href="#archive"
-                       onmouseover="startHoverAnimation('punc-2', 'punc-3')" 
-                       onmouseout="stopHoverAnimation('punc-2', 'punc-3')"
-                       onclick="showSection('archive')">archive</a>
-                </span>
-                
-                <span id="punc-3"> ,,. /////.,:;:* </span>
-                <span class="link-fixed-width">
-                    <a id="link-profile" class="nav-link" href="#profile"
-                       onmouseover="startHoverAnimation('punc-3', 'punc-4')" 
-                       onmouseout="stopHoverAnimation('punc-3', 'punc-4')"
-                       onclick="showSection('profile')">profile</a>
-                </span>
-                <span id="punc-4">. ../-.-_.-.--</span>
-            </div>
-        </div>
-        
-        <div id="landing" class="page-section" style="display: block;">
-            <video autoplay loop muted playsinline id="landing-video">
-                <source src="video/startvideo.mp4" type="video/mp4">
-            </video>
-            <div class="grid-12">
-                <h1 class="col-span-12" style="margin-top: 10vh;"><br></h1>
-            </div>
-        </div>
-
-        <div id="archive" class="page-section">
-            <div id="archive-content-wrapper" class="archive-free-layout">
-                <a href="project-7.html" class="project-item archive-slot-1">
-                    <img class="project-img" style="width: 75%;" src="bilder/skizzenbuecher/cover.webp" alt="Project 7"
-                         onerror="this.outerHTML='<video class=\'project-video\' style=\'width: 75%;\' src=\'bilder/skizzenbuecher/cover.mp4\' autoplay loop muted playsinline></video>'">
-                </a>
-                <a href="project-9.html" class="project-item archive-slot-2">
-                    <img class="project-img" style="width: 50%;" src="bilder/fotografie/cover.webp" alt="Project 9"
-                         onerror="this.outerHTML='<video class=\'project-video\' style=\'width: 50%;\' src=\'bilder/fotografie/cover.mp4\' autoplay loop muted playsinline></video>'">
-                </a>
-                <a href="project-3.html" class="project-item archive-slot-3">
-                    <img class="project-img" style="width: 100%;" src="bilder/designobjektekatalog/cover.webp" alt="Project 3"
-                         onerror="this.outerHTML='<video class=\'project-video\' style=\'width: 100%;\' src=\'bilder/designobjektekatalog/cover.mp4\' autoplay loop muted playsinline></video>'">
-                </a>
-                <a href="project-5.html" class="project-item archive-slot-4">
-                    <img class="project-img" style="width: 100%;" src="bilder/parisprojekt/cover.webp" alt="Project 5"
-                         onerror="this.outerHTML='<video class=\'project-video\' style=\'width: 100%;\' src=\'bilder/parisprojekt/cover.mp4\' autoplay loop muted playsinline></video>'">
-                </a>
-                <a href="project-2.html" class="project-item archive-slot-5">
-                    <img class="project-img" style="width: 80%;" src="bilder/blickwechsel/cover.webp" alt="Project 2"
-                         onerror="this.outerHTML='<video class=\'project-video\' style=\'width: 80%;\'  src=\'bilder/blickwechsel/cover.mp4\' autoplay loop muted playsinline></video>'">
-                </a>
-                <a href="project-1.html" class="project-item archive-slot-6">
-                    <img class="project-img" style="width: 50%;" src="bilder/bildmarke/cover.webp" alt="Project 1"
-                         onerror="this.outerHTML='<video class=\'project-video\' style=\'width: 50%;\' src=\'bilder/bildmarke/cover.mp4\' autoplay loop muted playsinline></video>'">
-                </a>
-                <a href="project-4.html" class="project-item archive-slot-7">
-                    <img class="project-img" style="width: 100%;" src="bilder/londonprojekt/cover.webp" alt="Project 4"
-                         onerror="this.outerHTML='<video class=\'project-video\' style=\'width: 100%;\' src=\'bilder/londonprojekt/cover.mp4\' autoplay loop muted playsinline></video>'">
-                </a>
-                <a href="project-10.html" class="project-item archive-slot-9">
-                    <img class="project-img" style="width: 100%;" src="bilder/londonbildmaterial/cover.webp" alt="Project 10"
-                         onerror="this.outerHTML='<video class=\'project-video\' style=\'width: 100%;\'src=\'bilder/londonbildmaterial/cover.mp4\' autoplay loop muted playsinline></video>'">
-                </a>
-                <a href="project-6.html" class="project-item archive-slot-10">
-                    <img class="project-img" style="width: 50%;"src="bilder/quadrate/cover.webp" alt="Project 6"
-                         onerror="this.outerHTML='<video class=\'project-video\' style=\'width: 40%;\'src=\'bilder/quadrate/cover.mp4\' autoplay loop muted playsinline></video>'">
-                </a>
-                <a href="project-11.html" class="project-item archive-slot-11">
-                    <img class="project-img" style="width: 50%;" src="bilder/fotosfotos/cover.webp" alt="Project 11"
-                         onerror="this.outerHTML='<video class=\'project-video\' style=\'width: 50%;\'src=\'bilder/fotosfotos/cover.mp4\' autoplay loop muted playsinline></video>'">
-                </a>
-            </div>
-        </div>
-
-        <div id="profile" class="page-section">
-            <div class="grid-12">
-                <div class="col-span-8">
-                    <p>i’m passionate about experimenting with different approaches and exploring the interaction between analog and digital techniques. my work focuses on materiality, typography, and the relationship between content and form. i enjoy discovering new subjects and testing creative possibilities. i’m particularly drawn to the intersections of different creative fields and love connecting graphic design with new disciplines while continually learning and developing my abilities. <br> <br> skills in indesign, photoshop, illustrator, figma, german, english, french
-                    <br> <br> damaris.wunderlin@hispeed.ch</p>
-                </div>
-            </div>
+    <div id="nav-container">
+        <div class="nav-text">
+            <span id="punc-1">//////////// , </span>
+            <span class="link-fixed-width">
+                <a id="link-landing" class="nav-link" href="#landing" 
+                   onclick="showSection('landing')"
+                   onmouseover="startHoverAnimation('punc-1', 'punc-2')" 
+                   onmouseout="stopHoverAnimation('punc-1', 'punc-2')">start</a>
+            </span>
+            <span id="punc-2"> / /. . . , / </span>
+            <span class="link-fixed-width">
+                <a id="link-archive" class="nav-link" href="#archive" 
+                   onclick="showSection('archive')"
+                   onmouseover="startHoverAnimation('punc-2', 'punc-3')" 
+                   onmouseout="stopHoverAnimation('punc-2', 'punc-3')">archive</a>
+            </span>
+            <span id="punc-3"> ,,. /////.,:;:* </span>
+            <span class="link-fixed-width">
+                <a id="link-profile" class="nav-link" href="profile.html" 
+                   onmouseover="startHoverAnimation('punc-3', 'punc-4')" 
+                   onmouseout="stopHoverAnimation('punc-3', 'punc-4')">profile</a>
+            </span>
+            <span id="punc-4">. ../-.-_.-.--</span>
         </div>
     </div>
     
-    <script>
-        const IS_DESKTOP = window.innerWidth >= 1025;
-        
-        // --- NAVIGATION ANIMATION SCRIPT ---
-        const PUNCTUATION_FINAL = {
-            'punc-1': '//////////// , ',
-            'punc-2': ' / /. . . , / ',
-            'punc-3': ' ,,. /////.,:;:* ',
-            'punc-4': '. ../-.-_.-.--',
-            'punc-error-left': '//////////// , ',
-            'punc-error-right': ' / /. . . , / '
-        };
-        const PUNCTUATION_POOL = ['/', ',', '.', ':', ';', '*', '-', '_', '|', '+', '(', ')', '[', ']', '<', '>', ' '];
-        const activeIntervals = {};
-        let isLoadAnimating = true;
+    <div id="landing" class="page-section" style="display: block;">
+        <video autoplay loop muted playsinline id="landing-video">
+            <source src="video/startvideo.mp4" type="video/mp4">
+        </video>
+        <div class="grid-12" style="padding: 0 36px;">
+            <h1 class="col-span-12" style="margin-top: 10vh;"><br></h1>
+        </div>
+    </div>
 
-        function generateRandomPunctuation(length) {
-            let result = '';
-            for (let i = 0; i < length; i++) {
-                result += PUNCTUATION_POOL[Math.floor(Math.random() * PUNCTUATION_POOL.length)];
-            }
-            return result;
-        }
+    <div id="archive" class="page-section">
+        <div id="archive-content-wrapper" class="archive-free-layout">
+            <a href="project-7.html" class="project-item archive-slot-1"><img class="project-img" style="width: 75%;" src="bilder/skizzenbuecher/cover.webp"></a>
+            <a href="project-9.html" class="project-item archive-slot-2"><img class="project-img" style="width: 50%;" src="bilder/fotografie/cover.webp"></a>
+            <a href="project-3.html" class="project-item archive-slot-3"><img class="project-img" style="width: 100%;" src="bilder/designobjektekatalog/cover.webp"></a>
+            <a href="project-5.html" class="project-item archive-slot-4"><img class="project-img" style="width: 100%;" src="bilder/parisprojekt/cover.webp"></a>
+            <a href="project-2.html" class="project-item archive-slot-5"><img class="project-img" style="width: 80%;" src="bilder/blickwechsel/cover.webp"></a>
+            <a href="project-1.html" class="project-item archive-slot-6"><img class="project-img" style="width: 50%;" src="bilder/bildmarke/cover.webp"></a>
+            <a href="project-4.html" class="project-item archive-slot-7"><img class="project-img" style="width: 100%;" src="bilder/londonprojekt/cover.webp"></a>
+            <a href="project-10.html" class="project-item archive-slot-9"><img class="project-img" style="width: 100%;" src="bilder/londonbildmaterial/cover.webp"></a>
+            <a href="project-6.html" class="project-item archive-slot-10"><img class="project-img" style="width: 50%;" src="bilder/quadrate/cover.webp"></a>
+            <a href="project-11.html" class="project-item archive-slot-11"><img class="project-img" style="width: 50%;" src="bilder/fotosfotos/cover.webp"></a>
+        </div>
+    </div>
 
-        function animateSpecificPunctuation(puncId) {
-            const element = document.getElementById(puncId);
-            if (element) {
-                element.textContent = PUNCTUATION_FINAL[puncId].length > 0 ? generateRandomPunctuation(PUNCTUATION_FINAL[puncId].length) : '';
-            }
-        }
+</div>
 
-        function startPunctuationAnimation() {
-            let loadInterval = setInterval(() => {
-                for (const id in PUNCTUATION_FINAL) {
-                    animateSpecificPunctuation(id);
-                }
-            }, 50);
+<script>
+    const IS_DESKTOP = window.innerWidth >= 1025;
+    const PUNCTUATION_FINAL = { 
+        'punc-1': '//////////// , ', 
+        'punc-2': ' / /. . . , / ', 
+        'punc-3': ' ,,. /////.,:;:* ', 
+        'punc-4': '. ../-.-_.-.--' 
+    };
+    const PUNCTUATION_POOL = ['/', ',', '.', ':', ';', '*', '-', '_', '|', '+', '(', ')', '[', ']', '<', '>', ' '];
+    const activeIntervals = {};
+    let isLoadAnimating = true;
 
-            // Requirement: Loop continuously on mobile
-            if (IS_DESKTOP) {
-                setTimeout(() => {
-                    clearInterval(loadInterval); 
-                    isLoadAnimating = false;    
-                    for (const id in PUNCTUATION_FINAL) {
-                        const element = document.getElementById(id);
-                        if (element) {
-                            element.textContent = PUNCTUATION_FINAL[id];
-                        }
-                    }
-                }, 5000); 
-            }
+    function generateRandomPunctuation(length) {
+        let result = '';
+        for (let i = 0; i < length; i++) {
+            result += PUNCTUATION_POOL[Math.floor(Math.random() * PUNCTUATION_POOL.length)];
         }
-        
-        function startHoverAnimation(puncId1, puncId2) {
-            if (isLoadAnimating) return; 
-            if (!activeIntervals[puncId1]) {
-                animateSpecificPunctuation(puncId1);
-                activeIntervals[puncId1] = setInterval(() => animateSpecificPunctuation(puncId1), 50);
-            }
-            if (!activeIntervals[puncId2]) {
-                animateSpecificPunctuation(puncId2);
-                activeIntervals[puncId2] = setInterval(() => animateSpecificPunctuation(puncId2), 50);
-            }
-        }
+        return result;
+    }
 
-        function stopHoverAnimation(puncId1, puncId2) {
-            if (activeIntervals[puncId1]) {
-                clearInterval(activeIntervals[puncId1]);
-                delete activeIntervals[puncId1];
-                document.getElementById(puncId1).textContent = PUNCTUATION_FINAL[puncId1];
-            }
-            if (activeIntervals[puncId2]) {
-                clearInterval(activeIntervals[puncId2]);
-                delete activeIntervals[puncId2];
-                document.getElementById(puncId2).textContent = PUNCTUATION_FINAL[puncId2];
-            }
+    function animateSpecificPunctuation(puncId) {
+        const element = document.getElementById(puncId);
+        if (element) {
+            element.textContent = generateRandomPunctuation(PUNCTUATION_FINAL[puncId].length);
         }
-        
-        window.addEventListener('load', function() {
+    }
+
+    function startPunctuationAnimation() {
+        let loadInterval = setInterval(() => {
+            for (const id in PUNCTUATION_FINAL) {
+                animateSpecificPunctuation(id);
+            }
+        }, 50);
+
+        setTimeout(() => {
+            clearInterval(loadInterval); 
+            isLoadAnimating = false;    
+            for (const id in PUNCTUATION_FINAL) {
+                const el = document.getElementById(id);
+                if (el) el.textContent = PUNCTUATION_FINAL[id];
+            }
+        }, 5000); 
+    }
+
+    function startHoverAnimation(puncId1, puncId2) {
+        if (isLoadAnimating) return; 
+        if (!activeIntervals[puncId1]) {
+            animateSpecificPunctuation(puncId1);
+            activeIntervals[puncId1] = setInterval(() => animateSpecificPunctuation(puncId1), 50);
+        }
+        if (!activeIntervals[puncId2]) {
+            animateSpecificPunctuation(puncId2);
+            activeIntervals[puncId2] = setInterval(() => animateSpecificPunctuation(puncId2), 50);
+        }
+    }
+
+    function stopHoverAnimation(puncId1, puncId2) {
+        if (activeIntervals[puncId1]) {
+            clearInterval(activeIntervals[puncId1]);
+            delete activeIntervals[puncId1];
+            const el1 = document.getElementById(puncId1);
+            if (el1) el1.textContent = PUNCTUATION_FINAL[puncId1];
+        }
+        if (activeIntervals[puncId2]) {
+            clearInterval(activeIntervals[puncId2]);
+            delete activeIntervals[puncId2];
+            const el2 = document.getElementById(puncId2);
+            if (el2) el2.textContent = PUNCTUATION_FINAL[puncId2];
+        }
+    }
+    
+    window.addEventListener('load', function() {
+        if (IS_DESKTOP) {
             startPunctuationAnimation();
-            
-            if (IS_DESKTOP) {
-                let sectionToShow = 'landing'; 
-                const hash = window.location.hash.substring(1); 
-                const savedSection = window.sessionStorage ? sessionStorage.getItem('damaris_active_section') : null;
-
-                if (hash && document.getElementById(hash) && document.getElementById(hash).classList.contains('page-section')) {
-                    sectionToShow = hash; 
-                } else if (savedSection && document.getElementById(savedSection)) {
-                    sectionToShow = savedSection; 
-                }
-                showSection(sectionToShow);
-            } else {
-                // STOP BACKGROUND ASSETS ON MOBILE (Requirement: no background loading/assets)
-                const landingVid = document.getElementById('landing-video');
-                if (landingVid) {
-                    landingVid.pause();
-                    landingVid.src = ""; // Stop the browser from downloading the video
-                    landingVid.load();
-                }
-                // Hide any scrollbars that might be triggered by hidden content
-                document.body.style.overflow = 'hidden';
-            }
-        });
-
-        function showSection(sectionId) {
-            const pages = document.querySelectorAll('.page-section');
-            pages.forEach(page => { page.style.display = 'none'; });
-            const links = document.querySelectorAll('.nav-link');
-
-            document.getElementById(sectionId).style.display = 'block';
-
-            links.forEach(l => l.classList.remove('active'));
-            const activeLink = document.getElementById('link-' + sectionId);
-            if (activeLink) activeLink.classList.add('active');
-
-            if (window.sessionStorage) {
-                sessionStorage.setItem('damaris_active_section', sectionId);
-            }
+            let sectionToShow = 'landing'; 
+            const hash = window.location.hash.substring(1); 
+            if (hash && document.getElementById(hash)) sectionToShow = hash;
+            showSection(sectionToShow);
         }
-    </script>
-</body>
-</html>
+    });
+
+    function showSection(sectionId) {
+        document.querySelectorAll('.page-section').forEach(p => p.style.display = 'none');
+        const targetSection = document.getElementById(sectionId);
+        if (targetSection) targetSection.style.display = 'block';
+        
+        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+        const activeLink = document.getElementById('link-' + sectionId);
+        if (activeLink) activeLink.classList.add('active');
+    }
+</script>
+</body> </html>

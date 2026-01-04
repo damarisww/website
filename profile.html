@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>damaris - profile</title>
+    <style>
+        /* --- GLOBAL STYLES (Copied from project pages) --- */
+        html { width: 100%; height: 100%; background-color: #000; }
+        body { 
+            margin: 0; 
+            padding: 0; 
+            width: 100%; 
+            height: 100%; 
+            background-color: #000; 
+            color: #fff; 
+            overflow-y: auto; 
+            overflow-x: hidden; 
+            font-family: 'Courier New', Courier, monospace; 
+            font-weight: bold; 
+            font-size: 11pt; 
+            -webkit-font-smoothing: none; 
+            transition: background-color 0.5s ease;
+        }
+
+        a { color: #fff; text-decoration: none; cursor: pointer; }
+        a:hover, a.active { text-decoration: none; background-color: #fff; color: #000; }
+        #bg-video { position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; opacity: 0.8; pointer-events: none; }
+        
+        /* Navigation */
+        #nav-container { position: fixed; bottom: 30px; left: 0; width: 100%; text-align: center; z-index: 100; padding: 0 20px; box-sizing: border-box; user-select: none; overflow: hidden; white-space: nowrap; }
+        .nav-text { display: inline-block; white-space: nowrap; }
+        
+        #punc-1, #punc-2, #punc-3, #punc-4 { display: inline-block; }
+        #punc-1 { width: 14ch; } 
+        #punc-2 { width: 13ch; } 
+        #punc-3 { width: 17ch; } 
+        #punc-4 { width: 13ch; } 
+
+        .link-fixed-width { display: inline-block; width: 75px; text-align: center; }
+        .nav-link { display: inline-block; padding: 0 2px; width: 100%; text-align: center; box-sizing: border-box; }
+
+        .project-page-content { 
+            min-height: 100vh;
+            padding: 0; 
+            margin: 0; 
+            box-sizing: border-box; 
+            padding-top: 20px;
+        }
+        
+        .project-content-wrapper { padding: 20px 36px 150px 36px; width: 100%; margin: 0; box-sizing: border-box; }
+        .grid-12 { display: grid; grid-template-columns: repeat(12, 1fr); gap: 20px; max-width: none; margin: 0; align-items: start; }
+        
+        .slideshow-container { display: flex; overflow-x: auto; gap: 5px; width: 100%; height: 60vh; margin-bottom: 0; padding-left: 0; padding-right: 0; box-sizing: border-box; scrollbar-width: none; -ms-overflow-style: none; scroll-behavior: auto; }
+        .slideshow-container::-webkit-scrollbar { display: none; }
+        .slide { flex: 0 0 auto; height: 100%; width: auto; position: relative; }
+        .slide img { height: 100%; width: auto; object-fit: contain; display: block; }
+        .project-description { line-height: 1.2; grid-column: 1 / 10; }
+        
+        @media (max-width: 768px) {
+            .grid-12 { grid-template-columns: repeat(4, 1fr); }
+            .project-description { grid-column: 1 / -1 !important; }
+            .slideshow-container { height: 50vh; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- VIDEO BACKGROUND -->
+    <video autoplay muted loop playsinline id="bg-video">
+        <source src="video/startvideo.mp4" type="video/mp4">
+    </video>
+
+    <!-- NAVIGATION CONTAINER -->
+    <div id="nav-container">
+        <div class="nav-text">
+            <span id="punc-1">//////////// , </span>
+            <span class="link-fixed-width">
+                <a id="link-landing" class="nav-link" 
+                   onmouseover="startHoverAnimation('punc-1', 'punc-2')" 
+                   onmouseout="stopHoverAnimation('punc-1', 'punc-2')"
+                   href="index.html#landing">start</a>
+            </span>
+            
+            <span id="punc-2"> / /. . . , / </span>
+            <span class="link-fixed-width">
+                <a id="link-archive" class="nav-link" 
+                   onmouseover="startHoverAnimation('punc-2', 'punc-3')" 
+                   onmouseout="stopHoverAnimation('punc-2', 'punc-3')"
+                   href="index.html#archive">archive</a>
+            </span>
+            
+            <span id="punc-3"> ,,. /////.,:;:* </span>
+            <span class="link-fixed-width">
+                <a id="link-profile" class="nav-link active" 
+                   onmouseover="startHoverAnimation('punc-3', 'punc-4')" 
+                   onmouseout="stopHoverAnimation('punc-3', 'punc-4')"
+                   href="index.html#profile">profile</a>
+            </span>
+            <span id="punc-4">. ../-.-_.-.--</span>
+        </div>
+    </div>
+    
+    <!-- PROFILE CONTENT AREA -->
+    <div class="project-page-content">
+        
+        <!-- SLIDESHOW/IMAGE SECTION -->
+        <div class="slideshow-container">
+            <div class="slide">
+                <img src="bilder/profile/1.webp" alt="Profile Image">
+            </div>
+        </div>
+
+        <!-- DESCRIPTION SECTION -->
+        <div class="grid-12 project-content-wrapper">
+            <div class="project-description">
+                <p>i’m passionate about experimenting with different approaches and exploring the interaction between analog and digital techniques. my work focuses on materiality, typography, and the relationship between content and form. i enjoy discovering new subjects and testing creative possibilities. i’m particularly drawn to the intersections of different creative fields and love connecting graphic design with new disciplines while continually learning and developing my abilities. <br><br>
+                indesign, photoshop, illustrator, premiere pro, afterffects, visual studio code, figma, german, english, french <br><br>
+                </p>
+            </div>
+        </div>
+        
+    </div>
+
+    <!-- SCRIPTS -->
+    <script>
+        const PUNCTUATION_FINAL = {
+            'punc-1': '//////////// , ',
+            'punc-2': ' / /. . . , / ',
+            'punc-3': ' ,,. /////.,:;:* ',
+            'punc-4': '. ../-.-_.-.--'
+        };
+        const PUNCTUATION_POOL = ['/', ',', '.', ':', ';', '*', '-', '_', '|', '+', '(', ')', '[', ']', '<', '>', ' '];
+        const activeIntervals = {};
+        let isLoadAnimating = true;
+
+        function generateRandomPunctuation(length) {
+            let result = '';
+            for (let i = 0; i < length; i++) {
+                result += PUNCTUATION_POOL[Math.floor(Math.random() * PUNCTUATION_POOL.length)];
+            }
+            return result;
+        }
+
+        function animateSpecificPunctuation(puncId) {
+            const element = document.getElementById(puncId);
+            if (element) {
+                element.textContent = generateRandomPunctuation(PUNCTUATION_FINAL[puncId].length);
+            }
+        }
+
+        function startPunctuationAnimation() {
+            let loadInterval = setInterval(() => {
+                for (const id in PUNCTUATION_FINAL) {
+                    animateSpecificPunctuation(id);
+                }
+            }, 50);
+
+            setTimeout(() => {
+                clearInterval(loadInterval); 
+                isLoadAnimating = false;    
+                for (const id in PUNCTUATION_FINAL) {
+                    const el = document.getElementById(id);
+                    if (el) el.textContent = PUNCTUATION_FINAL[id];
+                }
+            }, 5000); 
+        }
+        
+        function startHoverAnimation(puncId1, puncId2) {
+            if (isLoadAnimating) return; 
+            if (!activeIntervals[puncId1]) {
+                animateSpecificPunctuation(puncId1);
+                activeIntervals[puncId1] = setInterval(() => animateSpecificPunctuation(puncId1), 50);
+            }
+            if (!activeIntervals[puncId2]) {
+                animateSpecificPunctuation(puncId2);
+                activeIntervals[puncId2] = setInterval(() => animateSpecificPunctuation(puncId2), 50);
+            }
+        }
+
+        function stopHoverAnimation(puncId1, puncId2) {
+            if (activeIntervals[puncId1]) {
+                clearInterval(activeIntervals[puncId1]);
+                delete activeIntervals[puncId1];
+                const el1 = document.getElementById(puncId1);
+                if (el1) el1.textContent = PUNCTUATION_FINAL[puncId1];
+            }
+            if (activeIntervals[puncId2]) {
+                clearInterval(activeIntervals[puncId2]);
+                delete activeIntervals[puncId2];
+                const el2 = document.getElementById(puncId2);
+                if (el2) el2.textContent = PUNCTUATION_FINAL[puncId2];
+            }
+        }
+        
+        window.addEventListener('load', function() {
+            startPunctuationAnimation();
+        });
+    </script>
+</body>
+</html>
