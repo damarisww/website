@@ -1,157 +1,180 @@
 <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>damaris</title>
+    <style>
+        /* --- GLOBAL SETTINGS --- */
+        html { width: 100%; height: 100%; background-color: #000; overflow-x: hidden; }
+        body { margin: 0; padding: 0; width: 100%; height: 100%; background-color: #000; color: #fff; overflow: hidden; overflow-x: hidden; font-family: 'Courier New', Courier, monospace; font-weight: bold; font-size: 11pt; -webkit-font-smoothing: none; transition: background-color 0.5s ease; }
 
-<html lang="en"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>damaris</title> <style> /* --- GLOBAL SETTINGS --- */ html { width: 100%; height: 100%; background-color: #000; overflow-x: hidden; } body { margin: 0; padding: 0; width: 100%; height: 100%; background-color: #000; color: #fff; overflow: hidden; overflow-x: hidden; font-family: 'Courier New', Courier, monospace; font-weight: bold; font-size: 11pt; -webkit-font-smoothing: none; transition: background-color 0.5s ease; }
-
-    a { color: #fff; text-decoration: none; cursor: pointer; }
-    a:hover, a.active { text-decoration: none; background-color: #fff; color: #000; }
-
-    /* --- MOBILE ERROR OVERLAY --- */
-    #mobile-error { 
-        display: none; 
-        position: fixed; 
-        top: 0; left: 0; 
-        width: 100%; height: 100%; 
-        background-color: #000; 
-        z-index: 9999; 
-        flex-direction: column; 
-        justify-content: flex-end; 
-        align-items: center; 
-        text-align: center;
-        padding-bottom: 30px; 
-        box-sizing: border-box;
-    }
-    #punc-error-left { width: 14ch; display: inline-block; }
-    #punc-error-right { width: 13ch; display: inline-block; }
-
-    @media (max-width: 1024px) {
-        #mobile-error { display: flex; }
-        #desktop-content-wrapper { display: none !important; }
-        body { overflow: hidden !important; } 
-    }
-
-    /* --- NAVIGATION --- */
-    #nav-container { position: fixed; bottom: 30px; left: 0; width: 100%; text-align: center; z-index: 100; padding: 0 20px; box-sizing: border-box; user-select: none; overflow: hidden; white-space: nowrap; }
-    .nav-text { display: inline-block; white-space: nowrap; }
-    
-    #punc-1 { width: 14ch; display: inline-block; } 
-    #punc-2 { width: 13ch; display: inline-block; } 
-    #punc-3 { width: 17ch; display: inline-block; } 
-    #punc-4 { width: 13ch; display: inline-block; } 
-    
-    .link-fixed-width { display: inline-block; width: 75px; text-align: center; }
-    .nav-link { display: inline-block; padding: 0 2px; width: 100%; text-align: center; box-sizing: border-box; }
-
-    /* --- SECTIONS (PAGES) --- */
-    .page-section { 
-        display: none; 
-        position: fixed; 
-        top: 0; 
-        left: 0; 
-        width: 100%; 
-        height: 100%; 
-        overflow-y: auto; 
-        overflow-x: hidden; 
-        overscroll-behavior-x: none; 
-        background-color: #000; 
-        padding: 80px 0 100px 0; 
-        box-sizing: border-box; 
-        z-index: 10; 
-        animation: fadeIn 0.4s ease-out forwards; 
-    }
-
-    @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
-    }
-    
-    #landing-video {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        object-fit: cover; 
-        z-index: 0;
-    }
-
-    #landing .grid-12 {
-        position: relative;
-        z-index: 1;
-    }
-
-    /* --- GRID SYSTEMS --- */
-    .grid-12 { display: grid; grid-template-columns: repeat(12, 1fr); gap: 20px; max-width: none; margin: 0; align-items: start; }
-    .project-content-wrapper { padding: 20px 36px 150px 36px; width: 100%; margin: 0; box-sizing: border-box; }
-    
-    /* --- SLIDESHOW (From Project Pages) --- */
-    .slideshow-container { display: flex; overflow-x: auto; gap: 5px; width: 100%; height: 60vh; margin-bottom: 0; padding-left: 0; padding-right: 0; box-sizing: border-box; scrollbar-width: none; -ms-overflow-style: none; scroll-behavior: auto; }
-    .slideshow-container::-webkit-scrollbar { display: none; }
-    .slide { flex: 0 0 auto; height: 100%; width: auto; position: relative; }
-    .slide img, .slide video { height: 100%; width: auto; object-fit: contain; display: block; }
-
-    /* --- ARCHIVE LAYOUT --- */
-    .archive-free-layout {
-        position: relative; 
-        width: 100%;
-        min-height: 5000px; 
-        max-width: 100%; 
-        margin: 0 auto;
-    }
-
-    a.project-item { 
-        display: flex; 
-        flex-direction: column; 
-        gap: 10px; 
-        background: transparent; 
-        border: none; 
-        cursor: pointer; 
-        text-decoration: none; 
-        color: #fff; 
-        position: absolute; 
-        z-index: 1; 
-    }
-    
-    a.project-item:hover { z-index: 50; } 
-
-    .archive-slot-1 { top: 0px; right: 0px; width: 50%; z-index: 3; text-align: right; align-items: flex-end; }
-    .archive-slot-2 { top: 2300px; left: 720px; width: 75%; z-index: 10; }
-    .archive-slot-3 { top: 650px; left: 20px; width: 60%; z-index: 5; }
-    .archive-slot-4 { top: 1000px; left: 60px; width: 70%; z-index: 8; text-align: left; align-items: flex-end; }
-    .archive-slot-5 { top: 3000px; right: 0px; width: 100%; z-index: 4; }
-    .archive-slot-6 { top: 1200px; right: 0px; width: 100%; z-index: 7; text-align: right; align-items: flex-end; }
-    .archive-slot-7 { top: 1600px; left: 0px; width: 80%; z-index: 2; }
-    .archive-slot-8 { top: 2000px; left: 100px; width: 40%; z-index: 9; }
-    .archive-slot-9 { top: 1500px; right: 200px; width: 50%; z-index: 6; }
-    .archive-slot-10 { top: 3500px; left: 500px; width: 80%; z-index: 1; }
-    .archive-slot-11 { top: 3500px; right: 15%; width: 50%; z-index: 11; text-align: right; align-items: flex-end; }
-
-    .project-img, .project-video { height: auto; display: block; border: none; }
-    
-    .project-description { line-height: 1.2; grid-column: 1 / 10; }
-    
-    .col-span-12 { grid-column: span 12; }
-    
-    @media (max-width: 768px) {
-        .grid-12 { grid-template-columns: repeat(4, 1fr); }
-        .col-span-12 { grid-column: span 4 !important; }
-        .project-description { grid-column: 1 / -1 !important; }
-        .slideshow-container { height: 50vh; }
-        .archive-free-layout { min-height: auto; padding: 0 36px; }
-        .archive-free-layout a.project-item {
-            position: static !important;
-            width: 100% !important;
-            margin-bottom: 40px;
-            text-align: left !important;
-            align-items: flex-start !important;
+        a { color: #fff; text-decoration: none; cursor: pointer; }
+        a:hover, a.active { 
+            text-decoration: none; 
+            background-color: #fff; 
+            color: #000; 
         }
-    }
 
-    #desktop-content-wrapper { display: none; width: 100%; height: 100%; }
-    @media (min-width: 1025px) {
-        #desktop-content-wrapper { display: block !important; } 
-    }
-</style>
-</head> <body>
+        /* --- MOBILE ERROR OVERLAY --- */
+        #mobile-error { 
+            display: none; 
+            position: fixed; 
+            top: 0; left: 0; 
+            width: 100%; height: 100%; 
+            background-color: #000; 
+            z-index: 9999; 
+            flex-direction: column; 
+            justify-content: flex-end; 
+            align-items: center; 
+            text-align: center;
+            padding-bottom: 30px; 
+            box-sizing: border-box;
+        }
+        #punc-error-left { width: 14ch; display: inline-block; }
+        #punc-error-right { width: 13ch; display: inline-block; }
+
+        @media (max-width: 1024px) {
+            #mobile-error { display: flex; }
+            #desktop-content-wrapper { display: none !important; }
+            body { overflow: hidden !important; } 
+        }
+
+        /* --- NAVIGATION --- */
+        #nav-container { position: fixed; bottom: 30px; left: 0; width: 100%; text-align: center; z-index: 100; padding: 0 20px; box-sizing: border-box; user-select: none; overflow: hidden; white-space: nowrap; }
+        .nav-text { display: inline-block; white-space: nowrap; }
+        
+        #punc-1 { width: 14ch; display: inline-block; } 
+        #punc-2 { width: 13ch; display: inline-block; } 
+        #punc-3 { width: 17ch; display: inline-block; } 
+        #punc-4 { width: 13ch; display: inline-block; } 
+        
+        .link-fixed-width { display: inline-block; width: 75px; text-align: center; }
+        .nav-link { display: inline-block; padding: 0 2px; width: 100%; text-align: center; box-sizing: border-box; transition: background-color 0.3s ease, color 0.3s ease; }
+
+        /* --- SECTIONS (PAGES) --- */
+        .page-section { 
+            display: none; 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            overflow-y: auto; 
+            overflow-x: hidden; 
+            overscroll-behavior-x: none; 
+            background-color: #000; 
+            padding: 80px 0 100px 0; 
+            box-sizing: border-box; 
+            z-index: 10; 
+            animation: fadeIn 0.4s ease-out forwards; 
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        #landing-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover; 
+            z-index: 0;
+        }
+
+        #landing .grid-12 {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* --- GRID SYSTEMS --- */
+        .grid-12 { display: grid; grid-template-columns: repeat(12, 1fr); gap: 20px; max-width: none; margin: 0; align-items: start; }
+        .project-content-wrapper { padding: 20px 36px 150px 36px; width: 100%; margin: 0; box-sizing: border-box; }
+        
+        /* --- SLIDESHOW (From Project Pages) --- */
+        .slideshow-container { display: flex; overflow-x: auto; gap: 5px; width: 100%; height: 60vh; margin-bottom: 0; padding-left: 0; padding-right: 0; box-sizing: border-box; scrollbar-width: none; -ms-overflow-style: none; scroll-behavior: auto; }
+        .slideshow-container::-webkit-scrollbar { display: none; }
+        .slide { flex: 0 0 auto; height: 100%; width: auto; position: relative; }
+        .slide img, .slide video { height: 100%; width: auto; object-fit: contain; display: block; }
+
+        /* --- ARCHIVE LAYOUT --- */
+        .archive-free-layout {
+            position: relative; 
+            width: 100%;
+            min-height: 5000px; 
+            max-width: 100%; 
+            margin: 0 auto;
+        }
+
+        a.project-item { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 10px; 
+            background: transparent; 
+            border: none; 
+            cursor: pointer; 
+            text-decoration: none; 
+            color: #fff; 
+            position: absolute; 
+            z-index: 1;
+            top: var(--top, auto);
+            left: var(--left, auto);
+            right: var(--right, auto);
+            width: var(--width, auto);
+        }
+        
+        a.project-item:hover { z-index: 50; text-shadow: none; background: transparent; } 
+
+        /* MANUAL POSITIONING */
+        .archive-slot-1 { --top: 0px; --right: 0px; --width: 50%; z-index: 3; text-align: right; align-items: flex-end; }
+        .archive-slot-3 { --top: 700px; --left: 20px; --width: 60%; z-index: 8; }
+        .archive-slot-4 { --top: 1000px; --left: -40px; --width: 70%; z-index: 5; text-align: left; align-items: flex-end; }
+        .archive-slot-6 { --top: 1700px; --right: 0px; --width: 100%; z-index: 7; text-align: right; align-items: flex-end; }
+        .archive-slot-9 { --top: 2300px; --right: 200px; --width: 50%; z-index: 6; }
+        .archive-slot-7 { --top: 2350px; --left: 0px; --width: 100%; z-index: 2; }
+        .archive-slot-2 { --top: 3100px; --left: 50px; --width: 100%; z-index: 10; }
+        .archive-slot-5 { --top: 3600px; --right: 50px; --width: 100%; z-index: 4; }
+        .archive-slot-10 { --top: 4450px; --left: 200px; --width: 80%; z-index: 1; }
+        .archive-slot-8 { --top: 4000px; --left: 100px; --width: 40%; z-index: 9; }
+
+        .project-img, .project-video { height: auto; display: block; border: none; }
+        .project-description { line-height: 1.2; grid-column: 1 / 10; }
+        .col-span-12 { grid-column: span 12; }
+        
+        @media (max-width: 768px) {
+            .grid-12 { grid-template-columns: repeat(4, 1fr); }
+            .col-span-12 { grid-column: span 4 !important; }
+            .project-description { grid-column: 1 / -1 !important; }
+            .slideshow-container { height: 50vh; }
+            .archive-free-layout { min-height: auto; padding: 0 36px; }
+            .archive-free-layout a.project-item {
+                position: static !important;
+                width: 100% !important;
+                margin-bottom: 40px;
+                text-align: left !important;
+                align-items: flex-start !important;
+            }
+        }
+
+        #desktop-content-wrapper { display: none; width: 100%; height: 100%; }
+        @media (min-width: 1025px) {
+            #desktop-content-wrapper { display: block !important; } 
+        }
+
+        /* NEW HOVER BEHAVIOR FOR ARCHIVE IMAGES */
+        .project-img {
+            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .project-item:hover .project-img {
+            transform: scale(1.04);
+        }
+    </style>
+</head>
+<body>
 
 <div id="mobile-error">
     <div class="nav-text">
@@ -200,16 +223,15 @@
 
     <div id="archive" class="page-section">
         <div id="archive-content-wrapper" class="archive-free-layout">
-            <a href="project-7.html" class="project-item archive-slot-1"><img class="project-img" style="width: 75%;" src="bilder/skizzenbuecher/cover.webp"></a>
-            <a href="project-9.html" class="project-item archive-slot-2"><img class="project-img" style="width: 50%;" src="bilder/fotografie/cover.webp"></a>
-            <a href="project-3.html" class="project-item archive-slot-3"><img class="project-img" style="width: 100%;" src="bilder/designobjektekatalog/cover.webp"></a>
-            <a href="project-5.html" class="project-item archive-slot-4"><img class="project-img" style="width: 100%;" src="bilder/parisprojekt/cover.webp"></a>
-            <a href="project-2.html" class="project-item archive-slot-5"><img class="project-img" style="width: 80%;" src="bilder/blickwechsel/cover.webp"></a>
-            <a href="project-1.html" class="project-item archive-slot-6"><img class="project-img" style="width: 50%;" src="bilder/bildmarke/cover.webp"></a>
-            <a href="project-4.html" class="project-item archive-slot-7"><img class="project-img" style="width: 100%;" src="bilder/londonprojekt/cover.webp"></a>
-            <a href="project-10.html" class="project-item archive-slot-9"><img class="project-img" style="width: 100%;" src="bilder/londonbildmaterial/cover.webp"></a>
-            <a href="project-6.html" class="project-item archive-slot-10"><img class="project-img" style="width: 50%;" src="bilder/quadrate/cover.webp"></a>
-            <a href="project-11.html" class="project-item archive-slot-11"><img class="project-img" style="width: 50%;" src="bilder/fotosfotos/cover.webp"></a>
+            <a href="notebooks.html" class="project-item archive-slot-1"><img class="project-img" style="width: 75%;" src="bilder/skizzenbuecher/cover.webp"></a>
+            <a href="photography.html" class="project-item archive-slot-2"><img class="project-img" style="width: 50%;" src="bilder/fotografie/cover.webp"></a>
+            <a href="designclassics.html" class="project-item archive-slot-3"><img class="project-img" style="width: 100%;" src="bilder/designobjektekatalog/cover.webp"></a>
+            <a href="paris.html" class="project-item archive-slot-4"><img class="project-img" style="width: 100%;" src="bilder/parisprojekt/cover.webp"></a>
+            <a href="erinnerung.html" class="project-item archive-slot-5"><img class="project-img" style="width: 80%;" src="bilder/blickwechsel/cover.webp"></a>
+            <a href="kyoto.html" class="project-item archive-slot-6"><img class="project-img" style="width: 50%;" src="bilder/bildmarke/cover.webp"></a>
+            <a href="london.html" class="project-item archive-slot-7"><img class="project-img" style="width: 100%;" src="bilder/londonprojekt/cover.webp"></a>
+            <a href="shades.html" class="project-item archive-slot-9"><img class="project-img" style="width: 100%;" src="bilder/londonbildmaterial/cover.webp"></a>
+            <a href="squares.html" class="project-item archive-slot-10"><img class="project-img" style="width: 50%;" src="bilder/quadrate/cover.webp"></a>
         </div>
     </div>
 
@@ -306,4 +328,5 @@
         if (activeLink) activeLink.classList.add('active');
     }
 </script>
-</body> </html>
+</body>
+</html>

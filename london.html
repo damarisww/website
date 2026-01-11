@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>damaris</title>
+    <style>
+        /* --- GLOBAL STYLES (Copied from index.html) --- */
+        html { width: 100%; height: 100%; background-color: #000; }
+        body { 
+            margin: 0; 
+            padding: 0; 
+            width: 100%; 
+            height: 100%; 
+            background-color: #000; 
+            color: #fff; 
+            overflow: hidden; /* Changed from auto to hidden to prevent vertical scrolling */
+            font-family: 'Courier New', Courier, monospace; 
+            font-weight: bold; 
+            font-size: 11pt; 
+            -webkit-font-smoothing: none; 
+            transition: background-color 0.5s ease;
+        }
+
+        a { color: #fff; text-decoration: none; cursor: pointer; }
+        a:hover, a.active { text-decoration: none; background-color: #fff; color: #000; }
+        #bg-video { position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; opacity: 0.8; pointer-events: none; }
+        
+        /* Navigation (Fixed position on all pages) */
+        #nav-container { position: fixed; bottom: 30px; left: 0; width: 100%; text-align: center; z-index: 100; padding: 0 20px; box-sizing: border-box; user-select: none; overflow: hidden; white-space: nowrap; }
+        .nav-text { display: inline-block; white-space: nowrap; }
+        
+        /* Punctuation Fixes */
+        #punc-1, #punc-2, #punc-3, #punc-4 { display: inline-block; }
+        #punc-1 { width: 14ch; } 
+        #punc-2 { width: 13ch; } 
+        #punc-3 { width: 17ch; } 
+        #punc-4 { width: 13ch; } 
+
+        .link-fixed-width { display: inline-block; width: 75px; text-align: center; }
+        .nav-link { display: inline-block; padding: 0 2px; width: 100%; text-align: center; box-sizing: border-box; }
+
+        /* Project-Specific Styles */
+        .project-page-content { 
+            height: 100vh; /* Locked to viewport height */
+            padding: 0; 
+            margin: 0; 
+            box-sizing: border-box; 
+            padding-top: 0; /* Aligned description to top edge */
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .project-content-wrapper { padding: 20px 36px 0px 36px; width: 100%; margin: 0; box-sizing: border-box; }
+        
+        /* Grid and Slideshow styles needed on project pages */
+        .grid-12 { display: grid; grid-template-columns: repeat(12, 1fr); gap: 20px; max-width: none; margin: 0; align-items: start; }
+        
+        /* Slideshow 40% larger: 60vh * 1.4 = 84vh. 
+           Adjusted to ensure no overlap with nav (bottom: 30px + padding) and description */
+        .slideshow-container { 
+            display: flex; 
+            overflow-x: auto; 
+            gap: 10px; 
+            width: 100%; 
+            height: 84vh; 
+            margin-top: auto; /* Pushes container down */
+            margin-bottom: 80px; /* Buffer for fixed nav at 30px bottom */
+            padding-left: 0; 
+            padding-right: 0; 
+            padding-bottom: 0; 
+            box-sizing: border-box; 
+            scrollbar-width: none; 
+            -ms-overflow-style: none; 
+            scroll-behavior: auto; 
+            z-index: 1;
+        }
+        .slideshow-container::-webkit-scrollbar { display: none; }
+        .slide { flex: 0 0 auto; height: 100%; width: auto; position: relative; display: none; }
+        .slide.loaded { display: block; }
+        .slide img, .slide video { height: 100%; width: auto; object-fit: contain; display: block; }
+        
+        .project-description { 
+            line-height: 1.2; 
+            grid-column: 1 / 9; /* Sets width to 2/3 of 12 columns (approx 66.6%) */
+            width: 66.66vw; /* Explicitly 2/3 viewport width */
+            color: #ffffff; 
+            position: relative; 
+            z-index: 2; 
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .grid-12 { grid-template-columns: repeat(4, 1fr); }
+            .project-description { grid-column: 1 / -1 !important; width: 90vw; }
+            .slideshow-container { height: 60vh; margin-bottom: 80px; } 
+        }
+    </style>
+</head>
+<body>
+
+    <!-- VIDEO BACKGROUND -->
+    <video autoplay muted loop playsinline id="bg-video">
+        <source src="video/startvideo.mp4" type="video/mp4">
+        Your browser does not support HTML5 video.
+    </video>
+
+    <!-- NAVIGATION CONTAINER -->
+    <div id="nav-container">
+        <div class="nav-text">
+            <span id="punc-1">//////////// , </span>
+            <span class="link-fixed-width">
+                <a id="link-landing" class="nav-link" 
+                   onmouseover="startHoverAnimation('punc-1', 'punc-2')" 
+                   onmouseout="stopHoverAnimation('punc-1', 'punc-2')"
+                   href="index.html#landing">start</a>
+            </span>
+            
+            <span id="punc-2"> / /. . . , / </span>
+            <span class="link-fixed-width">
+                <a id="link-archive" class="nav-link active" 
+                   onmouseover="startHoverAnimation('punc-2', 'punc-3')" 
+                   onmouseout="stopHoverAnimation('punc-2', 'punc-3')"
+                   href="index.html#archive">archive</a>
+            </span>
+            
+            <span id="punc-3"> ,,. /////.,:;:* </span>
+            <span class="link-fixed-width">
+                <a id="link-profile" class="nav-link" 
+                   onmouseover="startHoverAnimation('punc-3', 'punc-4')" 
+                   onmouseout="stopHoverAnimation('punc-3', 'punc-4')"
+                   href="index.html#profile">profile</a>
+            </span>
+            <span id="punc-4">. ../-.-_.-.--</span>
+        </div>
+    </div>
+    
+    <!-- PROJECT CONTENT AREA -->
+    <div class="project-page-content">
+        
+        <!-- DESCRIPTION SECTION (Positioned at top) -->
+        <div class="grid-12 project-content-wrapper">
+            <div class="project-description">
+                <p>Wildlondon /// 130 × 210 // 2025 <br>
+                The aim of this book is to experience London from the perspective of its animals: how do they perceive the city? What do they pay attention to, which senses guide their perception, and what risks do they face? Through essays and dialogues, we gain a deeper insight into their point of view. This publication was made possible by the collective image and text material gathered by the entire class. A detailed exploration of twenty-two animals is presented both textually and visually—a blend of interpretation, research, and imagination.</p>
+            </div>
+        </div>
+
+        <!-- SLIDESHOW/IMAGE SECTION (Positioned below description) -->
+        <div class="slideshow-container" id="slider-london.html"></div>
+        
+    </div>
+
+    <!-- SCRIPTS -->
+    <script>
+        const PUNCTUATION_FINAL = {
+            'punc-1': '//////////// , ',
+            'punc-2': ' / /. . . , / ',
+            'punc-3': ' ,,. /////.,:;:* ',
+            'punc-4': '. ../-.-_.-.--'
+        };
+        const PUNCTUATION_POOL = ['/', ',', '.', ':', ';', '*', '-', '_', '|', '+', '(', ')', '[', ']', '<', '>', ' '];
+        const activeIntervals = {};
+        let isLoadAnimating = true;
+
+        function generateRandomPunctuation(length) {
+            let result = '';
+            for (let i = 0; i < length; i++) {
+                result += PUNCTUATION_POOL[Math.floor(Math.random() * PUNCTUATION_POOL.length)];
+            }
+            return result;
+        }
+
+        function animateSpecificPunctuation(puncId) {
+            const element = document.getElementById(puncId);
+            if (element) {
+                element.textContent = generateRandomPunctuation(PUNCTUATION_FINAL[puncId].length);
+            }
+        }
+
+        function startPunctuationAnimation() {
+            let loadInterval = setInterval(() => {
+                for (const id in PUNCTUATION_FINAL) {
+                    animateSpecificPunctuation(id);
+                }
+            }, 50);
+
+            setTimeout(() => {
+                clearInterval(loadInterval); 
+                isLoadAnimating = false;     
+                for (const id in PUNCTUATION_FINAL) {
+                    document.getElementById(id).textContent = PUNCTUATION_FINAL[id];
+                }
+            }, 5000); 
+        }
+        
+        function startHoverAnimation(puncId1, puncId2) {
+            if (isLoadAnimating) return; 
+            if (!activeIntervals[puncId1]) {
+                animateSpecificPunctuation(puncId1);
+                activeIntervals[puncId1] = setInterval(() => animateSpecificPunctuation(puncId1), 50);
+            }
+            if (!activeIntervals[puncId2]) {
+                animateSpecificPunctuation(puncId2);
+                activeIntervals[puncId2] = setInterval(() => animateSpecificPunctuation(puncId2), 50);
+            }
+        }
+
+        function stopHoverAnimation(puncId1, puncId2) {
+            if (activeIntervals[puncId1]) {
+                clearInterval(activeIntervals[puncId1]);
+                delete activeIntervals[puncId1];
+                document.getElementById(puncId1).textContent = PUNCTUATION_FINAL[puncId1];
+            }
+            if (activeIntervals[puncId2]) {
+                clearInterval(activeIntervals[puncId2]);
+                delete activeIntervals[puncId2];
+                document.getElementById(puncId2).textContent = PUNCTUATION_FINAL[puncId2];
+            }
+        }
+        
+        const projectId = 'london.html'; 
+        const folderName = 'londonprojekt'; 
+        
+        function loadProjectImages() {
+            const slider = document.getElementById('slider-' + projectId);
+            if (!slider || !folderName) return;
+            const maxImages = 50; 
+            
+            const slidePlaceholders = [];
+            for (let i = 1; i <= maxImages; i++) {
+                const slideDiv = document.createElement('div');
+                slideDiv.className = 'slide';
+                slider.appendChild(slideDiv);
+                slidePlaceholders.push(slideDiv);
+            }
+
+            for (let i = 1; i <= maxImages; i++) {
+                const slideDiv = slidePlaceholders[i - 1]; 
+                const imagePath = `bilder/${folderName}/${i}.webp`;
+                const videoPath = `bilder/${folderName}/${i}.mp4`;
+
+                const img = document.createElement('img');
+                img.src = imagePath;
+                img.alt = `${folderName} item ${i}`;
+                
+                img.onload = function() {
+                    slideDiv.appendChild(img);
+                    slideDiv.classList.add('loaded'); 
+                };
+                
+                img.onerror = function() {
+                    const video = document.createElement('video');
+                    video.src = videoPath;
+                    video.muted = true;
+                    video.autoplay = true;
+                    video.loop = true;
+                    video.playsInline = true;
+                    
+                    video.onloadeddata = function() {
+                        slideDiv.appendChild(video);
+                        slideDiv.classList.add('loaded'); 
+                    };
+                    
+                    video.onerror = function() {
+                        slideDiv.remove();
+                    };
+                    video.load(); 
+                };
+            }
+        }
+        
+        window.addEventListener('load', function() {
+            startPunctuationAnimation();
+            loadProjectImages();
+            
+            const archiveLink = document.getElementById('link-archive');
+            if (archiveLink) {
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                archiveLink.classList.add('active');
+            }
+        });
+    </script>
+</body>
+</html>
