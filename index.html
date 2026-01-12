@@ -243,7 +243,9 @@
         'punc-1': '//////////// , ', 
         'punc-2': ' / /. . . , / ', 
         'punc-3': ' ,,. /////.,:;:* ', 
-        'punc-4': '. ../-.-_.-.--' 
+        'punc-4': '. ../-.-_.-.--',
+        'punc-error-left': '//////////// , ',
+        'punc-error-right': ' / /. . . , / '
     };
     const PUNCTUATION_POOL = ['/', ',', '.', ':', ';', '*', '-', '_', '|', '+', '(', ')', '[', ']', '<', '>', ' '];
     const activeIntervals = {};
@@ -267,7 +269,10 @@
     function startPunctuationAnimation() {
         let loadInterval = setInterval(() => {
             for (const id in PUNCTUATION_FINAL) {
-                animateSpecificPunctuation(id);
+                // Only animate standard nav puncs during desktop intro
+                if (id.startsWith('punc-') && !id.includes('error')) {
+                    animateSpecificPunctuation(id);
+                }
             }
         }, 50);
 
@@ -276,7 +281,7 @@
             isLoadAnimating = false;    
             for (const id in PUNCTUATION_FINAL) {
                 const el = document.getElementById(id);
-                if (el) el.textContent = PUNCTUATION_FINAL[id];
+                if (el && !id.includes('error')) el.textContent = PUNCTUATION_FINAL[id];
             }
         }, 5000); 
     }
@@ -315,6 +320,12 @@
             const hash = window.location.hash.substring(1); 
             if (hash && document.getElementById(hash)) sectionToShow = hash;
             showSection(sectionToShow);
+        } else {
+            // Surgical fix for mobile error animation
+            setInterval(() => {
+                animateSpecificPunctuation('punc-error-left');
+                animateSpecificPunctuation('punc-error-right');
+            }, 50);
         }
     });
 
