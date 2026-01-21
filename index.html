@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>damaris</title>
+    <!-- Kept tailwind for utility, though your custom CSS does most work -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         /* --- GLOBAL SETTINGS --- */
         html { width: 100%; height: 100%; background-color: #000; overflow-x: hidden; }
@@ -114,21 +116,41 @@
             flex-direction: column; 
             gap: 10px; 
             background: transparent; 
+            /* DEBUGGING: Uncomment the line below to see the red boxes around your projects! */
+            /* border: 1px solid red; */ 
             border: none; 
-            cursor: pointer; 
+            cursor: grab;
             text-decoration: none; 
             color: #fff; 
             position: absolute; 
             z-index: 1;
+            
+            /* Positioning logic handled by CSS variables */
             top: var(--top, auto);
             left: var(--left, auto);
             right: var(--right, auto);
+            
+            /* SIZE CONTROLS: Now you can set --width and --height inline on HTML elements */
             width: var(--width, auto);
+            height: var(--height, auto); 
+            
+            /* Ensure the content inside aligns correctly if box is bigger than image */
+            justify-content: center; 
+            
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+        
+        a.project-item.dragging {
+            cursor: grabbing;
+            z-index: 1000 !important;
+            transition: none !important; 
         }
         
         a.project-item:hover { z-index: 50; text-shadow: none; background: transparent; } 
 
-        /* MANUAL POSITIONING */
+        /* MANUAL POSITIONING DEFAULTS */
+        /* You can override --width and --height in the HTML style attribute for specific tweaks */
         .archive-slot-1 { --top: 0px; --right: 0px; --width: 50%; z-index: 3; text-align: right; align-items: flex-end; }
         .archive-slot-3 { --top: 700px; --left: 20px; --width: 60%; z-index: 8; }
         .archive-slot-4 { --top: 1000px; --left: -40px; --width: 70%; z-index: 5; text-align: left; align-items: flex-end; }
@@ -140,7 +162,7 @@
         .archive-slot-10 { --top: 4450px; --left: 200px; --width: 80%; z-index: 1; }
         .archive-slot-8 { --top: 4000px; --left: 100px; --width: 40%; z-index: 9; }
 
-        .project-img, .project-video { height: auto; display: block; border: none; }
+        .project-img, .project-video { height: auto; display: block; border: none; pointer-events: none; }
         .project-description { line-height: 1.2; grid-column: 1 / 10; }
         .col-span-12 { grid-column: span 12; }
         
@@ -156,6 +178,8 @@
                 margin-bottom: 40px;
                 text-align: left !important;
                 align-items: flex-start !important;
+                cursor: pointer; 
+                height: auto !important; /* Reset height on mobile for flow */
             }
         }
 
@@ -171,6 +195,11 @@
 
         .project-item:hover .project-img {
             transform: scale(1.04);
+        }
+        
+        /* Disable hover scale while dragging to prevent jitter */
+        .project-item.dragging .project-img {
+            transform: scale(1.04); 
         }
     </style>
 </head>
@@ -214,7 +243,7 @@
     
     <div id="landing" class="page-section" style="display: block;">
         <video autoplay loop muted playsinline id="landing-video">
-            <source src="video/startvideo.mp4" type="video/mp4">
+             <source src="video/startvideo.mp4" type="video/mp4">
         </video>
         <div class="grid-12" style="padding: 0 36px;">
             <h1 class="col-span-12" style="margin-top: 10vh;"><br></h1>
@@ -223,22 +252,67 @@
 
     <div id="archive" class="page-section">
         <div id="archive-content-wrapper" class="archive-free-layout">
-            <a href="notebooks.html" class="project-item archive-slot-1"><img class="project-img" style="width: 75%;" src="bilder/skizzenbuecher/cover.webp"></a>
-            <a href="photography.html" class="project-item archive-slot-2"><img class="project-img" style="width: 50%;" src="bilder/fotografie/cover.webp"></a>
-            <a href="designclassics.html" class="project-item archive-slot-3"><img class="project-img" style="width: 100%;" src="bilder/designobjektekatalog/cover.webp"></a>
-            <a href="paris.html" class="project-item archive-slot-4"><img class="project-img" style="width: 100%;" src="bilder/parisprojekt/cover.webp"></a>
-            <a href="erinnerung.html" class="project-item archive-slot-5"><img class="project-img" style="width: 80%;" src="bilder/blickwechsel/cover.webp"></a>
-            <a href="kyoto.html" class="project-item archive-slot-6"><img class="project-img" style="width: 50%;" src="bilder/bildmarke/cover.webp"></a>
-            <a href="london.html" class="project-item archive-slot-7"><img class="project-img" style="width: 100%;" src="bilder/londonprojekt/cover.webp"></a>
-            <a href="shades.html" class="project-item archive-slot-9"><img class="project-img" style="width: 100%;" src="bilder/londonbildmaterial/cover.webp"></a>
-            <a href="squares.html" class="project-item archive-slot-10"><img class="project-img" style="width: 50%;" src="bilder/quadrate/cover.webp"></a>
+            <!-- 
+               HOW TO CUSTOMIZE HIT AREAS:
+               Change --width and --height in the style="" attribute for each project below.
+               'auto' means it fits the image size.
+               '500px' or '100%' forces a specific size box for clicking/dragging.
+            -->
+            
+            <!-- Sketchbooks (Default CSS width: 50%) -->
+            <a href="notebooks.html" class="project-item archive-slot-1" style="--width: 50%; --height: auto;">
+                <img class="project-img" style="width: 75%;" src="bilder/skizzenbuecher/cover.webp" alt="skizzenbuecher">
+            </a>
+            
+            <!-- Photography (Default CSS width: 100%) -->
+            <a href="photography.html" class="project-item archive-slot-2" style="--width: 100%; --height: auto;">
+                <img class="project-img" style="width: 50%;" src="bilder/fotografie/cover.webp" alt="photography">
+            </a>
+            
+            <!-- Design Classics (Default CSS width: 60%) -->
+            <a href="designclassics.html" class="project-item archive-slot-3" style="--width: 60%; --height: auto;">
+                <img class="project-img" style="width: 100%;" src="bilder/designobjektekatalog/cover.webp" alt="designclassics">
+            </a>
+
+            <!-- Paris (Default CSS width: 70%) -->
+            <a href="paris.html" class="project-item archive-slot-4" style="--width: 70%; --height: auto;">
+                <img class="project-img" style="width: 100%;" src="bilder/parisprojekt/cover.webp" alt="paris">
+            </a>
+
+            <!-- Memory (Default CSS width: 100%) -->
+            <a href="erinnerung.html" class="project-item archive-slot-5" style="--width: 100%; --height: auto;">
+                <img class="project-img" style="width: 80%;" src="bilder/blickwechsel/cover.webp" alt="erinnerung">
+            </a>
+
+            <!-- Kyoto (Default CSS width: 100%) -->
+            <a href="kyoto.html" class="project-item archive-slot-6" style="--width: 100%; --height: auto;">
+                <img class="project-img" style="width: 50%;" src="bilder/bildmarke/cover.webp" alt="kyoto">
+            </a>
+
+            <!-- London (Default CSS width: 100%) -->
+            <a href="london.html" class="project-item archive-slot-7" style="--width: 100%; --height: auto;">
+                <img class="project-img" style="width: 100%;" src="bilder/londonprojekt/cover.webp" alt="london">
+            </a>
+
+            <!-- Shades (Default CSS width: 50%) -->
+            <a href="shades.html" class="project-item archive-slot-9" style="--width: 50%; --height: auto;">
+                <img class="project-img" style="width: 100%;" src="bilder/londonbildmaterial/cover.webp" alt="shades">
+            </a>
+
+            <!-- Squares (Default CSS width: 80%) -->
+            <a href="squares.html" class="project-item archive-slot-10" style="--width: 80%; --height: auto;">
+                <img class="project-img" style="width: 50%;" src="bilder/quadrate/cover.webp" alt="squares">
+            </a>
         </div>
     </div>
 
 </div>
 
 <script>
-    const IS_DESKTOP = window.innerWidth >= 1025;
+    const FORCE_DESKTOP_PREVIEW = true; 
+    const IS_DESKTOP = FORCE_DESKTOP_PREVIEW || window.innerWidth >= 1025;
+    
+    // --- PUNCTUATION ANIMATION ---
     const PUNCTUATION_FINAL = { 
         'punc-1': '//////////// , ', 
         'punc-2': ' / /. . . , / ', 
@@ -269,7 +343,6 @@
     function startPunctuationAnimation() {
         let loadInterval = setInterval(() => {
             for (const id in PUNCTUATION_FINAL) {
-                // Only animate standard nav puncs during desktop intro
                 if (id.startsWith('punc-') && !id.includes('error')) {
                     animateSpecificPunctuation(id);
                 }
@@ -312,16 +385,169 @@
             if (el2) el2.textContent = PUNCTUATION_FINAL[puncId2];
         }
     }
-    
+
+    // --- DRAGGABLE FUNCTIONALITY ---
+    function initDraggable() {
+        if (!IS_DESKTOP) return; 
+
+        const items = document.querySelectorAll('.project-item');
+        let dragItem = null;
+        let dragOffsetX = 0;
+        let dragOffsetY = 0;
+        let startX = 0;
+        let startY = 0;
+        let isDragging = false;
+
+        items.forEach(item => {
+            // Mouse events
+            item.addEventListener('mousedown', dragStart);
+            
+            // Prevent default click if it was a drag
+            item.addEventListener('click', function(e) {
+                if (isDragging) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                } else {
+                    // It's a valid click, save scroll position before navigating
+                    saveArchiveScroll();
+                }
+            });
+            
+            // Touch events
+            item.addEventListener('touchstart', dragStart, {passive: false});
+        });
+
+        function dragStart(e) {
+            if (window.innerWidth <= 768) return;
+            if (e.type === 'mousedown' && e.button !== 0) return;
+
+            dragItem = this;
+            const rect = dragItem.getBoundingClientRect();
+            
+            const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+            const clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
+
+            // FREEZE POSITION: Convert CSS variable positioning to absolute pixel values
+            // offsetLeft gets the pixel distance from the parent, handling right/left CSS vars correctly
+            const currentLeft = dragItem.offsetLeft;
+            const currentTop = dragItem.offsetTop;
+
+            // Apply explicit pixel styles. This prevents the element from jumping
+            // when we unset 'right' or 'bottom' in the next step.
+            dragItem.style.left = currentLeft + 'px';
+            dragItem.style.top = currentTop + 'px';
+            dragItem.style.right = 'auto'; // Disable CSS variable 'right' positioning
+            dragItem.style.bottom = 'auto';
+            dragItem.style.width = getComputedStyle(dragItem).width; // Freeze width
+            dragItem.style.height = getComputedStyle(dragItem).height; // Freeze height as well
+
+            // Calculate where the mouse is relative to the element's top-left corner
+            dragOffsetX = clientX - rect.left;
+            dragOffsetY = clientY - rect.top;
+            
+            startX = clientX;
+            startY = clientY;
+            isDragging = false; 
+
+            dragItem.classList.add('dragging');
+
+            if (e.type === 'mousedown') {
+                document.addEventListener('mousemove', dragMove);
+                document.addEventListener('mouseup', dragEnd);
+            } else {
+                document.addEventListener('touchmove', dragMove, {passive: false});
+                document.addEventListener('touchend', dragEnd);
+            }
+        }
+
+        function dragMove(e) {
+            if (!dragItem) return;
+
+            const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+            const clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
+
+            const dist = Math.hypot(clientX - startX, clientY - startY);
+            if (dist > 5) {
+                isDragging = true;
+            }
+
+            if (e.type === 'touchmove') e.preventDefault(); 
+
+            const parentRect = dragItem.parentElement.getBoundingClientRect();
+            
+            // Calculate new position relative to parent container
+            const newLeft = clientX - parentRect.left - dragOffsetX;
+            const newTop = clientY - parentRect.top - dragOffsetY;
+
+            dragItem.style.left = newLeft + 'px';
+            dragItem.style.top = newTop + 'px';
+        }
+
+        function dragEnd(e) {
+            if (dragItem) {
+                dragItem.classList.remove('dragging');
+                dragItem = null;
+            }
+            document.removeEventListener('mousemove', dragMove);
+            document.removeEventListener('mouseup', dragEnd);
+            document.removeEventListener('touchmove', dragMove);
+            document.removeEventListener('touchend', dragEnd);
+            
+            setTimeout(() => { isDragging = false; }, 50);
+        }
+    }
+
+    // --- SCROLL PRESERVATION LOGIC ---
+    let savedArchiveScroll = 0;
+
+    function saveArchiveScroll() {
+        const archiveEl = document.getElementById('archive');
+        if (archiveEl) {
+            savedArchiveScroll = archiveEl.scrollTop;
+            sessionStorage.setItem('archiveScrollPos', savedArchiveScroll);
+        }
+    }
+
+    function restoreArchiveScroll() {
+        const archiveEl = document.getElementById('archive');
+        if (archiveEl) {
+            let pos = savedArchiveScroll;
+            if (pos === 0) {
+                const stored = sessionStorage.getItem('archiveScrollPos');
+                if (stored) pos = parseInt(stored, 10);
+            }
+            setTimeout(() => {
+                archiveEl.scrollTop = pos;
+            }, 0);
+        }
+    }
+
+    // --- INITIALIZATION ---
     window.addEventListener('load', function() {
-        if (IS_DESKTOP) {
+        const storedScroll = sessionStorage.getItem('archiveScrollPos');
+        if (storedScroll) {
+            savedArchiveScroll = parseInt(storedScroll, 10);
+        }
+
+        const isDesktop = FORCE_DESKTOP_PREVIEW || window.innerWidth >= 1025;
+
+        if (isDesktop) {
             startPunctuationAnimation();
+            initDraggable();
+            
             let sectionToShow = 'landing'; 
+            
             const hash = window.location.hash.substring(1); 
-            if (hash && document.getElementById(hash)) sectionToShow = hash;
+            if (hash && document.getElementById(hash)) {
+                sectionToShow = hash;
+            } else if (storedScroll && storedScroll > 0) {
+                // If returning with scroll data, assume archive
+                sectionToShow = 'archive';
+            }
+            
             showSection(sectionToShow);
+            
         } else {
-            // Surgical fix for mobile error animation
             setInterval(() => {
                 animateSpecificPunctuation('punc-error-left');
                 animateSpecificPunctuation('punc-error-right');
@@ -330,9 +556,21 @@
     });
 
     function showSection(sectionId) {
+        const archiveSection = document.getElementById('archive');
+        if (archiveSection.style.display === 'block') {
+            saveArchiveScroll();
+        }
+
         document.querySelectorAll('.page-section').forEach(p => p.style.display = 'none');
+        
         const targetSection = document.getElementById(sectionId);
-        if (targetSection) targetSection.style.display = 'block';
+        if (targetSection) {
+            targetSection.style.display = 'block';
+            
+            if (sectionId === 'archive') {
+                restoreArchiveScroll();
+            }
+        }
         
         document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
         const activeLink = document.getElementById('link-' + sectionId);
