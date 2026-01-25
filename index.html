@@ -188,18 +188,21 @@
             #desktop-content-wrapper { display: block !important; } 
         }
 
-        /* NEW HOVER BEHAVIOR FOR ARCHIVE IMAGES */
+        /* OVEREXPOSURE & BLUR HOVER EFFECT */
         .project-img {
-            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), filter 0.4s ease;
+            filter: brightness(1) contrast(1) blur(0px);
         }
 
         .project-item:hover .project-img {
             transform: scale(1.04);
+            filter: brightness(2.5) contrast(1.2) blur(1.5px); /* Reduced blur to be less extreme */
         }
         
-        /* Disable hover scale while dragging to prevent jitter */
+        /* Maintain effect while dragging to prevent jitter */
         .project-item.dragging .project-img {
             transform: scale(1.04); 
+            filter: brightness(2.5) contrast(1.2) blur(1.5px);
         }
     </style>
 </head>
@@ -252,54 +255,48 @@
 
     <div id="archive" class="page-section">
         <div id="archive-content-wrapper" class="archive-free-layout">
-            <!-- 
-               HOW TO CUSTOMIZE HIT AREAS:
-               Change --width and --height in the style="" attribute for each project below.
-               'auto' means it fits the image size.
-               '500px' or '100%' forces a specific size box for clicking/dragging.
-            -->
             
-            <!-- Sketchbooks (Default CSS width: 50%) -->
+            <!-- Sketchbooks -->
             <a href="notebooks.html" class="project-item archive-slot-1" style="--width: 50%; --height: auto;">
                 <img class="project-img" style="width: 75%;" src="bilder/skizzenbuecher/cover.webp" alt="skizzenbuecher">
             </a>
             
-            <!-- Photography (Default CSS width: 100%) -->
+            <!-- Photography -->
             <a href="photography.html" class="project-item archive-slot-2" style="--width: 100%; --height: auto;">
                 <img class="project-img" style="width: 50%;" src="bilder/fotografie/cover.webp" alt="photography">
             </a>
             
-            <!-- Design Classics (Default CSS width: 60%) -->
+            <!-- Design Classics -->
             <a href="designclassics.html" class="project-item archive-slot-3" style="--width: 60%; --height: auto;">
                 <img class="project-img" style="width: 100%;" src="bilder/designobjektekatalog/cover.webp" alt="designclassics">
             </a>
 
-            <!-- Paris (Default CSS width: 70%) -->
+            <!-- Paris -->
             <a href="paris.html" class="project-item archive-slot-4" style="--width: 70%; --height: auto;">
                 <img class="project-img" style="width: 100%;" src="bilder/parisprojekt/cover.webp" alt="paris">
             </a>
 
-            <!-- Memory (Default CSS width: 100%) -->
+            <!-- Memory -->
             <a href="erinnerung.html" class="project-item archive-slot-5" style="--width: 100%; --height: auto;">
                 <img class="project-img" style="width: 80%;" src="bilder/blickwechsel/cover.webp" alt="erinnerung">
             </a>
 
-            <!-- Kyoto (Default CSS width: 100%) -->
+            <!-- Kyoto -->
             <a href="kyoto.html" class="project-item archive-slot-6" style="--width: 100%; --height: auto;">
                 <img class="project-img" style="width: 50%;" src="bilder/bildmarke/cover.webp" alt="kyoto">
             </a>
 
-            <!-- London (Default CSS width: 100%) -->
+            <!-- London -->
             <a href="london.html" class="project-item archive-slot-7" style="--width: 100%; --height: auto;">
                 <img class="project-img" style="width: 100%;" src="bilder/londonprojekt/cover.webp" alt="london">
             </a>
 
-            <!-- Shades (Default CSS width: 50%) -->
+            <!-- Shades -->
             <a href="shades.html" class="project-item archive-slot-9" style="--width: 50%; --height: auto;">
                 <img class="project-img" style="width: 100%;" src="bilder/londonbildmaterial/cover.webp" alt="shades">
             </a>
 
-            <!-- Squares (Default CSS width: 80%) -->
+            <!-- Squares -->
             <a href="squares.html" class="project-item archive-slot-10" style="--width: 80%; --height: auto;">
                 <img class="project-img" style="width: 50%;" src="bilder/quadrate/cover.webp" alt="squares">
             </a>
@@ -399,21 +396,15 @@
         let isDragging = false;
 
         items.forEach(item => {
-            // Mouse events
             item.addEventListener('mousedown', dragStart);
-            
-            // Prevent default click if it was a drag
             item.addEventListener('click', function(e) {
                 if (isDragging) {
                     e.preventDefault();
                     e.stopPropagation();
                 } else {
-                    // It's a valid click, save scroll position before navigating
                     saveArchiveScroll();
                 }
             });
-            
-            // Touch events
             item.addEventListener('touchstart', dragStart, {passive: false});
         });
 
@@ -423,28 +414,21 @@
 
             dragItem = this;
             const rect = dragItem.getBoundingClientRect();
-            
             const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
             const clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
 
-            // FREEZE POSITION: Convert CSS variable positioning to absolute pixel values
-            // offsetLeft gets the pixel distance from the parent, handling right/left CSS vars correctly
             const currentLeft = dragItem.offsetLeft;
             const currentTop = dragItem.offsetTop;
 
-            // Apply explicit pixel styles. This prevents the element from jumping
-            // when we unset 'right' or 'bottom' in the next step.
             dragItem.style.left = currentLeft + 'px';
             dragItem.style.top = currentTop + 'px';
-            dragItem.style.right = 'auto'; // Disable CSS variable 'right' positioning
+            dragItem.style.right = 'auto'; 
             dragItem.style.bottom = 'auto';
-            dragItem.style.width = getComputedStyle(dragItem).width; // Freeze width
-            dragItem.style.height = getComputedStyle(dragItem).height; // Freeze height as well
+            dragItem.style.width = getComputedStyle(dragItem).width; 
+            dragItem.style.height = getComputedStyle(dragItem).height; 
 
-            // Calculate where the mouse is relative to the element's top-left corner
             dragOffsetX = clientX - rect.left;
             dragOffsetY = clientY - rect.top;
-            
             startX = clientX;
             startY = clientY;
             isDragging = false; 
@@ -462,20 +446,14 @@
 
         function dragMove(e) {
             if (!dragItem) return;
-
             const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
             const clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
 
             const dist = Math.hypot(clientX - startX, clientY - startY);
-            if (dist > 5) {
-                isDragging = true;
-            }
+            if (dist > 5) isDragging = true;
 
             if (e.type === 'touchmove') e.preventDefault(); 
-
             const parentRect = dragItem.parentElement.getBoundingClientRect();
-            
-            // Calculate new position relative to parent container
             const newLeft = clientX - parentRect.left - dragOffsetX;
             const newTop = clientY - parentRect.top - dragOffsetY;
 
@@ -483,7 +461,7 @@
             dragItem.style.top = newTop + 'px';
         }
 
-        function dragEnd(e) {
+        function dragEnd() {
             if (dragItem) {
                 dragItem.classList.remove('dragging');
                 dragItem = null;
@@ -492,7 +470,6 @@
             document.removeEventListener('mouseup', dragEnd);
             document.removeEventListener('touchmove', dragMove);
             document.removeEventListener('touchend', dragEnd);
-            
             setTimeout(() => { isDragging = false; }, 50);
         }
     }
@@ -516,37 +493,23 @@
                 const stored = sessionStorage.getItem('archiveScrollPos');
                 if (stored) pos = parseInt(stored, 10);
             }
-            setTimeout(() => {
-                archiveEl.scrollTop = pos;
-            }, 0);
+            setTimeout(() => { archiveEl.scrollTop = pos; }, 0);
         }
     }
 
     // --- INITIALIZATION ---
     window.addEventListener('load', function() {
         const storedScroll = sessionStorage.getItem('archiveScrollPos');
-        if (storedScroll) {
-            savedArchiveScroll = parseInt(storedScroll, 10);
-        }
+        if (storedScroll) savedArchiveScroll = parseInt(storedScroll, 10);
 
-        const isDesktop = FORCE_DESKTOP_PREVIEW || window.innerWidth >= 1025;
-
-        if (isDesktop) {
+        if (IS_DESKTOP) {
             startPunctuationAnimation();
             initDraggable();
-            
             let sectionToShow = 'landing'; 
-            
             const hash = window.location.hash.substring(1); 
-            if (hash && document.getElementById(hash)) {
-                sectionToShow = hash;
-            } else if (storedScroll && storedScroll > 0) {
-                // If returning with scroll data, assume archive
-                sectionToShow = 'archive';
-            }
-            
+            if (hash && document.getElementById(hash)) sectionToShow = hash;
+            else if (savedArchiveScroll > 0) sectionToShow = 'archive';
             showSection(sectionToShow);
-            
         } else {
             setInterval(() => {
                 animateSpecificPunctuation('punc-error-left');
@@ -556,22 +519,13 @@
     });
 
     function showSection(sectionId) {
-        const archiveSection = document.getElementById('archive');
-        if (archiveSection.style.display === 'block') {
-            saveArchiveScroll();
-        }
-
+        if (document.getElementById('archive').style.display === 'block') saveArchiveScroll();
         document.querySelectorAll('.page-section').forEach(p => p.style.display = 'none');
-        
         const targetSection = document.getElementById(sectionId);
         if (targetSection) {
             targetSection.style.display = 'block';
-            
-            if (sectionId === 'archive') {
-                restoreArchiveScroll();
-            }
+            if (sectionId === 'archive') restoreArchiveScroll();
         }
-        
         document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
         const activeLink = document.getElementById('link-' + sectionId);
         if (activeLink) activeLink.classList.add('active');
