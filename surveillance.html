@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>damaris</title>
     <style>
-        /* --- GLOBAL STYLES (Copied from index.html via notebooks.html) --- */
+        /* --- GLOBAL STYLES (Copied from index.html) --- */
         html { width: 100%; height: 100%; background-color: #000; }
         body { 
             margin: 0; 
@@ -40,7 +40,7 @@
         .link-fixed-width { display: inline-block; width: 75px; text-align: center; }
         .nav-link { display: inline-block; padding: 0 2px; width: 100%; text-align: center; box-sizing: border-box; }
 
-        /* Project-Specific Styles (Canonical from notebooks.html) */
+        /* Project-Specific Styles */
         .project-page-content { 
             height: 100vh; 
             padding: 0; 
@@ -170,11 +170,11 @@
     <div class="project-page-content">
         <div class="project-content-wrapper" id="floating-text-container">
             <div class="project-description">
-                <p>Jusqu’à ce que les livres dansent /// 120 × 190 // 2024 <br>
-                In and around the National Library of France, routines and systems of order become visible. Thoughts begin to wander. They take on a life of their own, strolling and racing, until the books begin to dance. Documentary photographs, sketches, and distorted images shape the publication. The focus lies not only on the library and its visitors, but also on the worlds into which our imagination can lead us.</p>
+                <p>Surveillance /// 2026 <br>
+                text</p>
             </div>
         </div>
-        <div class="slideshow-container" id="slider-paris.html"></div>
+        <div class="slideshow-container" id="slider-surveillance.html"></div>
     </div>
 
     <script>
@@ -249,7 +249,7 @@
 
             setTimeout(() => {
                 clearInterval(loadInterval); 
-                isLoadAnimating = false;      
+                isLoadAnimating = false;     
                 for (const id in PUNCTUATION_FINAL) {
                     document.getElementById(id).textContent = PUNCTUATION_FINAL[id];
                 }
@@ -281,8 +281,8 @@
             }
         }
         
-        const projectId = 'paris.html'; 
-        const folderName = 'parisprojekt'; 
+        const projectId = 'surveillance.html'; 
+        const folderName = 'surveillance'; 
         
         function loadProjectImages() {
             const slider = document.getElementById('slider-' + projectId);

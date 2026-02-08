@@ -9,7 +9,7 @@
     <style>
         /* --- GLOBAL SETTINGS --- */
         html { width: 100%; height: 100%; background-color: #000; overflow-x: hidden; }
-        body { margin: 0; padding: 0; width: 100%; height: 100%; background-color: #000; color: #fff; overflow: hidden; overflow-x: hidden; font-family: 'Courier New', Courier, monospace; font-weight: bold; font-size: 11pt; -webkit-font-smoothing: none; transition: background-color 0.5s ease; }
+        body { margin: 0; padding: 0; width: 100%; height: 100%; background-color: #000; color: #fff; overflow: hidden; overflow-x: hidden; font-family: 'Cascade Mono', monospace; font-weight: regular; font-size: 10pt; -webkit-font-smoothing: none; transition: background-color 0.5s ease; }
 
         a { color: #fff; text-decoration: none; cursor: pointer; }
         a:hover, a.active { 
@@ -116,8 +116,6 @@
             flex-direction: column; 
             gap: 10px; 
             background: transparent; 
-            /* DEBUGGING: Uncomment the line below to see the red boxes around your projects! */
-            /* border: 1px solid red; */ 
             border: none; 
             cursor: grab;
             text-decoration: none; 
@@ -130,11 +128,10 @@
             left: var(--left, auto);
             right: var(--right, auto);
             
-            /* SIZE CONTROLS: Now you can set --width and --height inline on HTML elements */
+            /* SIZE CONTROLS */
             width: var(--width, auto);
             height: var(--height, auto); 
             
-            /* Ensure the content inside aligns correctly if box is bigger than image */
             justify-content: center; 
             
             user-select: none;
@@ -150,7 +147,6 @@
         a.project-item:hover { z-index: 50; text-shadow: none; background: transparent; } 
 
         /* MANUAL POSITIONING DEFAULTS */
-        /* You can override --width and --height in the HTML style attribute for specific tweaks */
         .archive-slot-1 { --top: 0px; --right: 0px; --width: 30%; z-index: 3; text-align: right; align-items: flex-end; }
         .archive-slot-3 { --top: 700px; --left: 20px; --width: 60%; z-index: 8; }
         .archive-slot-4 { --top: 1000px; --left: -40px; --width: 70%; z-index: 5; text-align: left; align-items: flex-end; }
@@ -160,7 +156,9 @@
         .archive-slot-2 { --top: 3100px; --left: 50px; --width: 100%; z-index: 10; }
         .archive-slot-5 { --top: 3600px; --right: 50px; --width: 100%; z-index: 4; }
         .archive-slot-10 { --top: 4450px; --left: 200px; --width: 80%; z-index: 1; }
-        .archive-slot-8 { --top: 4000px; --left: 100px; --width: 40%; z-index: 9; }
+        
+        /* Surveillance moved 700px to the right (-200 -> 500) */
+        .archive-slot-8 { --top: 1000px; --left: 500px; --width: 40%; z-index: 9; }
 
         .project-img, .project-video { height: auto; display: block; border: none; pointer-events: none; }
         .project-description { line-height: 1.2; grid-column: 1 / 10; }
@@ -179,7 +177,7 @@
                 text-align: left !important;
                 align-items: flex-start !important;
                 cursor: pointer; 
-                height: auto !important; /* Reset height on mobile for flow */
+                height: auto !important; 
             }
         }
 
@@ -235,7 +233,7 @@
             <span class="link-fixed-width">
                 <a id="link-profile" class="nav-link" href="profile.html" 
                    onmouseover="startHoverAnimation('punc-3', 'punc-4')" 
-                   onmouseout="stopHoverAnimation('punc-3', 'punc-4')">profile</a>
+                   onmouseout="stopHoverAnimation('punc-4', 'punc-4')">profile</a>
             </span>
             <span id="punc-4">. ../-.-_.-.--</span>
         </div>
@@ -252,54 +250,43 @@
 
     <div id="archive" class="page-section">
         <div id="archive-content-wrapper" class="archive-free-layout">
-            <!-- 
-               HOW TO CUSTOMIZE HIT AREAS:
-               Change --width and --height in the style="" attribute for each project below.
-               'auto' means it fits the image size.
-               '500px' or '100%' forces a specific size box for clicking/dragging.
-            -->
             
-            <!-- Sketchbooks (Default CSS width: 50%) -->
             <a href="notebooks.html" class="project-item archive-slot-1" style="--width: 50%; --height: auto;">
                 <img class="project-img" style="width: 75%;" src="bilder/skizzenbuecher/cover.webp" alt="skizzenbuecher">
             </a>
             
-            <!-- Photography (Default CSS width: 100%) -->
             <a href="photography.html" class="project-item archive-slot-2" style="--width: 100%; --height: auto;">
                 <img class="project-img" style="width: 50%;" src="bilder/fotografie/cover.webp" alt="photography">
             </a>
             
-            <!-- Design Classics (Default CSS width: 60%) -->
             <a href="designclassics.html" class="project-item archive-slot-3" style="--width: 60%; --height: auto;">
                 <img class="project-img" style="width: 100%;" src="bilder/designobjektekatalog/cover.webp" alt="designclassics">
             </a>
 
-            <!-- Paris (Default CSS width: 70%) -->
             <a href="paris.html" class="project-item archive-slot-4" style="--width: 70%; --height: auto;">
                 <img class="project-img" style="width: 100%;" src="bilder/parisprojekt/cover.webp" alt="paris">
             </a>
 
-            <!-- Memory (Default CSS width: 100%) -->
             <a href="erinnerung.html" class="project-item archive-slot-5" style="--width: 100%; --height: auto;">
                 <img class="project-img" style="width: 80%;" src="bilder/blickwechsel/cover.webp" alt="erinnerung">
             </a>
 
-            <!-- Kyoto (Default CSS width: 100%) -->
             <a href="kyoto.html" class="project-item archive-slot-6" style="--width: 100%; --height: auto;">
                 <img class="project-img" style="width: 50%;" src="bilder/bildmarke/cover.webp" alt="kyoto">
             </a>
 
-            <!-- London (Default CSS width: 100%) -->
             <a href="london.html" class="project-item archive-slot-7" style="--width: 100%; --height: auto;">
                 <img class="project-img" style="width: 100%;" src="bilder/londonprojekt/cover.webp" alt="london">
             </a>
 
-            <!-- Shades (Default CSS width: 50%) -->
+            <a href="surveillance.html" class="project-item archive-slot-8" style="--width: 40%; --height: auto;">
+                <img class="project-img" style="width: 100%;" src="bilder/surveillance/cover.webp" alt="surveillance">
+            </a>
+
             <a href="shades.html" class="project-item archive-slot-9" style="--width: 50%; --height: auto;">
                 <img class="project-img" style="width: 100%;" src="bilder/londonbildmaterial/cover.webp" alt="shades">
             </a>
 
-            <!-- Squares (Default CSS width: 80%) -->
             <a href="squares.html" class="project-item archive-slot-10" style="--width: 80%; --height: auto;">
                 <img class="project-img" style="width: 50%;" src="bilder/quadrate/cover.webp" alt="squares">
             </a>
@@ -399,21 +386,17 @@
         let isDragging = false;
 
         items.forEach(item => {
-            // Mouse events
             item.addEventListener('mousedown', dragStart);
             
-            // Prevent default click if it was a drag
             item.addEventListener('click', function(e) {
                 if (isDragging) {
                     e.preventDefault();
                     e.stopPropagation();
                 } else {
-                    // It's a valid click, save scroll position before navigating
                     saveArchiveScroll();
                 }
             });
             
-            // Touch events
             item.addEventListener('touchstart', dragStart, {passive: false});
         });
 
@@ -427,21 +410,16 @@
             const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
             const clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
 
-            // FREEZE POSITION: Convert CSS variable positioning to absolute pixel values
-            // offsetLeft gets the pixel distance from the parent, handling right/left CSS vars correctly
             const currentLeft = dragItem.offsetLeft;
             const currentTop = dragItem.offsetTop;
 
-            // Apply explicit pixel styles. This prevents the element from jumping
-            // when we unset 'right' or 'bottom' in the next step.
             dragItem.style.left = currentLeft + 'px';
             dragItem.style.top = currentTop + 'px';
-            dragItem.style.right = 'auto'; // Disable CSS variable 'right' positioning
+            dragItem.style.right = 'auto'; 
             dragItem.style.bottom = 'auto';
-            dragItem.style.width = getComputedStyle(dragItem).width; // Freeze width
-            dragItem.style.height = getComputedStyle(dragItem).height; // Freeze height as well
+            dragItem.style.width = getComputedStyle(dragItem).width; 
+            dragItem.style.height = getComputedStyle(dragItem).height;
 
-            // Calculate where the mouse is relative to the element's top-left corner
             dragOffsetX = clientX - rect.left;
             dragOffsetY = clientY - rect.top;
             
@@ -475,7 +453,6 @@
 
             const parentRect = dragItem.parentElement.getBoundingClientRect();
             
-            // Calculate new position relative to parent container
             const newLeft = clientX - parentRect.left - dragOffsetX;
             const newTop = clientY - parentRect.top - dragOffsetY;
 
@@ -541,7 +518,6 @@
             if (hash && document.getElementById(hash)) {
                 sectionToShow = hash;
             } else if (storedScroll && storedScroll > 0) {
-                // If returning with scroll data, assume archive
                 sectionToShow = 'archive';
             }
             
