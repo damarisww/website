@@ -18,6 +18,15 @@
             color: #000; 
         }
 
+        /* --- PUNCTUATION STYLING --- */
+        /* Forces all punctuation spans to 10pt, Bold, and White */
+        #nav-container .nav-text span, 
+        #mobile-error .nav-text span {
+            font-size: 10pt !important;
+            font-weight: bold !important;
+            color: #fff !important;
+        }
+
         /* --- MOBILE ERROR OVERLAY --- */
         #mobile-error { 
             display: none; 
@@ -52,7 +61,18 @@
         #punc-4 { width: 13ch; display: inline-block; } 
         
         .link-fixed-width { display: inline-block; width: 75px; text-align: center; }
-        .nav-link { display: inline-block; padding: 0 2px; width: 100%; text-align: center; box-sizing: border-box; transition: background-color 0.3s ease, color 0.3s ease; }
+        
+        .nav-link { 
+            display: inline-block; 
+            padding: 0 2px; 
+            width: 100%; 
+            text-align: center; 
+            box-sizing: border-box; 
+            transition: background-color 0.3s ease, color 0.3s ease; 
+            font-weight: bold;
+            color: #fff;
+            font-size: 10pt;
+        }
 
         /* --- SECTIONS (PAGES) --- */
         .page-section { 
@@ -122,18 +142,12 @@
             color: #fff; 
             position: absolute; 
             z-index: 1;
-            
-            /* Positioning logic handled by CSS variables */
             top: var(--top, auto);
             left: var(--left, auto);
             right: var(--right, auto);
-            
-            /* SIZE CONTROLS */
             width: var(--width, auto);
             height: var(--height, auto); 
-            
             justify-content: center; 
-            
             user-select: none;
             -webkit-user-drag: none;
         }
@@ -146,7 +160,6 @@
         
         a.project-item:hover { z-index: 50; text-shadow: none; background: transparent; } 
 
-        /* MANUAL POSITIONING DEFAULTS */
         .archive-slot-1 { --top: 0px; --right: 0px; --width: 30%; z-index: 3; text-align: right; align-items: flex-end; }
         .archive-slot-3 { --top: 700px; --left: 20px; --width: 60%; z-index: 8; }
         .archive-slot-4 { --top: 1000px; --left: -40px; --width: 70%; z-index: 5; text-align: left; align-items: flex-end; }
@@ -156,8 +169,6 @@
         .archive-slot-2 { --top: 3100px; --left: 50px; --width: 100%; z-index: 10; }
         .archive-slot-5 { --top: 3600px; --right: 50px; --width: 100%; z-index: 4; }
         .archive-slot-10 { --top: 4450px; --left: 200px; --width: 80%; z-index: 1; }
-        
-        /* Surveillance moved 700px to the right (-200 -> 500) */
         .archive-slot-8 { --top: 1000px; --left: 500px; --width: 40%; z-index: 9; }
 
         .project-img, .project-video { height: auto; display: block; border: none; pointer-events: none; }
@@ -186,7 +197,6 @@
             #desktop-content-wrapper { display: block !important; } 
         }
 
-        /* NEW HOVER BEHAVIOR FOR ARCHIVE IMAGES */
         .project-img {
             transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
         }
@@ -195,7 +205,6 @@
             transform: scale(1.04);
         }
         
-        /* Disable hover scale while dragging to prevent jitter */
         .project-item.dragging .project-img {
             transform: scale(1.04); 
         }
@@ -218,22 +227,23 @@
             <span id="punc-1">//////////// , </span>
             <span class="link-fixed-width">
                 <a id="link-landing" class="nav-link" href="#landing" 
-                   onclick="showSection('landing')"
+                   onclick="handleNavClick(event, 'landing')"
                    onmouseover="startHoverAnimation('punc-1', 'punc-2')" 
                    onmouseout="stopHoverAnimation('punc-1', 'punc-2')">start</a>
             </span>
             <span id="punc-2"> / /. . . , / </span>
             <span class="link-fixed-width">
                 <a id="link-archive" class="nav-link" href="#archive" 
-                   onclick="showSection('archive')"
+                   onclick="handleNavClick(event, 'archive')"
                    onmouseover="startHoverAnimation('punc-2', 'punc-3')" 
                    onmouseout="stopHoverAnimation('punc-2', 'punc-3')">archive</a>
             </span>
             <span id="punc-3"> ,,. /////.,:;:* </span>
             <span class="link-fixed-width">
                 <a id="link-profile" class="nav-link" href="profile.html" 
+                   onclick="handleProfileNavigation(event)"
                    onmouseover="startHoverAnimation('punc-3', 'punc-4')" 
-                   onmouseout="stopHoverAnimation('punc-4', 'punc-4')">profile</a>
+                   onmouseout="stopHoverAnimation('punc-3', 'punc-4')">profile</a>
             </span>
             <span id="punc-4">. ../-.-_.-.--</span>
         </div>
@@ -250,45 +260,44 @@
 
     <div id="archive" class="page-section">
         <div id="archive-content-wrapper" class="archive-free-layout">
-            
             <a href="notebooks.html" class="project-item archive-slot-1" style="--width: 50%; --height: auto;">
-                <img class="project-img" style="width: 75%;" src="bilder/skizzenbuecher/cover.webp" alt="skizzenbuecher">
+                <img class="project-img" style="width: 75%;" src="bilder/skizzenbuecher/cover.webp" alt="skizzenbuecher" loading="lazy" decoding="async">
             </a>
             
             <a href="photography.html" class="project-item archive-slot-2" style="--width: 100%; --height: auto;">
-                <img class="project-img" style="width: 50%;" src="bilder/fotografie/cover.webp" alt="photography">
+                <img class="project-img" style="width: 50%;" src="bilder/fotografie/cover.webp" alt="photography" loading="lazy" decoding="async">
             </a>
             
             <a href="designclassics.html" class="project-item archive-slot-3" style="--width: 60%; --height: auto;">
-                <img class="project-img" style="width: 100%;" src="bilder/designobjektekatalog/cover.webp" alt="designclassics">
+                <img class="project-img" style="width: 100%;" src="bilder/designobjektekatalog/cover.webp" alt="designclassics" loading="lazy" decoding="async">
             </a>
 
             <a href="paris.html" class="project-item archive-slot-4" style="--width: 70%; --height: auto;">
-                <img class="project-img" style="width: 100%;" src="bilder/parisprojekt/cover.webp" alt="paris">
+                <img class="project-img" style="width: 100%;" src="bilder/parisprojekt/cover.webp" alt="paris" loading="lazy" decoding="async">
             </a>
 
             <a href="erinnerung.html" class="project-item archive-slot-5" style="--width: 100%; --height: auto;">
-                <img class="project-img" style="width: 80%;" src="bilder/blickwechsel/cover.webp" alt="erinnerung">
+                <img class="project-img" style="width: 80%;" src="bilder/blickwechsel/cover.webp" alt="erinnerung" loading="lazy" decoding="async">
             </a>
 
             <a href="kyoto.html" class="project-item archive-slot-6" style="--width: 100%; --height: auto;">
-                <img class="project-img" style="width: 50%;" src="bilder/bildmarke/cover.webp" alt="kyoto">
+                <img class="project-img" style="width: 50%;" src="bilder/bildmarke/cover.webp" alt="kyoto" loading="lazy" decoding="async">
             </a>
 
             <a href="london.html" class="project-item archive-slot-7" style="--width: 100%; --height: auto;">
-                <img class="project-img" style="width: 100%;" src="bilder/londonprojekt/cover.webp" alt="london">
+                <img class="project-img" style="width: 100%;" src="bilder/londonprojekt/cover.webp" alt="london" loading="lazy" decoding="async">
             </a>
 
             <a href="surveillance.html" class="project-item archive-slot-8" style="--width: 40%; --height: auto;">
-                <img class="project-img" style="width: 100%;" src="bilder/surveillance/cover.webp" alt="surveillance">
+                <img class="project-img" style="width: 100%;" src="bilder/surveillance/cover.webp" alt="surveillance" loading="lazy" decoding="async">
             </a>
 
             <a href="shades.html" class="project-item archive-slot-9" style="--width: 50%; --height: auto;">
-                <img class="project-img" style="width: 100%;" src="bilder/londonbildmaterial/cover.webp" alt="shades">
+                <img class="project-img" style="width: 100%;" src="bilder/londonbildmaterial/cover.webp" alt="shades" loading="lazy" decoding="async">
             </a>
 
             <a href="squares.html" class="project-item archive-slot-10" style="--width: 80%; --height: auto;">
-                <img class="project-img" style="width: 50%;" src="bilder/quadrate/cover.webp" alt="squares">
+                <img class="project-img" style="width: 50%;" src="bilder/quadrate/cover.webp" alt="squares" loading="lazy" decoding="async">
             </a>
         </div>
     </div>
@@ -493,47 +502,29 @@
                 const stored = sessionStorage.getItem('archiveScrollPos');
                 if (stored) pos = parseInt(stored, 10);
             }
-            setTimeout(() => {
+            requestAnimationFrame(() => {
                 archiveEl.scrollTop = pos;
-            }, 0);
+            });
         }
     }
 
-    // --- INITIALIZATION ---
-    window.addEventListener('load', function() {
-        const storedScroll = sessionStorage.getItem('archiveScrollPos');
-        if (storedScroll) {
-            savedArchiveScroll = parseInt(storedScroll, 10);
-        }
+    // --- NAVIGATION LOGIC ---
+    function handleNavClick(e, sectionId) {
+        if (e) e.preventDefault();
+        history.pushState(null, null, '#' + sectionId);
+        showSection(sectionId);
+    }
 
-        const isDesktop = FORCE_DESKTOP_PREVIEW || window.innerWidth >= 1025;
-
-        if (isDesktop) {
-            startPunctuationAnimation();
-            initDraggable();
-            
-            let sectionToShow = 'landing'; 
-            
-            const hash = window.location.hash.substring(1); 
-            if (hash && document.getElementById(hash)) {
-                sectionToShow = hash;
-            } else if (storedScroll && storedScroll > 0) {
-                sectionToShow = 'archive';
-            }
-            
-            showSection(sectionToShow);
-            
-        } else {
-            setInterval(() => {
-                animateSpecificPunctuation('punc-error-left');
-                animateSpecificPunctuation('punc-error-right');
-            }, 50);
-        }
-    });
+    // FIX: PROFILE SINGLE CLICK
+    function handleProfileNavigation(e) {
+        e.preventDefault();
+        saveArchiveScroll();
+        window.location.href = "profile.html";
+    }
 
     function showSection(sectionId) {
         const archiveSection = document.getElementById('archive');
-        if (archiveSection.style.display === 'block') {
+        if (archiveSection.style.display === 'block' && sectionId !== 'archive') {
             saveArchiveScroll();
         }
 
@@ -552,6 +543,39 @@
         const activeLink = document.getElementById('link-' + sectionId);
         if (activeLink) activeLink.classList.add('active');
     }
+
+    window.addEventListener('popstate', () => {
+        const hash = window.location.hash.substring(1) || 'landing';
+        showSection(hash);
+    });
+
+    window.addEventListener('load', function() {
+        const storedScroll = sessionStorage.getItem('archiveScrollPos');
+        if (storedScroll) {
+            savedArchiveScroll = parseInt(storedScroll, 10);
+        }
+
+        if (IS_DESKTOP) {
+            startPunctuationAnimation();
+            initDraggable();
+            
+            let sectionToShow = 'landing'; 
+            const hash = window.location.hash.substring(1); 
+            if (hash && document.getElementById(hash)) {
+                sectionToShow = hash;
+            } else if (storedScroll && storedScroll > 0) {
+                sectionToShow = 'archive';
+            }
+            
+            showSection(sectionToShow);
+            
+        } else {
+            setInterval(() => {
+                animateSpecificPunctuation('punc-error-left');
+                animateSpecificPunctuation('punc-error-right');
+            }, 50);
+        }
+    });
 </script>
 </body>
 </html>

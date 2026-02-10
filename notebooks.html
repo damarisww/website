@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>damaris</title>
     <style>
-        /* --- GLOBAL STYLES (Copied from index.html) --- */
+        /* --- GLOBAL STYLES --- */
         html { width: 100%; height: 100%; background-color: #000; }
         body { 
             margin: 0; 
@@ -16,13 +16,13 @@
             color: #fff; 
             overflow: hidden; 
             font-family: 'Cascade Mono', monospace; 
-            font-weight: regular; 
+            font-weight: bold; /* MATCHED PROFILE: Bold */
             font-size: 10pt; 
             -webkit-font-smoothing: none; 
             transition: background-color 0.5s ease;
         }
 
-        a { color: #fff; text-decoration: none; cursor: pointer; }
+        a { color: #fff; text-decoration: none; cursor: pointer; font-weight: bold; }
         a:hover { text-decoration: none; background-color: #fff; color: #000; }
         #bg-video { position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; opacity: 0.8; pointer-events: none; }
         
@@ -99,15 +99,20 @@
             position: relative; 
             padding: 20px 36px;
             font-family: 'Cascade Mono', monospace;
-            font-weight: regular;
+            font-weight: bold; /* MATCHED PROFILE */
             font-size: 10pt; 
-            text-shadow: 
-                0px 0px 15px rgba(0,0,0,1), 
-                0px 0px 10px rgba(0,0,0,1),
-                0px 0px 5px rgba(0,0,0,1),
-                1px 1px 3px rgba(0,0,0,0.9),
-                0px 0px 2px rgba(255,255,255,0.4); 
+            text-shadow: none; /* MATCHED PROFILE: No Shadow */
             user-select: none; 
+        }
+
+        /* Hover style for close text */
+        .close-trigger {
+            cursor: pointer;
+            transition: background-color 0.2s, color 0.2s;
+        }
+        .close-trigger:hover {
+            background-color: #fff;
+            color: #000;
         }
 
         #cursor-instruction {
@@ -118,20 +123,15 @@
             z-index: 200;
             white-space: nowrap;
             margin: 0;
-            padding: 0;
+            padding: 20px 36px; 
             width: auto;
-            /* Matches project-description styling */
             font-family: 'Cascade Mono', monospace;
-            font-weight: regular;
+            font-weight: bold; /* MATCHED PROFILE */
             font-size: 10pt;
             color: #ffffff;
-            text-shadow: 
-                0px 0px 15px rgba(0,0,0,1), 
-                0px 0px 10px rgba(0,0,0,1),
-                0px 0px 5px rgba(0,0,0,1),
-                1px 1px 3px rgba(0,0,0,0.9),
-                0px 0px 2px rgba(255,255,255,0.4);
-            user-select: none;
+            text-shadow: none; /* MATCHED PROFILE: No Shadow */
+            opacity: 0; /* Hidden until first movement */
+            transition: opacity 0.1s ease; 
         }
         
         @media (max-width: 768px) {
@@ -182,8 +182,9 @@
     <div class="project-page-content">
         <div class="project-content-wrapper" id="floating-text-container">
             <div class="project-description">
-                <p>Notebooks /// 2023 - 2026 <br>
-                These images offer a brief glimpse into my notebooks, which are my constant companions. Many of them are handbound and customized as they are being used. Within their pages, I capture fleeting thoughts, memories, and everyday notes. In this way, ideas gradually take shape.</p>
+                <p>Notebooks /// 2023 - 2026 <br><br>
+                These images offer a brief glimpse into my notebooks, which are my constant companions. Many of them are handbound and customized as they are being used. Within their pages, I capture fleeting thoughts, memories, and everyday notes. In this way, ideas gradually take shape.<br> <br>
+                <span class="close-trigger" id="close-text-btn">close text</span></p>
             </div>
         </div>
         <div class="slideshow-container" id="slider-notebooks.html"></div>
@@ -206,24 +207,39 @@
         const textContainer = document.getElementById('floating-text-container');
         const cursorInstruction = document.getElementById('cursor-instruction');
 
-        function handleMouseMove(e) {
-            if (!textIsPlaced) {
-                if (cursorInstruction) {
-                    cursorInstruction.style.transform = `translate(${e.clientX + 5}px, ${e.clientY + 5}px)`;
+        // Static Cursor Tracking Logic
+        let hasMoved = false;
+
+        function updateCursorInstructionPosition(x, y) {
+            if (cursorInstruction && !textIsPlaced) {
+                if (!hasMoved) {
+                    cursorInstruction.style.opacity = "1";
+                    hasMoved = true;
                 }
-            } 
-            else if (isDragging) {
+                // MATCHED PROFILE: -18px X offset, -35px Y offset
+                cursorInstruction.style.transform = `translate(${x - 18}px, ${y - 35}px)`;
+            }
+        }
+
+        function handleMouseMove(e) {
+            // Update "click" text instantly with 1:1 mapping
+            updateCursorInstructionPosition(e.clientX, e.clientY);
+
+            if (isDragging) {
                 textContainer.style.transform = `translate(${e.clientX - offset.x}px, ${e.clientY - offset.y}px)`;
             }
         }
 
         function handleMouseClick(e) {
             if (textIsPlaced) return;
+            // Prevent opening if clicking nav or the close button
+            if (e.target.closest('#nav-container') || e.target.id === 'close-text-btn') return;
+
             textIsPlaced = true;
             textContainer.style.display = "block";
             textContainer.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
             textContainer.style.pointerEvents = "auto"; 
-            if (cursorInstruction) cursorInstruction.remove();
+            if (cursorInstruction) cursorInstruction.style.display = "none";
             
             textContainer.addEventListener('mousedown', (dragStart) => {
                 isDragging = true;
@@ -236,6 +252,23 @@
 
             window.addEventListener('mouseup', () => {
                 isDragging = false;
+            });
+        }
+
+        // Logic to close text box on click
+        const closeBtn = document.getElementById('close-text-btn');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', (e) => {
+                e.stopPropagation(); 
+                textIsPlaced = false;
+                textContainer.style.display = "none";
+                textContainer.style.pointerEvents = "none";
+                
+                if (cursorInstruction) {
+                    cursorInstruction.style.display = "block";
+                    // Update to current position immediately
+                    updateCursorInstructionPosition(e.clientX, e.clientY);
+                }
             });
         }
 
@@ -261,9 +294,10 @@
 
             setTimeout(() => {
                 clearInterval(loadInterval); 
-                isLoadAnimating = false;     
+                isLoadAnimating = false;      
                 for (const id in PUNCTUATION_FINAL) {
-                    document.getElementById(id).textContent = PUNCTUATION_FINAL[id];
+                    const el = document.getElementById(id);
+                    if (el) el.textContent = PUNCTUATION_FINAL[id];
                 }
             }, 5000); 
         }
@@ -284,12 +318,14 @@
             if (activeIntervals[puncId1]) {
                 clearInterval(activeIntervals[puncId1]);
                 delete activeIntervals[puncId1];
-                document.getElementById(puncId1).textContent = PUNCTUATION_FINAL[puncId1];
+                const el1 = document.getElementById(puncId1);
+                if (el1) el1.textContent = PUNCTUATION_FINAL[puncId1];
             }
             if (activeIntervals[puncId2]) {
                 clearInterval(activeIntervals[puncId2]);
                 delete activeIntervals[puncId2];
-                document.getElementById(puncId2).textContent = PUNCTUATION_FINAL[puncId2];
+                const el2 = document.getElementById(puncId2);
+                if (el2) el2.textContent = PUNCTUATION_FINAL[puncId2];
             }
         }
         
