@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>damaris</title>
     <style>
         /* --- GLOBAL STYLES --- */
@@ -23,11 +23,19 @@
         }
 
         a { color: #fff; text-decoration: none; cursor: pointer; font-weight: bold; }
-        a:hover { text-decoration: none; background-color: #fff; color: #000; }
+        @media (hover: hover) {
+            a:hover { text-decoration: none; background-color: #fff; color: #000; }
+        }
+        @media (hover: none) {
+            a.nav-link:active, .close-trigger:active {
+                background-color: #fff;
+                color: #000;
+            }
+        }
         #bg-video { position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; opacity: 0.8; pointer-events: none; }
         
         /* Navigation (Fixed position on all pages) */
-        #nav-container { position: fixed; bottom: 30px; left: 0; width: 100%; text-align: center; z-index: 100; padding: 0 20px; box-sizing: border-box; user-select: none; overflow: hidden; white-space: nowrap; }
+        #nav-container { position: fixed; bottom: 30px; left: 0; width: 100%; text-align: center; z-index: 100; padding: 0 20px; padding-bottom: max(0px, env(safe-area-inset-bottom)); box-sizing: border-box; user-select: none; overflow: hidden; white-space: nowrap; }
         .nav-text { display: inline-block; white-space: nowrap; }
         
         /* Punctuation Fixes */
@@ -112,9 +120,11 @@
             cursor: pointer;
             transition: background-color 0.2s, color 0.2s;
         }
-        .close-trigger:hover {
-            background-color: #fff;
-            color: #000;
+        @media (hover: hover) {
+            .close-trigger:hover {
+                background-color: #fff;
+                color: #000;
+            }
         }
 
         #cursor-instruction {
@@ -138,10 +148,103 @@
             transition: opacity 0.1s ease; 
         }
         
-        @media (max-width: 768px) {
+        @media (max-width: 1024px) {
+            body { -webkit-tap-highlight-color: transparent; }
             .grid-12 { grid-template-columns: repeat(4, 1fr); }
-            .project-description { width: 75vw; } 
-            .slideshow-container { height: 60vh; margin-bottom: 80px; } 
+            #nav-container {
+                bottom: 12px;
+                padding: 0 8px;
+                padding-bottom: max(12px, env(safe-area-inset-bottom));
+                overflow: visible;
+            }
+            .nav-text {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 0;
+                max-width: 100%;
+            }
+            #punc-1, #punc-4 { display: none !important; }
+            #punc-2, #punc-3 {
+                width: 3ch;
+                min-width: 3ch;
+                max-width: 3ch;
+                overflow: hidden;
+                text-align: center;
+                flex-shrink: 0;
+            }
+            .link-fixed-width { width: auto; min-width: 52px; flex-shrink: 0; }
+            .nav-link { font-size: 10pt; padding: 4px 2px; }
+
+            .project-page-content {
+                height: 100dvh;
+                height: 100vh;
+            }
+
+            .slideshow-container {
+                height: calc(100dvh - 140px);
+                height: calc(100vh - 140px);
+                margin-bottom: 100px;
+                margin-top: 24px;
+                gap: 8px;
+                padding-left: 12px;
+                padding-right: 12px;
+                -webkit-overflow-scrolling: touch;
+                scroll-snap-type: x mandatory;
+                overscroll-behavior-x: contain;
+            }
+            .slide.loaded { scroll-snap-align: start; }
+            .slide img, .slide video {
+                max-width: calc(100vw - 24px);
+                width: auto;
+                height: 100%;
+                object-fit: contain;
+            }
+
+            /* Same text look as desktop — no panel background */
+            #cursor-instruction {
+                top: 50%;
+                bottom: auto;
+                left: 50%;
+                transform: translate(-50%, -50%) !important;
+                padding: 8px 12px;
+                opacity: 1;
+                pointer-events: none;
+                text-align: center;
+            }
+            .project-content-wrapper {
+                top: 0;
+                left: 0;
+                right: 0;
+                width: 100%;
+                max-height: none;
+                overflow: visible;
+                background: transparent;
+                cursor: default;
+                transform: none !important;
+            }
+            .project-description {
+                width: 100%;
+                max-width: 100%;
+                box-sizing: border-box;
+                padding: 36px;
+                padding-top: max(36px, env(safe-area-inset-top));
+                text-align: left;
+                font-family: 'Cascade Mono', monospace;
+                font-weight: bold;
+                font-size: 10pt;
+                line-height: 1.2;
+                color: #ffffff;
+                text-shadow:
+                    0 1px 2px rgba(0,0,0,0.35),
+                    0 0 4px rgba(0,0,0,0.15);
+                background: transparent;
+            }
+            .close-trigger {
+                display: inline-block;
+                margin-top: 8px;
+                padding: 4px 2px;
+            }
         }
     </style>
 </head>
@@ -175,7 +278,7 @@
                 <a id="link-profile" class="nav-link" 
                    onmouseover="startHoverAnimation('punc-3', 'punc-4')" 
                    onmouseout="stopHoverAnimation('punc-3', 'punc-4')"
-                   href="index.html#profile">profile</a>
+                   href="profile.html">profile</a>
             </span>
             <span id="punc-4">. ../-.-_.-.--</span>
         </div>
@@ -198,12 +301,20 @@ In the third part of the work, individual surveillance images were given more ti
     </div>
 
     <script>
-        const PUNCTUATION_FINAL = {
-            'punc-1': '//////////// , ',
-            'punc-2': ' / /. . . , / ',
-            'punc-3': ' ,,. /////.,:;:* ',
-            'punc-4': '. ../-.-_.-.--'
-        };
+        const IS_MOBILE = window.innerWidth < 1025;
+        const PUNCTUATION_FINAL = IS_MOBILE
+            ? {
+                'punc-1': '',
+                'punc-2': ' / ',
+                'punc-3': ' / ',
+                'punc-4': ''
+            }
+            : {
+                'punc-1': '//////////// , ',
+                'punc-2': ' / /. . . , / ',
+                'punc-3': ' ,,. /////.,:;:* ',
+                'punc-4': '. ../-.-_.-.--'
+            };
         const PUNCTUATION_POOL = ['/', ',', '.', ':', ';', '*', '-', '_', '|', '+', '(', ')', '[', ']', '<', '>', ' '];
         const activeIntervals = {};
         let isLoadAnimating = true;
@@ -237,17 +348,18 @@ In the third part of the work, individual surveillance images were given more ti
             }
         }
 
-        function handleMouseClick(e) {
-            if (textIsPlaced) return;
-            // Prevent opening if clicking nav or the close button
-            if (e.target.closest('#nav-container') || e.target.id === 'close-text-btn') return;
-
+        function showProjectText(x, y) {
             textIsPlaced = true;
             textContainer.style.display = "block";
-            textContainer.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
-            textContainer.style.pointerEvents = "auto"; 
+            textContainer.style.pointerEvents = "auto";
             if (cursorInstruction) cursorInstruction.style.display = "none";
-            
+
+            if (IS_MOBILE) {
+                textContainer.style.transform = "none";
+                return;
+            }
+
+            textContainer.style.transform = `translate(${x}px, ${y}px)`;
             textContainer.addEventListener('mousedown', (dragStart) => {
                 isDragging = true;
                 const style = window.getComputedStyle(textContainer);
@@ -256,26 +368,42 @@ In the third part of the work, individual surveillance images were given more ti
                 offset.y = dragStart.clientY - matrix.m42;
                 dragStart.stopPropagation();
             });
-
-            window.addEventListener('mouseup', () => {
-                isDragging = false;
-            });
+            window.addEventListener('mouseup', () => { isDragging = false; });
         }
 
-        // Logic to close text box on click
+        function hideProjectText(e) {
+            textIsPlaced = false;
+            textContainer.style.display = "none";
+            textContainer.style.pointerEvents = "none";
+            if (cursorInstruction) {
+                cursorInstruction.style.display = "block";
+                if (!IS_MOBILE && e) {
+                    updateCursorInstructionPosition(e.clientX, e.clientY);
+                }
+            }
+        }
+
+        function handleMouseClick(e) {
+            if (textIsPlaced) return;
+            if (e.target.closest('#nav-container') || e.target.id === 'close-text-btn') return;
+            if (IS_MOBILE) return;
+            showProjectText(e.clientX, e.clientY);
+        }
+
+        function handleTouchTap(e) {
+            if (e.target.closest('#nav-container')) return;
+            if (e.target.closest('#close-text-btn') || e.target.closest('.close-trigger')) return;
+            if (e.target.closest('#floating-text-container')) return;
+            if (textIsPlaced) return;
+            const touch = e.changedTouches ? e.changedTouches[0] : null;
+            showProjectText(touch ? touch.clientX : 20, touch ? touch.clientY : 20);
+        }
+
         const closeBtn = document.getElementById('close-text-btn');
         if (closeBtn) {
             closeBtn.addEventListener('click', (e) => {
-                e.stopPropagation(); 
-                textIsPlaced = false;
-                textContainer.style.display = "none";
-                textContainer.style.pointerEvents = "none";
-                
-                if (cursorInstruction) {
-                    cursorInstruction.style.display = "block";
-                    // Update to current position immediately
-                    updateCursorInstructionPosition(e.clientX, e.clientY);
-                }
+                e.stopPropagation();
+                hideProjectText(e);
             });
         }
 
@@ -290,27 +418,48 @@ In the third part of the work, individual surveillance images were given more ti
         function animateSpecificPunctuation(puncId) {
             const element = document.getElementById(puncId);
             if (element) {
-                element.textContent = generateRandomPunctuation(PUNCTUATION_FINAL[puncId].length);
+                const len = PUNCTUATION_FINAL[puncId].length || 3;
+                element.textContent = generateRandomPunctuation(len);
             }
         }
 
         function startPunctuationAnimation() {
-            let loadInterval = setInterval(() => {
-                for (const id in PUNCTUATION_FINAL) animateSpecificPunctuation(id);
+            const minDuration = 3000;
+            const startedAt = Date.now();
+            const visibleIds = IS_MOBILE
+                ? ['punc-2', 'punc-3']
+                : Object.keys(PUNCTUATION_FINAL);
+
+            for (const id in PUNCTUATION_FINAL) {
+                const el = document.getElementById(id);
+                if (el && PUNCTUATION_FINAL[id] === '') el.textContent = '';
+            }
+
+            const loadInterval = setInterval(() => {
+                visibleIds.forEach(id => animateSpecificPunctuation(id));
             }, 50);
 
-            setTimeout(() => {
-                clearInterval(loadInterval); 
-                isLoadAnimating = false;      
-                for (const id in PUNCTUATION_FINAL) {
-                    const el = document.getElementById(id);
-                    if (el) el.textContent = PUNCTUATION_FINAL[id];
-                }
-            }, 5000); 
+            function finishAnimation() {
+                const remaining = Math.max(0, minDuration - (Date.now() - startedAt));
+                setTimeout(() => {
+                    clearInterval(loadInterval);
+                    isLoadAnimating = false;
+                    for (const id in PUNCTUATION_FINAL) {
+                        const el = document.getElementById(id);
+                        if (el) el.textContent = PUNCTUATION_FINAL[id];
+                    }
+                }, remaining);
+            }
+
+            if (document.readyState === 'complete') {
+                finishAnimation();
+            } else {
+                window.addEventListener('load', finishAnimation, { once: true });
+            }
         }
         
         function startHoverAnimation(puncId1, puncId2) {
-            if (isLoadAnimating) return; 
+            if (isLoadAnimating || IS_MOBILE) return; 
             if (!activeIntervals[puncId1]) {
                 animateSpecificPunctuation(puncId1);
                 activeIntervals[puncId1] = setInterval(() => animateSpecificPunctuation(puncId1), 50);
@@ -376,11 +525,37 @@ In the third part of the work, individual surveillance images were given more ti
         }
         
         window.addEventListener('load', function() {
-            startPunctuationAnimation();
             loadProjectImages();
-            window.addEventListener('mousemove', handleMouseMove);
-            window.addEventListener('mousedown', handleMouseClick);
+
+            if (IS_MOBILE) {
+                if (cursorInstruction) {
+                    cursorInstruction.style.opacity = "1";
+                    cursorInstruction.textContent = "click";
+                }
+                let touchStartX = 0, touchStartY = 0, touchMoved = false;
+                window.addEventListener('touchstart', (e) => {
+                    const t = e.touches[0];
+                    touchStartX = t.clientX;
+                    touchStartY = t.clientY;
+                    touchMoved = false;
+                }, { passive: true });
+                window.addEventListener('touchmove', (e) => {
+                    const t = e.touches[0];
+                    if (Math.hypot(t.clientX - touchStartX, t.clientY - touchStartY) > 12) {
+                        touchMoved = true;
+                    }
+                }, { passive: true });
+                window.addEventListener('touchend', (e) => {
+                    if (touchMoved) return;
+                    handleTouchTap(e);
+                }, { passive: true });
+            } else {
+                window.addEventListener('mousemove', handleMouseMove);
+                window.addEventListener('mousedown', handleMouseClick);
+            }
         });
+
+        startPunctuationAnimation();
     </script>
 </body>
 </html>

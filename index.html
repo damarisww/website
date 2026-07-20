@@ -2,57 +2,46 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>damaris</title>
     <!-- Kept tailwind for utility, though your custom CSS does most work -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         /* --- GLOBAL SETTINGS --- */
         html { width: 100%; height: 100%; background-color: #000; overflow-x: hidden; }
-        body { margin: 0; padding: 0; width: 100%; height: 100%; background-color: #000; color: #fff; overflow: hidden; overflow-x: hidden; font-family: 'Cascade Mono', monospace; font-weight: regular; font-size: 10pt; -webkit-font-smoothing: none; transition: background-color 0.5s ease; }
+        body { margin: 0; padding: 0; width: 100%; height: 100%; background-color: #000; color: #fff; overflow: hidden; overflow-x: hidden; font-family: 'Cascade Mono', monospace; font-weight: regular; font-size: 10pt; -webkit-font-smoothing: none; transition: background-color 0.5s ease; -webkit-tap-highlight-color: transparent; overscroll-behavior-x: none; }
 
         a { color: #fff; text-decoration: none; cursor: pointer; }
-        a:hover, a.active { 
+        a.active { 
             text-decoration: none; 
             background-color: #fff; 
             color: #000; 
         }
 
+        @media (hover: hover) {
+            a:hover { 
+                text-decoration: none; 
+                background-color: #fff; 
+                color: #000; 
+            }
+        }
+
+        @media (hover: none) {
+            a.nav-link:active {
+                background-color: #fff;
+                color: #000;
+            }
+        }
+
         /* --- PUNCTUATION STYLING --- */
-        /* Forces all punctuation spans to 10pt, Bold, and White */
-        #nav-container .nav-text span, 
-        #mobile-error .nav-text span {
+        #nav-container .nav-text span {
             font-size: 10pt !important;
             font-weight: bold !important;
             color: #fff !important;
         }
 
-        /* --- MOBILE ERROR OVERLAY --- */
-        #mobile-error { 
-            display: none; 
-            position: fixed; 
-            top: 0; left: 0; 
-            width: 100%; height: 100%; 
-            background-color: #000; 
-            z-index: 9999; 
-            flex-direction: column; 
-            justify-content: flex-end; 
-            align-items: center; 
-            text-align: center;
-            padding-bottom: 30px; 
-            box-sizing: border-box;
-        }
-        #punc-error-left { width: 14ch; display: inline-block; }
-        #punc-error-right { width: 13ch; display: inline-block; }
-
-        @media (max-width: 1024px) {
-            #mobile-error { display: flex; }
-            #desktop-content-wrapper { display: none !important; }
-            body { overflow: hidden !important; } 
-        }
-
         /* --- NAVIGATION --- */
-        #nav-container { position: fixed; bottom: 30px; left: 0; width: 100%; text-align: center; z-index: 100; padding: 0 20px; box-sizing: border-box; user-select: none; overflow: hidden; white-space: nowrap; }
+        #nav-container { position: fixed; bottom: 30px; left: 0; width: 100%; text-align: center; z-index: 100; padding: 0 20px; padding-bottom: max(0px, env(safe-area-inset-bottom)); box-sizing: border-box; user-select: none; overflow: hidden; white-space: nowrap; }
         .nav-text { display: inline-block; white-space: nowrap; }
         
         #punc-1 { width: 14ch; display: inline-block; } 
@@ -85,6 +74,7 @@
             overflow-y: auto; 
             overflow-x: hidden; 
             overscroll-behavior-x: none; 
+            -webkit-overflow-scrolling: touch;
             background-color: #000; 
             padding: 80px 0 100px 0; 
             box-sizing: border-box; 
@@ -105,6 +95,11 @@
             height: 100%;
             object-fit: cover; 
             z-index: 0;
+        }
+
+        #landing {
+            padding: 0;
+            overflow: hidden;
         }
 
         #landing .grid-12 {
@@ -175,34 +170,224 @@
         .project-description { line-height: 1.2; grid-column: 1 / 10; }
         .col-span-12 { grid-column: span 12; }
         
-        @media (max-width: 768px) {
+        @media (max-width: 1024px) {
             .grid-12 { grid-template-columns: repeat(4, 1fr); }
             .col-span-12 { grid-column: span 4 !important; }
             .project-description { grid-column: 1 / -1 !important; }
             .slideshow-container { height: 50vh; }
-            .archive-free-layout { min-height: auto; padding: 0 36px; }
+            .page-section { padding: 48px 0 110px 0; }
+            #landing { padding: 0; }
+            #archive.page-section {
+                overflow-x: hidden;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            /* Native document scroll while viewing archive — more reliable on phones */
+            html.mobile-archive-open,
+            html.mobile-archive-open body {
+                height: auto;
+                min-height: 100%;
+                overflow-x: hidden;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+                overscroll-behavior-y: auto;
+                touch-action: pan-y;
+            }
+            html.mobile-archive-open #site-content {
+                height: auto;
+                min-height: 100%;
+                overflow: visible;
+            }
+            html.mobile-archive-open #archive.page-section {
+                position: relative;
+                top: auto;
+                left: auto;
+                width: 100%;
+                height: auto;
+                min-height: 100vh;
+                overflow: visible;
+                padding: 24px 0 120px;
+                animation: none;
+            }
+            html.mobile-archive-open #landing {
+                display: none !important;
+            }
+            html.mobile-archive-open #nav-container {
+                position: fixed;
+            }
+            #nav-container {
+                bottom: 12px;
+                padding: 0 8px;
+                padding-bottom: max(12px, env(safe-area-inset-bottom));
+                overflow: visible;
+            }
+            .nav-text {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 0;
+                max-width: 100%;
+            }
+            #punc-1, #punc-4 { display: none !important; }
+            #punc-2, #punc-3 {
+                width: 3ch;
+                min-width: 3ch;
+                max-width: 3ch;
+                overflow: hidden;
+                text-align: center;
+                flex-shrink: 0;
+            }
+            .link-fixed-width { width: auto; min-width: 52px; flex-shrink: 0; }
+            .nav-link { font-size: 10pt; padding: 4px 2px; }
+            .archive-free-layout {
+                min-height: auto;
+                padding: 24px 0 56px;
+                display: block;
+                overflow-x: hidden;
+                width: 100%;
+                max-width: 100%;
+            }
             .archive-free-layout a.project-item {
-                position: static !important;
+                position: relative !important;
+                display: block;
                 width: 100% !important;
-                margin-bottom: 40px;
+                margin: 0;
                 text-align: left !important;
                 align-items: flex-start !important;
-                cursor: pointer; 
-                height: auto !important; 
+                cursor: pointer;
+                height: auto !important;
+                top: auto !important;
+                left: auto !important;
+                right: auto !important;
+                z-index: 1;
+                touch-action: pan-y;
+                -webkit-user-drag: none;
+                user-select: none;
+                -webkit-touch-callout: none;
+            }
+            .archive-free-layout a.project-item .project-img {
+                width: 100% !important;
+                max-width: none;
+                height: auto;
+                display: block;
+            }
+
+            /* sketchbook — nearly full / a bit bigger */
+            .archive-free-layout a.project-item:nth-child(1) {
+                width: 100% !important;
+                margin: 0 0 44px 0;
+                z-index: 1;
+                overflow: hidden;
+            }
+            .archive-free-layout a.project-item:nth-child(1) .project-img {
+                width: 108% !important;
+                margin-left: -4%;
+            }
+
+            /* photography — enlarged full bleed */
+            .archive-free-layout a.project-item:nth-child(2) {
+                width: 100% !important;
+                margin: 0 0 20px 0;
+                z-index: 1;
+                overflow: hidden;
+            }
+            .archive-free-layout a.project-item:nth-child(2) .project-img {
+                width: 118% !important;
+                margin-left: -9%;
+            }
+
+            /* designclassics — larger, centered */
+            .archive-free-layout a.project-item:nth-child(3) {
+                width: 88% !important;
+                margin: 28px auto 0;
+                z-index: 2;
+                overflow: hidden;
+            }
+            .archive-free-layout a.project-item:nth-child(3) .project-img {
+                width: 100% !important;
+                margin-left: 0;
+            }
+
+            /* paris — larger, right-biased bleed, light overlap on designclassics */
+            .archive-free-layout a.project-item:nth-child(4) {
+                width: 100% !important;
+                margin: -36% 0 28px 0;
+                z-index: 4;
+                overflow: hidden;
+            }
+            .archive-free-layout a.project-item:nth-child(4) .project-img {
+                width: 162% !important;
+                margin-left: 0;
+            }
+
+            /* erinnerung — full bleed */
+            .archive-free-layout a.project-item:nth-child(5) {
+                width: 100% !important;
+                margin: 0 0 48px 0;
+                z-index: 1;
+            }
+
+            /* kyoto — compact */
+            .archive-free-layout a.project-item:nth-child(6) {
+                width: 55% !important;
+                margin: 0 0 12px 18px;
+                z-index: 2;
+            }
+
+            /* london — larger, shifted further right, overlaps neighbors */
+            .archive-free-layout a.project-item:nth-child(7) {
+                width: 100% !important;
+                margin: -32% 0 -28% 0;
+                z-index: 5;
+                overflow: hidden;
+            }
+            .archive-free-layout a.project-item:nth-child(7) .project-img {
+                width: 155% !important;
+                margin-left: -8%;
+            }
+
+            /* surveillance — full bleed, sits under london overlap */
+            .archive-free-layout a.project-item:nth-child(8) {
+                width: 100% !important;
+                margin: 36px 0 20px 0;
+                z-index: 1;
+            }
+
+            /* shades — larger, centered, light overlap */
+            .archive-free-layout a.project-item:nth-child(9) {
+                width: 100% !important;
+                margin: -14% auto 44px;
+                z-index: 3;
+                overflow: hidden;
+            }
+            .archive-free-layout a.project-item:nth-child(9) .project-img {
+                width: 112% !important;
+                margin-left: -6%;
+            }
+
+            /* squares — bigger, flush left to the border */
+            .archive-free-layout a.project-item:nth-child(10) {
+                width: 70% !important;
+                margin: 8px 0 28px 0;
+                z-index: 1;
+            }
+
+            .archive-free-layout a.project-item:active {
+                z-index: 20;
             }
         }
 
-        #desktop-content-wrapper { display: none; width: 100%; height: 100%; }
-        @media (min-width: 1025px) {
-            #desktop-content-wrapper { display: block !important; } 
-        }
+        #site-content { width: 100%; height: 100%; }
 
         .project-img {
             transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
-        .project-item:hover .project-img {
-            transform: scale(1.04);
+        @media (hover: hover) {
+            .project-item:hover .project-img {
+                transform: scale(1.04);
+            }
         }
         
         .project-item.dragging .project-img {
@@ -212,15 +397,7 @@
 </head>
 <body>
 
-<div id="mobile-error">
-    <div class="nav-text">
-        <span id="punc-error-left">//////////// , </span>
-        <span style="padding: 0 10px;">only open on desktop</span>
-        <span id="punc-error-right"> / /. . . , / </span>
-    </div>
-</div>
-
-<div id="desktop-content-wrapper">
+<div id="site-content">
 
     <div id="nav-container">
         <div class="nav-text">
@@ -305,18 +482,24 @@
 </div>
 
 <script>
-    const FORCE_DESKTOP_PREVIEW = true; 
-    const IS_DESKTOP = FORCE_DESKTOP_PREVIEW || window.innerWidth >= 1025;
+    const IS_DESKTOP = window.innerWidth >= 1025;
+    const IS_MOBILE = !IS_DESKTOP;
     
     // --- PUNCTUATION ANIMATION ---
-    const PUNCTUATION_FINAL = { 
-        'punc-1': '//////////// , ', 
-        'punc-2': ' / /. . . , / ', 
-        'punc-3': ' ,,. /////.,:;:* ', 
-        'punc-4': '. ../-.-_.-.--',
-        'punc-error-left': '//////////// , ',
-        'punc-error-right': ' / /. . . , / '
-    };
+    // Mobile uses short separators so the nav never overlaps.
+    const PUNCTUATION_FINAL = IS_MOBILE
+        ? {
+            'punc-1': '',
+            'punc-2': ' / ',
+            'punc-3': ' / ',
+            'punc-4': ''
+        }
+        : {
+            'punc-1': '//////////// , ',
+            'punc-2': ' / /. . . , / ',
+            'punc-3': ' ,,. /////.,:;:* ',
+            'punc-4': '. ../-.-_.-.--'
+        };
     const PUNCTUATION_POOL = ['/', ',', '.', ':', ';', '*', '-', '_', '|', '+', '(', ')', '[', ']', '<', '>', ' '];
     const activeIntervals = {};
     let isLoadAnimating = true;
@@ -332,31 +515,49 @@
     function animateSpecificPunctuation(puncId) {
         const element = document.getElementById(puncId);
         if (element) {
-            element.textContent = generateRandomPunctuation(PUNCTUATION_FINAL[puncId].length);
+            const len = PUNCTUATION_FINAL[puncId].length || 3;
+            element.textContent = generateRandomPunctuation(len);
         }
     }
 
     function startPunctuationAnimation() {
-        let loadInterval = setInterval(() => {
-            for (const id in PUNCTUATION_FINAL) {
-                if (id.startsWith('punc-') && !id.includes('error')) {
-                    animateSpecificPunctuation(id);
-                }
-            }
+        const minDuration = 3000;
+        const startedAt = Date.now();
+        const visibleIds = IS_MOBILE
+            ? ['punc-2', 'punc-3']
+            : Object.keys(PUNCTUATION_FINAL);
+
+        for (const id in PUNCTUATION_FINAL) {
+            const el = document.getElementById(id);
+            if (el && PUNCTUATION_FINAL[id] === '') el.textContent = '';
+        }
+
+        const loadInterval = setInterval(() => {
+            visibleIds.forEach(id => animateSpecificPunctuation(id));
         }, 50);
 
-        setTimeout(() => {
-            clearInterval(loadInterval); 
-            isLoadAnimating = false;    
-            for (const id in PUNCTUATION_FINAL) {
-                const el = document.getElementById(id);
-                if (el && !id.includes('error')) el.textContent = PUNCTUATION_FINAL[id];
-            }
-        }, 5000); 
+        function finishAnimation() {
+            const remaining = Math.max(0, minDuration - (Date.now() - startedAt));
+            setTimeout(() => {
+                clearInterval(loadInterval);
+                isLoadAnimating = false;
+                for (const id in PUNCTUATION_FINAL) {
+                    const el = document.getElementById(id);
+                    if (el) el.textContent = PUNCTUATION_FINAL[id];
+                }
+            }, remaining);
+        }
+
+        // Keep scrambling while the page is still loading (covers/video), at least 3s
+        if (document.readyState === 'complete') {
+            finishAnimation();
+        } else {
+            window.addEventListener('load', finishAnimation, { once: true });
+        }
     }
 
     function startHoverAnimation(puncId1, puncId2) {
-        if (isLoadAnimating) return; 
+        if (isLoadAnimating || IS_MOBILE) return; 
         if (!activeIntervals[puncId1]) {
             animateSpecificPunctuation(puncId1);
             activeIntervals[puncId1] = setInterval(() => animateSpecificPunctuation(puncId1), 50);
@@ -410,7 +611,7 @@
         });
 
         function dragStart(e) {
-            if (window.innerWidth <= 768) return;
+            if (IS_MOBILE) return;
             if (e.type === 'mousedown' && e.button !== 0) return;
 
             dragItem = this;
@@ -483,10 +684,58 @@
         }
     }
 
+    // Mobile: tap vs scroll on covers (document scroll handles the actual scrolling)
+    function initMobileArchiveScroll() {
+        if (!IS_MOBILE) return;
+
+        const items = document.querySelectorAll('.archive-free-layout a.project-item');
+        const TAP_MOVE_LIMIT = 10;
+
+        items.forEach(item => {
+            let startX = 0;
+            let startY = 0;
+            let moved = false;
+
+            item.addEventListener('touchstart', (e) => {
+                const t = e.touches[0];
+                startX = t.clientX;
+                startY = t.clientY;
+                moved = false;
+            }, { passive: true });
+
+            item.addEventListener('touchmove', (e) => {
+                const t = e.touches[0];
+                if (Math.abs(t.clientY - startY) > TAP_MOVE_LIMIT || Math.abs(t.clientX - startX) > TAP_MOVE_LIMIT) {
+                    moved = true;
+                }
+            }, { passive: true });
+
+            item.addEventListener('click', (e) => {
+                if (moved) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return;
+                }
+                saveArchiveScroll();
+            });
+        });
+
+        window.addEventListener('scroll', () => {
+            if (!document.documentElement.classList.contains('mobile-archive-open')) return;
+            savedArchiveScroll = window.scrollY || document.documentElement.scrollTop || 0;
+            sessionStorage.setItem('archiveScrollPos', savedArchiveScroll);
+        }, { passive: true });
+    }
+
     // --- SCROLL PRESERVATION LOGIC ---
     let savedArchiveScroll = 0;
 
     function saveArchiveScroll() {
+        if (IS_MOBILE) {
+            savedArchiveScroll = window.scrollY || document.documentElement.scrollTop || 0;
+            sessionStorage.setItem('archiveScrollPos', savedArchiveScroll);
+            return;
+        }
         const archiveEl = document.getElementById('archive');
         if (archiveEl) {
             savedArchiveScroll = archiveEl.scrollTop;
@@ -495,17 +744,19 @@
     }
 
     function restoreArchiveScroll() {
-        const archiveEl = document.getElementById('archive');
-        if (archiveEl) {
-            let pos = savedArchiveScroll;
-            if (pos === 0) {
-                const stored = sessionStorage.getItem('archiveScrollPos');
-                if (stored) pos = parseInt(stored, 10);
-            }
-            requestAnimationFrame(() => {
-                archiveEl.scrollTop = pos;
-            });
+        let pos = savedArchiveScroll;
+        if (pos === 0) {
+            const stored = sessionStorage.getItem('archiveScrollPos');
+            if (stored) pos = parseInt(stored, 10);
         }
+        requestAnimationFrame(() => {
+            if (IS_MOBILE) {
+                window.scrollTo(0, pos);
+            } else {
+                const archiveEl = document.getElementById('archive');
+                if (archiveEl) archiveEl.scrollTop = pos;
+            }
+        });
     }
 
     // --- NAVIGATION LOGIC ---
@@ -522,9 +773,18 @@
         window.location.href = "profile.html";
     }
 
+    function setMobileSectionMode(sectionId) {
+        if (!IS_MOBILE) return;
+        const root = document.documentElement;
+        root.classList.toggle('mobile-archive-open', sectionId === 'archive');
+        if (sectionId !== 'archive') {
+            window.scrollTo(0, 0);
+        }
+    }
+
     function showSection(sectionId) {
         const archiveSection = document.getElementById('archive');
-        if (archiveSection.style.display === 'block' && sectionId !== 'archive') {
+        if (archiveSection && archiveSection.style.display === 'block' && sectionId !== 'archive') {
             saveArchiveScroll();
         }
 
@@ -533,6 +793,7 @@
         const targetSection = document.getElementById(sectionId);
         if (targetSection) {
             targetSection.style.display = 'block';
+            setMobileSectionMode(sectionId);
             
             if (sectionId === 'archive') {
                 restoreArchiveScroll();
@@ -555,27 +816,22 @@
             savedArchiveScroll = parseInt(storedScroll, 10);
         }
 
-        if (IS_DESKTOP) {
-            startPunctuationAnimation();
-            initDraggable();
-            
-            let sectionToShow = 'landing'; 
-            const hash = window.location.hash.substring(1); 
-            if (hash && document.getElementById(hash)) {
-                sectionToShow = hash;
-            } else if (storedScroll && storedScroll > 0) {
-                sectionToShow = 'archive';
-            }
-            
-            showSection(sectionToShow);
-            
-        } else {
-            setInterval(() => {
-                animateSpecificPunctuation('punc-error-left');
-                animateSpecificPunctuation('punc-error-right');
-            }, 50);
+        if (IS_DESKTOP) initDraggable();
+        else initMobileArchiveScroll();
+
+        let sectionToShow = 'landing';
+        const hash = window.location.hash.substring(1);
+        if (hash && document.getElementById(hash)) {
+            sectionToShow = hash;
+        } else if (storedScroll && storedScroll > 0) {
+            sectionToShow = 'archive';
         }
+
+        showSection(sectionToShow);
     });
+
+    // Start punctuation as soon as the page is interactive (first 3s)
+    startPunctuationAnimation();
 </script>
 </body>
 </html>
