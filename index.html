@@ -656,6 +656,9 @@
     const PUNCTUATION_POOL = ['/', ',', '.', ':', ';', '*', '-', '_', '|', '+', '(', ')', '[', ']', '<', '>', ' '];
     const activeIntervals = {};
     let isLoadAnimating = true;
+    let punctuationScrambleInterval = null;
+    let punctuationLoadFinishTimer = null;
+    let archiveHintActive = false;
 
     function generateRandomPunctuation(length) {
         let result = '';
@@ -673,35 +676,59 @@
         }
     }
 
-    function startPunctuationAnimation() {
-        const minDuration = 3000;
-        const startedAt = Date.now();
-        const visibleIds = IS_MOBILE
+    function getVisiblePunctuationIds() {
+        return IS_MOBILE
             ? ['punc-2', 'punc-3']
             : Object.keys(PUNCTUATION_FINAL);
+    }
 
+    function settlePunctuation() {
+        if (punctuationScrambleInterval) {
+            clearInterval(punctuationScrambleInterval);
+            punctuationScrambleInterval = null;
+        }
+        if (punctuationLoadFinishTimer) {
+            clearTimeout(punctuationLoadFinishTimer);
+            punctuationLoadFinishTimer = null;
+        }
+        isLoadAnimating = false;
+        for (const id in PUNCTUATION_FINAL) {
+            const el = document.getElementById(id);
+            if (el) el.textContent = PUNCTUATION_FINAL[id];
+        }
+    }
+
+    function scramblePunctuation() {
+        if (punctuationScrambleInterval) {
+            clearInterval(punctuationScrambleInterval);
+        }
+        isLoadAnimating = true;
+        const visibleIds = getVisiblePunctuationIds();
         for (const id in PUNCTUATION_FINAL) {
             const el = document.getElementById(id);
             if (el && PUNCTUATION_FINAL[id] === '') el.textContent = '';
         }
-
-        const loadInterval = setInterval(() => {
+        punctuationScrambleInterval = setInterval(() => {
             visibleIds.forEach(id => animateSpecificPunctuation(id));
         }, 50);
+    }
+
+    function startPunctuationAnimation() {
+        const minDuration = 3000;
+        const startedAt = Date.now();
+        scramblePunctuation();
 
         function finishAnimation() {
             const remaining = Math.max(0, minDuration - (Date.now() - startedAt));
-            setTimeout(() => {
-                clearInterval(loadInterval);
-                isLoadAnimating = false;
-                for (const id in PUNCTUATION_FINAL) {
-                    const el = document.getElementById(id);
-                    if (el) el.textContent = PUNCTUATION_FINAL[id];
-                }
+            if (punctuationLoadFinishTimer) clearTimeout(punctuationLoadFinishTimer);
+            punctuationLoadFinishTimer = setTimeout(() => {
+                punctuationLoadFinishTimer = null;
+                // Archive hint owns the end time while it is visible
+                if (archiveHintActive) return;
+                settlePunctuation();
             }, remaining);
         }
 
-        // Keep scrambling while the page is still loading (covers/video), at least 3s
         if (document.readyState === 'complete') {
             finishAnimation();
         } else {
@@ -768,13 +795,24 @@
         let pendingDrag = false;
         let introRaf = 0;
         let introActive = false;
+        let introEnd = null; // { scale, tx, ty }
+        let introVeilFade = null;
 
         function boardIsOpen() {
             return document.documentElement.classList.contains('archive-board-open');
         }
 
         function applyBoardTransform() {
-            board.style.transform = `translate(${tx}px, ${ty}px) scale(${scale})`;
+            board.style.transform = `translate3d(${tx}px, ${ty}px, 0) scale(${scale})`;
+        }
+
+        function clearIntroVeil() {
+            const veil = document.getElementById('archive-intro-veil');
+            if (!veil) return;
+            veil.classList.remove('is-active');
+            veil.style.opacity = '';
+            veil.style.setProperty('--intro-blur', '28px');
+            veil.style.setProperty('--intro-clear', '12%');
         }
 
         function cancelIntroZoom() {
@@ -782,14 +820,46 @@
                 cancelAnimationFrame(introRaf);
                 introRaf = 0;
             }
-            introActive = false;
-            const veil = document.getElementById('archive-intro-veil');
-            if (veil) {
-                veil.classList.remove('is-active');
-                veil.style.opacity = '';
-                veil.style.setProperty('--intro-blur', '28px');
-                veil.style.setProperty('--intro-clear', '12%');
+            if (introVeilFade) {
+                cancelAnimationFrame(introVeilFade);
+                introVeilFade = null;
             }
+            introActive = false;
+            introEnd = null;
+            clearIntroVeil();
+        }
+
+        function fadeOutIntroVeil(ms) {
+            const veil = document.getElementById('archive-intro-veil');
+            if (!veil) return;
+            const start = performance.now();
+            const startOpacity = parseFloat(veil.style.opacity || '1') || 1;
+            function step(now) {
+                const t = Math.min(1, (now - start) / ms);
+                const o = startOpacity * (1 - t);
+                veil.style.opacity = String(o);
+                if (t < 1) {
+                    introVeilFade = requestAnimationFrame(step);
+                } else {
+                    introVeilFade = null;
+                    clearIntroVeil();
+                }
+            }
+            introVeilFade = requestAnimationFrame(step);
+        }
+
+        function settleDesktopIntroZoom() {
+            if (IS_MOBILE) return;
+            if (!introActive) return;
+            // Stop zoom exactly where it is when typing finishes
+            if (introRaf) {
+                cancelAnimationFrame(introRaf);
+                introRaf = 0;
+            }
+            introActive = false;
+            introEnd = null;
+            fadeOutIntroVeil(500);
+            saveBoardState();
         }
 
         function playDesktopIntroZoom() {
@@ -800,16 +870,18 @@
             const endScale = Math.min(1.02, Math.max(0.82, window.innerWidth / 1550));
             const startScale = endScale * 3.6;
             const focus = getCompositionFocus();
-            const focusX = focus.x;
-            const focusY = focus.y;
             const cx = window.innerWidth / 2;
             const cy = window.innerHeight / 2;
-            const duration = 3200;
+            const endTx = cx - focus.x * endScale;
+            const endTy = cy - focus.y * endScale;
 
             scale = startScale;
-            tx = cx - focusX * scale;
-            ty = cy - focusY * scale;
+            tx = cx - focus.x * scale;
+            ty = cy - focus.y * scale;
             applyBoardTransform();
+
+            introEnd = { scale: endScale, tx: endTx, ty: endTy };
+            introActive = true;
 
             if (veil) {
                 veil.style.setProperty('--intro-blur', '34px');
@@ -818,44 +890,34 @@
                 veil.classList.add('is-active');
             }
 
-            const startTime = performance.now();
-            introActive = true;
-
-            function easeOutCubic(t) {
-                return 1 - Math.pow(1 - t, 3);
-            }
+            let lastTime = performance.now();
 
             function frame(now) {
                 if (!introActive || !boardIsOpen()) {
                     cancelIntroZoom();
                     return;
                 }
-                const t = Math.min(1, (now - startTime) / duration);
-                const e = easeOutCubic(t);
-                scale = startScale + (endScale - startScale) * e;
-                tx = cx - focusX * scale;
-                ty = cy - focusY * scale;
+
+                const dt = Math.min(0.05, (now - lastTime) / 1000);
+                lastTime = now;
+                // Continuous natural drift toward resting frame until typing stops it
+                const k = 1 - Math.exp(-dt * 2.1);
+                scale += (introEnd.scale - scale) * k;
+                tx += (introEnd.tx - tx) * k;
+                ty += (introEnd.ty - ty) * k;
                 applyBoardTransform();
 
                 if (veil) {
-                    const blur = 34 * (1 - e);
-                    const clear = 8 + e * 92;
+                    const span = startScale - endScale || 1;
+                    const progress = Math.max(0, Math.min(1, (startScale - scale) / span));
+                    const blur = 34 * (1 - progress);
+                    const clear = 8 + progress * 80;
                     veil.style.setProperty('--intro-blur', blur.toFixed(1) + 'px');
                     veil.style.setProperty('--intro-clear', clear.toFixed(1) + '%');
-                    veil.style.opacity = String(Math.max(0, 1 - e * 1.05));
+                    veil.style.opacity = String(Math.max(0.2, 1 - progress * 0.75));
                 }
 
-                if (t < 1) {
-                    introRaf = requestAnimationFrame(frame);
-                } else {
-                    introActive = false;
-                    introRaf = 0;
-                    if (veil) {
-                        veil.classList.remove('is-active');
-                        veil.style.opacity = '';
-                    }
-                    saveBoardState();
-                }
+                introRaf = requestAnimationFrame(frame);
             }
 
             introRaf = requestAnimationFrame(frame);
@@ -1232,6 +1294,8 @@
             }
         };
 
+        window.__settleArchiveIntro = settleDesktopIntroZoom;
+
         window.__randomizeArchiveComposition = function() {
             randomizeComposition();
             if (typeof window.__resetArchiveBoardView === 'function') {
@@ -1333,8 +1397,15 @@
         hint.textContent = '';
         hint.setAttribute('aria-hidden', 'false');
         hint.classList.add('is-visible');
+        archiveHintActive = true;
+        scramblePunctuation();
         typeLikeHuman(hint, 'dig through\nclick to open', tokenRef).then(() => {
             if (tokenRef.token !== archiveHintTypeToken) return;
+            archiveHintActive = false;
+            settlePunctuation();
+            if (typeof window.__settleArchiveIntro === 'function') {
+                window.__settleArchiveIntro();
+            }
             showArchiveHint._timer = setTimeout(() => {
                 hint.classList.remove('is-visible');
                 hint.setAttribute('aria-hidden', 'true');
@@ -1346,10 +1417,15 @@
         const hint = document.getElementById('archive-hint');
         if (!hint) return;
         archiveHintTypeToken += 1;
+        archiveHintActive = false;
         hint.classList.remove('is-visible');
         hint.setAttribute('aria-hidden', 'true');
         hint.textContent = '';
         clearTimeout(showArchiveHint._timer);
+        settlePunctuation();
+        if (typeof window.__settleArchiveIntro === 'function') {
+            window.__settleArchiveIntro();
+        }
     }
 
     function showSection(sectionId) {
@@ -1418,5 +1494,6 @@
     // Start punctuation as soon as the page is interactive (first 3s)
     startPunctuationAnimation();
 </script>
+    <script src="glitch-text.js"></script>
 </body>
 </html>
