@@ -32,7 +32,21 @@
                 color: #000;
             }
         }
-        #bg-video { position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; opacity: 0.8; pointer-events: none; }
+        #bg-video { position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; opacity: 0; pointer-events: none; transition: opacity 0.35s ease; }
+        #bg-video.is-playing { opacity: 0.8; }
+        #bg-video::-webkit-media-controls,
+        #bg-video::-webkit-media-controls-enclosure,
+        #bg-video::-webkit-media-controls-panel,
+        #bg-video::-webkit-media-controls-start-playback-button,
+        #bg-video::-webkit-media-controls-overlay-play-button,
+        #bg-video::-webkit-media-controls-overlay-enclosure {
+            display: none !important;
+            -webkit-appearance: none !important;
+            opacity: 0 !important;
+            width: 0 !important;
+            height: 0 !important;
+            pointer-events: none !important;
+        }
         
         /* Navigation (Fixed position on all pages) */
         #nav-container { position: fixed; bottom: 30px; left: 0; width: 100%; text-align: center; z-index: 100; padding: 0 20px; padding-bottom: max(0px, env(safe-area-inset-bottom)); box-sizing: border-box; user-select: none; overflow: hidden; white-space: nowrap; }
@@ -160,6 +174,7 @@
                 transform: scale(1.75);
                 transform-origin: center center;
             }
+            #bg-video.is-playing { opacity: 0.8; }
             .grid-12 { grid-template-columns: repeat(4, 1fr); }
             #nav-container {
                 bottom: 12px;
@@ -218,9 +233,31 @@
                 left: 50%;
                 transform: translate(-50%, -50%) !important;
                 padding: 8px 12px;
-                opacity: 1;
+                opacity: 1 !important;
                 pointer-events: none;
                 text-align: center;
+            }
+            .slideshow-container {
+                touch-action: pan-x;
+                -webkit-overflow-scrolling: touch;
+                overflow-x: auto;
+            }
+            .slide video {
+                pointer-events: none;
+                opacity: 1;
+            }
+            .slide video::-webkit-media-controls,
+            .slide video::-webkit-media-controls-enclosure,
+            .slide video::-webkit-media-controls-panel,
+            .slide video::-webkit-media-controls-start-playback-button,
+            .slide video::-webkit-media-controls-overlay-play-button,
+            .slide video::-webkit-media-controls-overlay-enclosure {
+                display: none !important;
+                -webkit-appearance: none !important;
+                opacity: 0 !important;
+                width: 0 !important;
+                height: 0 !important;
+                pointer-events: none !important;
             }
             .project-content-wrapper {
                 top: 0;
@@ -260,7 +297,7 @@
 </head>
 <body>
 
-    <video autoplay muted loop playsinline id="bg-video">
+    <video autoplay muted loop playsinline webkit-playsinline disablePictureInPicture preload="auto" controlslist="nodownload nofullscreen noremoteplayback" id="bg-video">
         <source src="video/startvideo.mp4" type="video/mp4">
         Your browser does not support HTML5 video.
     </video>
@@ -317,11 +354,67 @@ I am especially drawn to interdisciplinary approaches, seeing design as a space 
             if (!video) return;
             const source = video.querySelector('source');
             if (!source) return;
+
+            video.muted = true;
+            video.defaultMuted = true;
+            video.volume = 0;
+            video.loop = true;
+            video.autoplay = true;
+            video.playsInline = true;
+            video.controls = false;
+            video.setAttribute('muted', 'muted');
+            video.setAttribute('autoplay', '');
+            video.setAttribute('loop', '');
+            video.setAttribute('playsinline', '');
+            video.setAttribute('webkit-playsinline', '');
+            video.removeAttribute('controls');
+            video.disablePictureInPicture = true;
+            video.setAttribute('controlslist', 'nodownload nofullscreen noremoteplayback');
+
             if (IS_MOBILE) {
                 source.src = 'video/startvideo-mobile.mp4';
-                video.load();
-                video.play().catch(() => {});
             }
+
+            function markPlaying() {
+                if (!video.paused) video.classList.add('is-playing');
+            }
+
+            function keepPlaying() {
+                video.muted = true;
+                video.volume = 0;
+                video.controls = false;
+                const p = video.play();
+                if (p && typeof p.then === 'function') {
+                    p.then(markPlaying).catch(() => {
+                        video.classList.remove('is-playing');
+                    });
+                } else {
+                    markPlaying();
+                }
+            }
+
+            video.addEventListener('playing', markPlaying);
+            video.load();
+            keepPlaying();
+            video.addEventListener('loadeddata', keepPlaying, { once: true });
+            video.addEventListener('canplay', keepPlaying, { once: true });
+            document.addEventListener('visibilitychange', () => {
+                if (!document.hidden) keepPlaying();
+                else video.pause();
+            });
+            const unlock = () => keepPlaying();
+            document.addEventListener('touchstart', unlock, { passive: true, once: true });
+            document.addEventListener('click', unlock, { once: true });
+
+            let tries = 0;
+            const retry = setInterval(() => {
+                tries += 1;
+                if ((!video.paused && video.classList.contains('is-playing')) || tries > 30) {
+                    clearInterval(retry);
+                    return;
+                }
+                keepPlaying();
+            }, 200);
         })();
 
         const PUNCTUATION_FINAL = IS_MOBILE
@@ -346,6 +439,12 @@ I am especially drawn to interdisciplinary approaches, seeing design as a space 
         let offset = { x: 0, y: 0 };
         const textContainer = document.getElementById('floating-text-container');
         const cursorInstruction = document.getElementById('cursor-instruction');
+        if (IS_MOBILE && cursorInstruction) {
+            cursorInstruction.textContent = 'loading';
+            cursorInstruction.style.opacity = '1';
+            cursorInstruction.style.display = 'block';
+        }
+
 
         // Static Cursor Tracking Logic
         let hasMoved = false;
@@ -509,13 +608,36 @@ I am especially drawn to interdisciplinary approaches, seeing design as a space 
         }
         
         const projectId = 'profile.html'; 
-        const folderName = 'profile'; 
-        
-        function loadProjectImages() {
+        const folderName = 'profile';
+
+        const mediaBase = IS_MOBILE ? 'bilder-mobile' : 'bilder';
+
+        function setInstruction(text) {
+            if (!cursorInstruction) return;
+            cursorInstruction.textContent = text;
+            cursorInstruction.style.opacity = '1';
+            cursorInstruction.style.display = 'block';
+        }
+
+        function loadProjectImages(onDone) {
             const slider = document.getElementById('slider-' + projectId);
-            if (!slider || !folderName) return;
-            const maxImages = 10; 
+            if (!slider || !folderName) {
+                if (onDone) onDone();
+                return;
+            }
+            const maxImages = 50;
             const slidePlaceholders = [];
+            let pending = maxImages;
+            let finished = false;
+
+            function doneOne() {
+                pending -= 1;
+                if (pending <= 0 && !finished) {
+                    finished = true;
+                    if (onDone) onDone();
+                }
+            }
+
             for (let i = 1; i <= maxImages; i++) {
                 const slideDiv = document.createElement('div');
                 slideDiv.className = 'slide';
@@ -524,39 +646,141 @@ I am especially drawn to interdisciplinary approaches, seeing design as a space 
             }
 
             for (let i = 1; i <= maxImages; i++) {
-                const slideDiv = slidePlaceholders[i - 1]; 
-                const imagePath = `bilder/${folderName}/${i}.webp`;
-                const videoPath = `bilder/${folderName}/${i}.mp4`;
+                const slideDiv = slidePlaceholders[i - 1];
+                const imagePath = `${mediaBase}/${folderName}/${i}.webp`;
+                const videoPath = `${mediaBase}/${folderName}/${i}.mp4`;
                 const img = document.createElement('img');
                 img.src = imagePath;
+                img.decoding = 'async';
                 img.onload = function() {
                     slideDiv.appendChild(img);
-                    slideDiv.classList.add('loaded'); 
+                    slideDiv.classList.add('loaded');
+                    doneOne();
                 };
                 img.onerror = function() {
                     const video = document.createElement('video');
+                    // Prefer compressed mobile file; avoid huge desktop originals on phones
                     video.src = videoPath;
-                    video.muted = true; video.autoplay = true; video.loop = true; video.playsInline = true;
-                    video.onloadeddata = function() {
+
+                    video.muted = true;
+                    video.defaultMuted = true;
+                    video.volume = 0;
+                    video.autoplay = true;
+                    video.loop = true;
+                    video.playsInline = true;
+                    video.controls = false;
+                    video.preload = 'auto';
+                    video.setAttribute('muted', 'muted');
+                    video.setAttribute('autoplay', '');
+                    video.setAttribute('loop', '');
+                    video.setAttribute('playsinline', '');
+                    video.setAttribute('webkit-playsinline', '');
+                    video.setAttribute('controlslist', 'nodownload nofullscreen noremoteplayback');
+                    video.removeAttribute('controls');
+                    video.disablePictureInPicture = true;
+
+                    function playSlideVideo() {
+                        video.muted = true;
+                        video.defaultMuted = true;
+                        video.volume = 0;
+                        video.loop = true;
+                        video.controls = false;
+                        video.removeAttribute('controls');
+                        const p = video.play();
+                        if (p && typeof p.catch === 'function') p.catch(function() {});
+                    }
+
+                    let settled = false;
+
+                    function mountAndPlay() {
+                        if (settled) return;
+                        settled = true;
                         slideDiv.appendChild(video);
-                        slideDiv.classList.add('loaded'); 
+                        slideDiv.classList.add('loaded');
+                        playSlideVideo();
+
+                        // Restart if loop attribute is ignored
+                        video.addEventListener('ended', function() {
+                            video.currentTime = 0;
+                            playSlideVideo();
+                        });
+
+                        // Play when slide is on screen
+                        if ('IntersectionObserver' in window) {
+                            const io = new IntersectionObserver(function(entries) {
+                                entries.forEach(function(entry) {
+                                    if (entry.isIntersecting) playSlideVideo();
+                                    else video.pause();
+                                });
+                            }, { threshold: 0.35 });
+                            io.observe(slideDiv);
+                        }
+
+                        let tries = 0;
+                        const retry = setInterval(function() {
+                            tries += 1;
+                            if (!video.paused || tries > 40) {
+                                clearInterval(retry);
+                                return;
+                            }
+                            playSlideVideo();
+                        }, 150);
+
+                        doneOne();
+                    }
+
+                    video.addEventListener('loadeddata', mountAndPlay, { once: true });
+                    video.addEventListener('canplay', playSlideVideo);
+                    video.addEventListener('playing', playSlideVideo);
+                    video.onerror = function() {
+                        if (settled) return;
+                        // fallback to desktop file only if mobile missing
+                        if (mediaBase === 'bilder-mobile' && video.src.indexOf('bilder-mobile/') !== -1) {
+                            video.src = 'bilder/' + folderName + '/' + i + '.mp4';
+                            video.load();
+                            return;
+                        }
+                        settled = true;
+                        slideDiv.remove();
+                        doneOne();
                     };
-                    video.onerror = function() { slideDiv.remove(); };
-                    video.load(); 
+
+                    video.load();
                 };
             }
         }
-        
+
+
+
+        function unlockSlideshowVideos() {
+            document.querySelectorAll('.slideshow-container video').forEach(function(v) {
+                v.muted = true;
+                v.loop = true;
+                v.controls = false;
+                const p = v.play();
+                if (p && typeof p.catch === 'function') p.catch(function() {});
+            });
+        }
+
         window.addEventListener('load', function() {
-            loadProjectImages();
+            if (IS_MOBILE && cursorInstruction) {
+                setInstruction('loading');
+            }
+
+            loadProjectImages(function() {
+                if (IS_MOBILE && cursorInstruction && !textIsPlaced) {
+                    setInstruction('click');
+                }
+            });
+
+
+            document.addEventListener('touchstart', unlockSlideshowVideos, { passive: true });
+            document.addEventListener('click', unlockSlideshowVideos);
 
             if (IS_MOBILE) {
-                if (cursorInstruction) {
-                    cursorInstruction.style.opacity = "1";
-                    cursorInstruction.textContent = "click";
-                }
                 let touchStartX = 0, touchStartY = 0, touchMoved = false;
                 window.addEventListener('touchstart', (e) => {
+                    unlockSlideshowVideos();
                     const t = e.touches[0];
                     touchStartX = t.clientX;
                     touchStartY = t.clientY;
@@ -570,6 +794,7 @@ I am especially drawn to interdisciplinary approaches, seeing design as a space 
                 }, { passive: true });
                 window.addEventListener('touchend', (e) => {
                     if (touchMoved) return;
+                    if (cursorInstruction && cursorInstruction.textContent === 'loading') return;
                     handleTouchTap(e);
                 }, { passive: true });
             } else {

@@ -95,6 +95,25 @@
             height: 100%;
             object-fit: cover; 
             z-index: 0;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.35s ease;
+        }
+        #landing-video.is-playing {
+            opacity: 1;
+        }
+        #landing-video::-webkit-media-controls,
+        #landing-video::-webkit-media-controls-enclosure,
+        #landing-video::-webkit-media-controls-panel,
+        #landing-video::-webkit-media-controls-start-playback-button,
+        #landing-video::-webkit-media-controls-overlay-play-button,
+        #landing-video::-webkit-media-controls-overlay-enclosure {
+            display: none !important;
+            -webkit-appearance: none !important;
+            opacity: 0 !important;
+            width: 0 !important;
+            height: 0 !important;
+            pointer-events: none !important;
         }
 
         #landing {
@@ -155,6 +174,7 @@
         
         a.project-item:hover { z-index: 50; text-shadow: none; background: transparent; } 
 
+        /* Legacy scroll layout slots (unused once board is open) */
         .archive-slot-1 { --top: 0px; --right: 0px; --width: 30%; z-index: 3; text-align: right; align-items: flex-end; }
         .archive-slot-3 { --top: 700px; --left: 20px; --width: 60%; z-index: 8; }
         .archive-slot-4 { --top: 1000px; --left: -40px; --width: 70%; z-index: 5; text-align: left; align-items: flex-end; }
@@ -169,6 +189,100 @@
         .project-img, .project-video { height: auto; display: block; border: none; pointer-events: none; }
         .project-description { line-height: 1.2; grid-column: 1 / 10; }
         .col-span-12 { grid-column: span 12; }
+
+        /* Freeform board (desktop + mobile) */
+        html.archive-board-open,
+        html.archive-board-open body {
+            height: 100%;
+            overflow: hidden;
+            touch-action: none;
+        }
+        html.archive-board-open #site-content {
+            height: 100%;
+            overflow: hidden;
+        }
+        html.archive-board-open #archive.page-section {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            padding: 0;
+            animation: none;
+            touch-action: none;
+            cursor: grab;
+        }
+        html.archive-board-open #archive.page-section.is-panning {
+            cursor: grabbing;
+        }
+        html.archive-board-open #landing {
+            display: none !important;
+            visibility: hidden !important;
+        }
+        html.archive-board-open #landing-video {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+        }
+        html.archive-board-open #nav-container {
+            position: fixed;
+        }
+        html.archive-board-open .archive-free-layout {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 1400px;
+            height: 2400px;
+            min-height: 2400px;
+            padding: 0;
+            margin: 0;
+            display: block;
+            overflow: visible;
+            transform-origin: 0 0;
+            will-change: transform;
+            touch-action: none;
+        }
+        html.archive-board-open .archive-free-layout a.project-item {
+            position: absolute !important;
+            display: block;
+            margin: 0 !important;
+            top: auto;
+            left: auto;
+            right: auto;
+            bottom: auto;
+            width: 300px;
+            height: auto !important;
+            cursor: grab;
+            touch-action: none;
+            -webkit-user-drag: none;
+            user-select: none;
+            -webkit-touch-callout: none;
+            transition: none;
+        }
+        html.archive-board-open .archive-free-layout a.project-item.dragging {
+            cursor: grabbing;
+            z-index: 1000 !important;
+        }
+        html.archive-board-open .archive-free-layout a.project-item .project-img {
+            width: 100% !important;
+            max-width: none;
+            height: auto;
+            display: block;
+            margin: 0 !important;
+            pointer-events: none;
+        }
+
+        @media (min-width: 1025px) {
+            html.archive-board-open .archive-free-layout {
+                width: 2000px;
+                height: 2800px;
+                min-height: 2800px;
+            }
+            html.archive-board-open .archive-free-layout a.project-item {
+                width: 420px;
+            }
+        }
         
         @media (max-width: 1024px) {
             .grid-12 { grid-template-columns: repeat(4, 1fr); }
@@ -186,43 +300,9 @@
                 transform-origin: center center;
             }
             #archive.page-section {
-                overflow-x: hidden;
-                overflow-y: auto;
-                -webkit-overflow-scrolling: touch;
-            }
-
-            /* Native document scroll while viewing archive — more reliable on phones */
-            html.mobile-archive-open,
-            html.mobile-archive-open body {
-                height: auto;
-                min-height: 100%;
-                overflow-x: hidden;
-                overflow-y: auto;
-                -webkit-overflow-scrolling: touch;
-                overscroll-behavior-y: auto;
-                touch-action: pan-y;
-            }
-            html.mobile-archive-open #site-content {
-                height: auto;
-                min-height: 100%;
-                overflow: visible;
-            }
-            html.mobile-archive-open #archive.page-section {
-                position: relative;
-                top: auto;
-                left: auto;
-                width: 100%;
-                height: auto;
-                min-height: 100vh;
-                overflow: visible;
-                padding: 24px 0 120px;
-                animation: none;
-            }
-            html.mobile-archive-open #landing {
-                display: none !important;
-            }
-            html.mobile-archive-open #nav-container {
-                position: fixed;
+                overflow: hidden;
+                padding: 0;
+                -webkit-overflow-scrolling: auto;
             }
             #nav-container {
                 bottom: 12px;
@@ -248,142 +328,6 @@
             }
             .link-fixed-width { width: auto; min-width: 52px; flex-shrink: 0; }
             .nav-link { font-size: 10pt; padding: 4px 2px; }
-            .archive-free-layout {
-                min-height: auto;
-                padding: 24px 0 56px;
-                display: block;
-                overflow-x: hidden;
-                width: 100%;
-                max-width: 100%;
-            }
-            .archive-free-layout a.project-item {
-                position: relative !important;
-                display: block;
-                width: 100% !important;
-                margin: 0;
-                text-align: left !important;
-                align-items: flex-start !important;
-                cursor: pointer;
-                height: auto !important;
-                top: auto !important;
-                left: auto !important;
-                right: auto !important;
-                z-index: 1;
-                touch-action: pan-y;
-                -webkit-user-drag: none;
-                user-select: none;
-                -webkit-touch-callout: none;
-            }
-            .archive-free-layout a.project-item .project-img {
-                width: 100% !important;
-                max-width: none;
-                height: auto;
-                display: block;
-            }
-
-            /* sketchbook — nearly full / a bit bigger */
-            .archive-free-layout a.project-item:nth-child(1) {
-                width: 100% !important;
-                margin: 0 0 44px 0;
-                z-index: 1;
-                overflow: hidden;
-            }
-            .archive-free-layout a.project-item:nth-child(1) .project-img {
-                width: 108% !important;
-                margin-left: -4%;
-            }
-
-            /* photography — enlarged full bleed */
-            .archive-free-layout a.project-item:nth-child(2) {
-                width: 100% !important;
-                margin: 0 0 20px 0;
-                z-index: 1;
-                overflow: hidden;
-            }
-            .archive-free-layout a.project-item:nth-child(2) .project-img {
-                width: 118% !important;
-                margin-left: -9%;
-            }
-
-            /* designclassics — larger, centered */
-            .archive-free-layout a.project-item:nth-child(3) {
-                width: 88% !important;
-                margin: 28px auto 0;
-                z-index: 2;
-                overflow: hidden;
-            }
-            .archive-free-layout a.project-item:nth-child(3) .project-img {
-                width: 100% !important;
-                margin-left: 0;
-            }
-
-            /* paris — larger, right-biased bleed, light overlap on designclassics */
-            .archive-free-layout a.project-item:nth-child(4) {
-                width: 100% !important;
-                margin: -36% 0 28px 0;
-                z-index: 4;
-                overflow: hidden;
-            }
-            .archive-free-layout a.project-item:nth-child(4) .project-img {
-                width: 162% !important;
-                margin-left: 0;
-            }
-
-            /* erinnerung — full bleed */
-            .archive-free-layout a.project-item:nth-child(5) {
-                width: 100% !important;
-                margin: 0 0 48px 0;
-                z-index: 1;
-            }
-
-            /* kyoto — compact */
-            .archive-free-layout a.project-item:nth-child(6) {
-                width: 55% !important;
-                margin: 0 0 12px 18px;
-                z-index: 2;
-            }
-
-            /* london — larger, shifted further right, overlaps neighbors */
-            .archive-free-layout a.project-item:nth-child(7) {
-                width: 100% !important;
-                margin: -32% 0 -28% 0;
-                z-index: 5;
-                overflow: hidden;
-            }
-            .archive-free-layout a.project-item:nth-child(7) .project-img {
-                width: 155% !important;
-                margin-left: -8%;
-            }
-
-            /* surveillance — full bleed, sits under london overlap */
-            .archive-free-layout a.project-item:nth-child(8) {
-                width: 100% !important;
-                margin: 36px 0 20px 0;
-                z-index: 1;
-            }
-
-            /* shades — larger, centered, light overlap */
-            .archive-free-layout a.project-item:nth-child(9) {
-                width: 100% !important;
-                margin: -14% auto 44px;
-                z-index: 3;
-                overflow: hidden;
-            }
-            .archive-free-layout a.project-item:nth-child(9) .project-img {
-                width: 112% !important;
-                margin-left: -6%;
-            }
-
-            /* squares — bigger, flush left to the border */
-            .archive-free-layout a.project-item:nth-child(10) {
-                width: 70% !important;
-                margin: 8px 0 28px 0;
-                z-index: 1;
-            }
-
-            .archive-free-layout a.project-item:active {
-                z-index: 20;
-            }
         }
 
         #site-content { width: 100%; height: 100%; }
@@ -400,6 +344,94 @@
         
         .project-item.dragging .project-img {
             transform: scale(1.04); 
+        }
+
+        /* Keep freeform dragging smooth (no hover scale fighting the drag) */
+        html.archive-board-open .project-img {
+            transition: none !important;
+        }
+        html.archive-board-open .project-item:hover .project-img,
+        html.archive-board-open .project-item.dragging .project-img {
+            transform: none;
+        }
+        html.archive-board-open .archive-free-layout a.project-item.dragging {
+            will-change: transform;
+        }
+
+        #archive-hint {
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 200;
+            pointer-events: none;
+            font-family: 'Cascade Mono', monospace;
+            font-weight: bold;
+            font-size: 10pt;
+            color: #fff;
+            text-align: center;
+            padding: 0 24px;
+            width: max-content;
+            max-width: 90vw;
+            line-height: 1.45;
+            height: calc(1.45em * 2);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.45s ease, visibility 0.45s ease;
+            text-shadow:
+                0 1px 2px rgba(0,0,0,0.45),
+                0 0 6px rgba(0,0,0,0.25);
+            white-space: pre;
+        }
+        #archive-hint.is-visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        @media (max-width: 1024px) {
+            #archive-hint {
+                font-size: 11pt;
+                line-height: 1.45;
+                height: calc(1.45em * 2);
+            }
+        }
+
+        /* Desktop archive intro: soft blur from the edges */
+        #archive-intro-veil {
+            position: fixed;
+            inset: 0;
+            z-index: 160;
+            pointer-events: none;
+            opacity: 0;
+            visibility: hidden;
+            --intro-blur: 28px;
+            --intro-clear: 12%;
+            backdrop-filter: blur(var(--intro-blur));
+            -webkit-backdrop-filter: blur(var(--intro-blur));
+            background: radial-gradient(
+                ellipse 75% 70% at 50% 48%,
+                rgba(0, 0, 0, 0) 0%,
+                rgba(0, 0, 0, 0.12) 42%,
+                rgba(0, 0, 0, 0.55) 100%
+            );
+            -webkit-mask-image: radial-gradient(
+                ellipse 80% 75% at 50% 48%,
+                transparent var(--intro-clear),
+                #000 calc(var(--intro-clear) + 42%),
+                #000 100%
+            );
+            mask-image: radial-gradient(
+                ellipse 80% 75% at 50% 48%,
+                transparent var(--intro-clear),
+                #000 calc(var(--intro-clear) + 42%),
+                #000 100%
+            );
+        }
+        #archive-intro-veil.is-active {
+            opacity: 1;
+            visibility: visible;
+        }
+        @media (max-width: 1024px) {
+            #archive-intro-veil { display: none !important; }
         }
     </style>
 </head>
@@ -435,7 +467,7 @@
     </div>
     
     <div id="landing" class="page-section" style="display: block;">
-        <video autoplay loop muted playsinline id="landing-video">
+        <video autoplay loop muted playsinline webkit-playsinline disablePictureInPicture preload="auto" id="landing-video">
              <source src="video/startvideo.mp4" type="video/mp4">
         </video>
         <div class="grid-12" style="padding: 0 36px;">
@@ -444,15 +476,17 @@
     </div>
 
     <div id="archive" class="page-section">
+        <div id="archive-intro-veil" aria-hidden="true"></div>
+        <div id="archive-hint" aria-hidden="true"></div>
         <div id="archive-content-wrapper" class="archive-free-layout">
             <a href="notebooks.html" class="project-item archive-slot-1" style="--width: 50%; --height: auto;">
                 <img class="project-img" style="width: 75%;" src="bilder/skizzenbuecher/cover.webp" alt="skizzenbuecher" loading="lazy" decoding="async">
             </a>
-            
+
             <a href="photography.html" class="project-item archive-slot-2" style="--width: 100%; --height: auto;">
                 <img class="project-img" style="width: 50%;" src="bilder/fotografie/cover.webp" alt="photography" loading="lazy" decoding="async">
             </a>
-            
+
             <a href="designclassics.html" class="project-item archive-slot-3" style="--width: 60%; --height: auto;">
                 <img class="project-img" style="width: 100%;" src="bilder/designobjektekatalog/cover.webp" alt="designclassics" loading="lazy" decoding="async">
             </a>
@@ -495,16 +529,114 @@
 
     // Mobile-only background video (desktop keeps startvideo.mp4)
     (function applyBackgroundVideo() {
-        const video = document.getElementById('landing-video') || document.getElementById('bg-video');
+        const video = document.getElementById('landing-video');
         if (!video) return;
         const source = video.querySelector('source');
         if (!source) return;
+
+        video.muted = true;
+        video.defaultMuted = true;
+        video.volume = 0;
+        video.loop = true;
+        video.autoplay = true;
+        video.playsInline = true;
+        video.controls = false;
+        video.setAttribute('muted', 'muted');
+        video.setAttribute('autoplay', '');
+        video.setAttribute('loop', '');
+        video.setAttribute('playsinline', '');
+        video.setAttribute('webkit-playsinline', '');
+        video.removeAttribute('controls');
+        video.disablePictureInPicture = true;
+        video.setAttribute('controlslist', 'nodownload nofullscreen noremoteplayback');
+
         if (IS_MOBILE) {
             source.src = 'video/startvideo-mobile.mp4';
-            video.load();
-            video.play().catch(() => {});
         }
+
+        window.__landingVideo = video;
+
+        function isLandingVisible() {
+            const landing = document.getElementById('landing');
+            return landing && landing.style.display !== 'none' &&
+                !document.documentElement.classList.contains('archive-board-open');
+        }
+
+        function markPlaying() {
+            if (!video.paused) video.classList.add('is-playing');
+        }
+
+        function keepPlaying() {
+            if (!isLandingVisible()) {
+                video.pause();
+                video.classList.remove('is-playing');
+                return;
+            }
+            video.muted = true;
+            video.volume = 0;
+            video.controls = false;
+            const p = video.play();
+            if (p && typeof p.then === 'function') {
+                p.then(markPlaying).catch(() => {
+                    video.classList.remove('is-playing');
+                });
+            } else {
+                markPlaying();
+            }
+        }
+
+        window.__syncLandingVideo = function(sectionId) {
+            if (sectionId === 'landing') {
+                video.style.display = '';
+                video.style.visibility = '';
+                keepPlaying();
+            } else {
+                video.pause();
+                video.controls = false;
+                video.classList.remove('is-playing');
+                video.style.display = 'none';
+                video.style.visibility = 'hidden';
+            }
+        };
+
+        video.addEventListener('playing', markPlaying);
+        video.addEventListener('pause', () => {
+            if (!isLandingVisible()) video.classList.remove('is-playing');
+        });
+
+        video.load();
+        keepPlaying();
+        video.addEventListener('loadeddata', keepPlaying, { once: true });
+        video.addEventListener('canplay', keepPlaying, { once: true });
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) keepPlaying();
+            else video.pause();
+        });
+        // First tap/scroll anywhere can unlock autoplay on strict mobile browsers
+        const unlock = () => keepPlaying();
+        document.addEventListener('touchstart', unlock, { passive: true, once: true });
+        document.addEventListener('click', unlock, { once: true });
+
+        let tries = 0;
+        const retry = setInterval(() => {
+            tries += 1;
+            if (!isLandingVisible() || (!video.paused && video.classList.contains('is-playing')) || tries > 30) {
+                clearInterval(retry);
+                return;
+            }
+            keepPlaying();
+        }, 200);
     })();
+
+    // Use lower-res covers on mobile
+    if (IS_MOBILE) {
+        document.querySelectorAll('#archive-content-wrapper img.project-img').forEach(img => {
+            const src = img.getAttribute('src') || '';
+            if (src.startsWith('bilder/')) {
+                img.setAttribute('src', src.replace(/^bilder\//, 'bilder-mobile/'));
+            }
+        });
+    }
     
     // --- PUNCTUATION ANIMATION ---
     // Mobile uses short separators so the nav never overlaps.
@@ -605,179 +737,523 @@
     }
 
     // --- DRAGGABLE FUNCTIONALITY ---
-    function initDraggable() {
-        if (!IS_DESKTOP) return; 
+    // Freeform archive board: pan, zoom, drag covers (desktop + mobile)
+    function initArchiveBoard() {
+        const archive = document.getElementById('archive');
+        const board = document.getElementById('archive-content-wrapper');
+        if (!archive || !board) return;
 
-        const items = document.querySelectorAll('.project-item');
-        let dragItem = null;
-        let dragOffsetX = 0;
-        let dragOffsetY = 0;
-        let startX = 0;
-        let startY = 0;
-        let isDragging = false;
+        const items = [...board.querySelectorAll('a.project-item')];
+        const MIN_SCALE = 0.35;
+        const MAX_SCALE = 2.8;
+        const TAP_LIMIT = 10;
+        const STORAGE_KEY = IS_MOBILE ? 'mobileArchiveBoard' : 'desktopArchiveBoard';
 
-        items.forEach(item => {
-            item.addEventListener('mousedown', dragStart);
-            
-            item.addEventListener('click', function(e) {
-                if (isDragging) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                } else {
-                    saveArchiveScroll();
-                }
-            });
-            
-            item.addEventListener('touchstart', dragStart, {passive: false});
-        });
+        let scale = IS_MOBILE ? 0.72 : 0.92;
+        let tx = IS_MOBILE ? 20 : 48;
+        let ty = IS_MOBILE ? 40 : 56;
+        let mode = null; // 'pan' | 'drag' | 'pinch'
+        let activeItem = null;
+        let startX = 0, startY = 0;
+        let startTx = 0, startTy = 0;
+        let startLeft = 0, startTop = 0;
+        let dragDx = 0, dragDy = 0;
+        let moved = false;
+        let pinchStartDist = 0;
+        let pinchStartScale = 1;
+        let pinchStartTx = 0, pinchStartTy = 0;
+        let pinchMidX = 0, pinchMidY = 0;
+        let rafId = 0;
+        let pendingPan = false;
+        let pendingDrag = false;
+        let introRaf = 0;
+        let introActive = false;
 
-        function dragStart(e) {
+        function boardIsOpen() {
+            return document.documentElement.classList.contains('archive-board-open');
+        }
+
+        function applyBoardTransform() {
+            board.style.transform = `translate(${tx}px, ${ty}px) scale(${scale})`;
+        }
+
+        function cancelIntroZoom() {
+            if (introRaf) {
+                cancelAnimationFrame(introRaf);
+                introRaf = 0;
+            }
+            introActive = false;
+            const veil = document.getElementById('archive-intro-veil');
+            if (veil) {
+                veil.classList.remove('is-active');
+                veil.style.opacity = '';
+                veil.style.setProperty('--intro-blur', '28px');
+                veil.style.setProperty('--intro-clear', '12%');
+            }
+        }
+
+        function playDesktopIntroZoom() {
             if (IS_MOBILE) return;
-            if (e.type === 'mousedown' && e.button !== 0) return;
+            cancelIntroZoom();
 
-            dragItem = this;
-            const rect = dragItem.getBoundingClientRect();
-            
-            const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
-            const clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
+            const veil = document.getElementById('archive-intro-veil');
+            const endScale = Math.min(1.02, Math.max(0.82, window.innerWidth / 1550));
+            const startScale = endScale * 3.6;
+            const focus = getCompositionFocus();
+            const focusX = focus.x;
+            const focusY = focus.y;
+            const cx = window.innerWidth / 2;
+            const cy = window.innerHeight / 2;
+            const duration = 3200;
 
-            const currentLeft = dragItem.offsetLeft;
-            const currentTop = dragItem.offsetTop;
+            scale = startScale;
+            tx = cx - focusX * scale;
+            ty = cy - focusY * scale;
+            applyBoardTransform();
 
-            dragItem.style.left = currentLeft + 'px';
-            dragItem.style.top = currentTop + 'px';
-            dragItem.style.right = 'auto'; 
-            dragItem.style.bottom = 'auto';
-            dragItem.style.width = getComputedStyle(dragItem).width; 
-            dragItem.style.height = getComputedStyle(dragItem).height;
-
-            dragOffsetX = clientX - rect.left;
-            dragOffsetY = clientY - rect.top;
-            
-            startX = clientX;
-            startY = clientY;
-            isDragging = false; 
-
-            dragItem.classList.add('dragging');
-
-            if (e.type === 'mousedown') {
-                document.addEventListener('mousemove', dragMove);
-                document.addEventListener('mouseup', dragEnd);
-            } else {
-                document.addEventListener('touchmove', dragMove, {passive: false});
-                document.addEventListener('touchend', dragEnd);
-            }
-        }
-
-        function dragMove(e) {
-            if (!dragItem) return;
-
-            const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
-            const clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
-
-            const dist = Math.hypot(clientX - startX, clientY - startY);
-            if (dist > 5) {
-                isDragging = true;
+            if (veil) {
+                veil.style.setProperty('--intro-blur', '34px');
+                veil.style.setProperty('--intro-clear', '8%');
+                veil.style.opacity = '1';
+                veil.classList.add('is-active');
             }
 
-            if (e.type === 'touchmove') e.preventDefault(); 
+            const startTime = performance.now();
+            introActive = true;
 
-            const parentRect = dragItem.parentElement.getBoundingClientRect();
-            
-            const newLeft = clientX - parentRect.left - dragOffsetX;
-            const newTop = clientY - parentRect.top - dragOffsetY;
-
-            dragItem.style.left = newLeft + 'px';
-            dragItem.style.top = newTop + 'px';
-        }
-
-        function dragEnd(e) {
-            if (dragItem) {
-                dragItem.classList.remove('dragging');
-                dragItem = null;
+            function easeOutCubic(t) {
+                return 1 - Math.pow(1 - t, 3);
             }
-            document.removeEventListener('mousemove', dragMove);
-            document.removeEventListener('mouseup', dragEnd);
-            document.removeEventListener('touchmove', dragMove);
-            document.removeEventListener('touchend', dragEnd);
-            
-            setTimeout(() => { isDragging = false; }, 50);
-        }
-    }
 
-    // Mobile: tap vs scroll on covers (document scroll handles the actual scrolling)
-    function initMobileArchiveScroll() {
-        if (!IS_MOBILE) return;
-
-        const items = document.querySelectorAll('.archive-free-layout a.project-item');
-        const TAP_MOVE_LIMIT = 10;
-
-        items.forEach(item => {
-            let startX = 0;
-            let startY = 0;
-            let moved = false;
-
-            item.addEventListener('touchstart', (e) => {
-                const t = e.touches[0];
-                startX = t.clientX;
-                startY = t.clientY;
-                moved = false;
-            }, { passive: true });
-
-            item.addEventListener('touchmove', (e) => {
-                const t = e.touches[0];
-                if (Math.abs(t.clientY - startY) > TAP_MOVE_LIMIT || Math.abs(t.clientX - startX) > TAP_MOVE_LIMIT) {
-                    moved = true;
-                }
-            }, { passive: true });
-
-            item.addEventListener('click', (e) => {
-                if (moved) {
-                    e.preventDefault();
-                    e.stopPropagation();
+            function frame(now) {
+                if (!introActive || !boardIsOpen()) {
+                    cancelIntroZoom();
                     return;
                 }
-                saveArchiveScroll();
+                const t = Math.min(1, (now - startTime) / duration);
+                const e = easeOutCubic(t);
+                scale = startScale + (endScale - startScale) * e;
+                tx = cx - focusX * scale;
+                ty = cy - focusY * scale;
+                applyBoardTransform();
+
+                if (veil) {
+                    const blur = 34 * (1 - e);
+                    const clear = 8 + e * 92;
+                    veil.style.setProperty('--intro-blur', blur.toFixed(1) + 'px');
+                    veil.style.setProperty('--intro-clear', clear.toFixed(1) + '%');
+                    veil.style.opacity = String(Math.max(0, 1 - e * 1.05));
+                }
+
+                if (t < 1) {
+                    introRaf = requestAnimationFrame(frame);
+                } else {
+                    introActive = false;
+                    introRaf = 0;
+                    if (veil) {
+                        veil.classList.remove('is-active');
+                        veil.style.opacity = '';
+                    }
+                    saveBoardState();
+                }
+            }
+
+            introRaf = requestAnimationFrame(frame);
+        }
+
+        function flushPointerFrame() {
+            rafId = 0;
+            if (pendingPan) {
+                pendingPan = false;
+                applyBoardTransform();
+            }
+            if (pendingDrag && activeItem && mode === 'drag') {
+                pendingDrag = false;
+                activeItem.style.transform = `translate(${dragDx}px, ${dragDy}px)`;
+            }
+        }
+
+        function schedulePointerFrame() {
+            if (rafId) return;
+            rafId = requestAnimationFrame(flushPointerFrame);
+        }
+
+        function saveBoardState() {
+            const state = {
+                scale, tx, ty,
+                items: items.map(item => ({
+                    left: item.style.left || '',
+                    top: item.style.top || '',
+                    width: item.style.width || '',
+                    z: item.style.zIndex || ''
+                }))
+            };
+            sessionStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        }
+
+        function getCompositionFocus() {
+            let sx = 0, sy = 0, n = 0;
+            items.forEach(item => {
+                const l = parseFloat(item.style.left);
+                const t = parseFloat(item.style.top);
+                const w = parseFloat(item.style.width) || 300;
+                if (Number.isFinite(l) && Number.isFinite(t)) {
+                    sx += l + w * 0.5;
+                    sy += t + w * 0.55;
+                    n += 1;
+                }
             });
+            if (!n) return { x: 560, y: 520 };
+            return { x: sx / n, y: sy / n };
+        }
+
+        function overlapRatio(a, b) {
+            const x1 = Math.max(a.left, b.left);
+            const y1 = Math.max(a.top, b.top);
+            const x2 = Math.min(a.left + a.w, b.left + b.w);
+            const y2 = Math.min(a.top + a.h, b.top + b.h);
+            const iw = x2 - x1;
+            const ih = y2 - y1;
+            if (iw <= 0 || ih <= 0) return 0;
+            const inter = iw * ih;
+            return inter / Math.min(a.w * a.h, b.w * b.h);
+        }
+
+        function randomizeComposition() {
+            const boardW = IS_MOBILE ? 1400 : 2000;
+            const boardH = IS_MOBILE ? 2400 : 2800;
+            const widths = IS_MOBILE
+                ? [200, 230, 260, 280, 300, 320, 340, 360, 380]
+                : [300, 340, 380, 420, 460, 500, 540, 580];
+            // Allow light edge overlap, but not covers sitting on top of each other
+            const maxOverlap = 0.28;
+            const placed = [];
+
+            sessionStorage.removeItem(STORAGE_KEY);
+
+            items.forEach((item, index) => {
+                let w = widths[Math.floor(Math.random() * widths.length)];
+                // London cover reads tiny — keep it larger in every composition
+                if ((item.getAttribute('href') || '').indexOf('london.html') !== -1) {
+                    w = Math.round(w * 1.5);
+                }
+                const estH = w * (0.9 + Math.random() * 0.45);
+                let left = 40;
+                let top = 40;
+                let chosen = null;
+
+                for (let attempt = 0; attempt < 70; attempt++) {
+                    const next = {
+                        left: 30 + Math.random() * Math.max(40, boardW - w - 60),
+                        top: 30 + Math.random() * Math.max(40, boardH - estH - 60),
+                        w,
+                        h: estH
+                    };
+                    const heaviest = placed.reduce((max, p) => Math.max(max, overlapRatio(p, next)), 0);
+                    if (heaviest <= maxOverlap) {
+                        chosen = next;
+                        // Prefer placements that kiss an edge at least once after a few items
+                        if (placed.length >= 2 && heaviest > 0.04) break;
+                        if (placed.length < 2 || attempt > 25 || Math.random() < 0.35) break;
+                    }
+                }
+
+                if (!chosen) {
+                    chosen = {
+                        left: 30 + Math.random() * Math.max(40, boardW - w - 60),
+                        top: 30 + Math.random() * Math.max(40, boardH - estH - 60),
+                        w,
+                        h: estH
+                    };
+                }
+
+                left = chosen.left;
+                top = chosen.top;
+                placed.push(chosen);
+
+                item.style.setProperty('width', w + 'px', 'important');
+                item.style.left = Math.round(left) + 'px';
+                item.style.top = Math.round(top) + 'px';
+                item.style.right = 'auto';
+                item.style.bottom = 'auto';
+                item.style.zIndex = String(1 + Math.floor(Math.random() * 10));
+            });
+        }
+
+        function dist(a, b) {
+            return Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
+        }
+
+        function mid(a, b) {
+            return {
+                x: (a.clientX + b.clientX) / 2,
+                y: (a.clientY + b.clientY) / 2
+            };
+        }
+
+        function bringToFront(item) {
+            let maxZ = 10;
+            items.forEach(el => {
+                const z = parseInt(getComputedStyle(el).zIndex, 10) || 1;
+                if (z > maxZ) maxZ = z;
+            });
+            item.style.zIndex = String(maxZ + 1);
+        }
+
+        function beginPointer(clientX, clientY, target) {
+            cancelIntroZoom();
+            hideArchiveHint();
+            startX = clientX;
+            startY = clientY;
+            moved = false;
+            dragDx = 0;
+            dragDy = 0;
+
+            const targetItem = target && target.closest && target.closest('a.project-item');
+            if (targetItem && board.contains(targetItem)) {
+                mode = 'drag';
+                activeItem = targetItem;
+                bringToFront(activeItem);
+                activeItem.classList.add('dragging');
+                startLeft = parseFloat(activeItem.style.left) || activeItem.offsetLeft;
+                startTop = parseFloat(activeItem.style.top) || activeItem.offsetTop;
+                activeItem.style.willChange = 'transform';
+                activeItem.style.transform = 'translate(0px, 0px)';
+            } else {
+                mode = 'pan';
+                activeItem = null;
+                startTx = tx;
+                startTy = ty;
+                archive.classList.add('is-panning');
+            }
+        }
+
+        function movePointer(clientX, clientY, preventDefault) {
+            if (!mode) return;
+            const dx = clientX - startX;
+            const dy = clientY - startY;
+            if (Math.hypot(dx, dy) > TAP_LIMIT) moved = true;
+
+            if (mode === 'pan') {
+                if (preventDefault) preventDefault();
+                tx = startTx + dx;
+                ty = startTy + dy;
+                pendingPan = true;
+                schedulePointerFrame();
+            } else if (mode === 'drag' && activeItem) {
+                if (preventDefault) preventDefault();
+                dragDx = dx / scale;
+                dragDy = dy / scale;
+                pendingDrag = true;
+                schedulePointerFrame();
+            }
+        }
+
+        function endPointer(openOnTap) {
+            archive.classList.remove('is-panning');
+            if (rafId) {
+                cancelAnimationFrame(rafId);
+                rafId = 0;
+            }
+            if (pendingPan) {
+                pendingPan = false;
+                applyBoardTransform();
+            }
+            if (mode === 'drag' && activeItem) {
+                if (pendingDrag || dragDx || dragDy) {
+                    pendingDrag = false;
+                    activeItem.style.left = (startLeft + dragDx) + 'px';
+                    activeItem.style.top = (startTop + dragDy) + 'px';
+                    activeItem.style.right = 'auto';
+                    activeItem.style.bottom = 'auto';
+                }
+                activeItem.style.transform = '';
+                activeItem.style.willChange = '';
+            }
+            if (openOnTap && mode === 'drag' && activeItem && !moved) {
+                const href = activeItem.getAttribute('href');
+                saveBoardState();
+                if (href) window.location.href = href;
+            } else if (moved) {
+                saveBoardState();
+            }
+            if (activeItem) activeItem.classList.remove('dragging');
+            mode = null;
+            activeItem = null;
+            dragDx = 0;
+            dragDy = 0;
+        }
+
+        function zoomAt(clientX, clientY, factor) {
+            const nextScale = Math.min(MAX_SCALE, Math.max(MIN_SCALE, scale * factor));
+            if (nextScale === scale) return;
+            const worldX = (clientX - tx) / scale;
+            const worldY = (clientY - ty) / scale;
+            scale = nextScale;
+            tx = clientX - worldX * scale;
+            ty = clientY - worldY * scale;
+            applyBoardTransform();
+            saveBoardState();
+        }
+
+        randomizeComposition();
+        applyBoardTransform();
+        saveBoardState();
+
+        // --- Touch ---
+        archive.addEventListener('touchstart', (e) => {
+            if (!boardIsOpen()) return;
+            hideArchiveHint();
+
+            if (e.touches.length === 2) {
+                mode = 'pinch';
+                activeItem = null;
+                archive.classList.remove('is-panning');
+                const a = e.touches[0], b = e.touches[1];
+                pinchStartDist = dist(a, b) || 1;
+                pinchStartScale = scale;
+                pinchStartTx = tx;
+                pinchStartTy = ty;
+                const m = mid(a, b);
+                pinchMidX = m.x;
+                pinchMidY = m.y;
+                moved = true;
+                return;
+            }
+
+            if (e.touches.length !== 1) return;
+            const t = e.touches[0];
+            beginPointer(t.clientX, t.clientY, t.target);
+        }, { passive: true });
+
+        archive.addEventListener('touchmove', (e) => {
+            if (!boardIsOpen()) return;
+            if (!mode) return;
+
+            if (mode === 'pinch' && e.touches.length === 2) {
+                e.preventDefault();
+                const a = e.touches[0], b = e.touches[1];
+                const d = dist(a, b) || 1;
+                const m = mid(a, b);
+                const nextScale = Math.min(MAX_SCALE, Math.max(MIN_SCALE, pinchStartScale * (d / pinchStartDist)));
+                const worldX = (pinchMidX - pinchStartTx) / pinchStartScale;
+                const worldY = (pinchMidY - pinchStartTy) / pinchStartScale;
+                scale = nextScale;
+                tx = m.x - worldX * scale;
+                ty = m.y - worldY * scale;
+                applyBoardTransform();
+                moved = true;
+                return;
+            }
+
+            if (e.touches.length !== 1) return;
+            const t = e.touches[0];
+            movePointer(t.clientX, t.clientY, () => e.preventDefault());
+        }, { passive: false });
+
+        archive.addEventListener('touchend', (e) => {
+            if (!boardIsOpen()) return;
+
+            if (mode === 'pinch') {
+                if (e.touches.length >= 2) return;
+                if (e.touches.length === 1) {
+                    mode = 'pan';
+                    const t = e.touches[0];
+                    startX = t.clientX;
+                    startY = t.clientY;
+                    startTx = tx;
+                    startTy = ty;
+                    activeItem = null;
+                    archive.classList.add('is-panning');
+                    return;
+                }
+                saveBoardState();
+                mode = null;
+                archive.classList.remove('is-panning');
+                return;
+            }
+
+            endPointer(true);
+        }, { passive: true });
+
+        archive.addEventListener('touchcancel', () => endPointer(false), { passive: true });
+
+        // --- Mouse (desktop) ---
+        archive.addEventListener('mousedown', (e) => {
+            if (!boardIsOpen()) return;
+            if (e.button !== 0) return;
+            if (e.target.closest && e.target.closest('#nav-container')) return;
+            e.preventDefault();
+            beginPointer(e.clientX, e.clientY, e.target);
+
+            function onMove(ev) {
+                movePointer(ev.clientX, ev.clientY, null);
+            }
+            function onUp() {
+                document.removeEventListener('mousemove', onMove);
+                document.removeEventListener('mouseup', onUp);
+                endPointer(true);
+            }
+            document.addEventListener('mousemove', onMove);
+            document.addEventListener('mouseup', onUp);
         });
 
-        window.addEventListener('scroll', () => {
-            if (!document.documentElement.classList.contains('mobile-archive-open')) return;
-            savedArchiveScroll = window.scrollY || document.documentElement.scrollTop || 0;
-            sessionStorage.setItem('archiveScrollPos', savedArchiveScroll);
-        }, { passive: true });
+        archive.addEventListener('wheel', (e) => {
+            if (!boardIsOpen()) return;
+            // Desktop: ignore scroll/wheel zoom. Only react to trackpad pinch
+            // (browsers expose pinch as wheel + ctrlKey).
+            if (!e.ctrlKey) return;
+            e.preventDefault();
+            cancelIntroZoom();
+            hideArchiveHint();
+            const factor = Math.exp(-e.deltaY * 0.01);
+            zoomAt(e.clientX, e.clientY, factor);
+        }, { passive: false });
+
+        // Block default click navigation; open via tap/click when not dragged
+        items.forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+            });
+            item.addEventListener('dragstart', (e) => e.preventDefault());
+        });
+
+        window.__resetArchiveBoardView = function() {
+            if (IS_MOBILE) {
+                const focus = getCompositionFocus();
+                scale = Math.min(0.9, Math.max(0.55, window.innerWidth / 980));
+                tx = window.innerWidth / 2 - focus.x * scale;
+                ty = window.innerHeight * 0.42 - focus.y * scale;
+                applyBoardTransform();
+                saveBoardState();
+            } else {
+                playDesktopIntroZoom();
+            }
+        };
+
+        window.__randomizeArchiveComposition = function() {
+            randomizeComposition();
+            if (typeof window.__resetArchiveBoardView === 'function') {
+                window.__resetArchiveBoardView();
+            } else {
+                applyBoardTransform();
+            }
+            saveBoardState();
+        };
     }
 
     // --- SCROLL PRESERVATION LOGIC ---
     let savedArchiveScroll = 0;
 
     function saveArchiveScroll() {
-        if (IS_MOBILE) {
-            savedArchiveScroll = window.scrollY || document.documentElement.scrollTop || 0;
-            sessionStorage.setItem('archiveScrollPos', savedArchiveScroll);
-            return;
-        }
-        const archiveEl = document.getElementById('archive');
-        if (archiveEl) {
-            savedArchiveScroll = archiveEl.scrollTop;
-            sessionStorage.setItem('archiveScrollPos', savedArchiveScroll);
-        }
+        // Freeform board state is saved by initArchiveBoard
     }
 
     function restoreArchiveScroll() {
-        let pos = savedArchiveScroll;
-        if (pos === 0) {
-            const stored = sessionStorage.getItem('archiveScrollPos');
-            if (stored) pos = parseInt(stored, 10);
+        if (typeof window.__resetArchiveBoardView === 'function') {
+            window.__resetArchiveBoardView();
         }
-        requestAnimationFrame(() => {
-            if (IS_MOBILE) {
-                window.scrollTo(0, pos);
-            } else {
-                const archiveEl = document.getElementById('archive');
-                if (archiveEl) archiveEl.scrollTop = pos;
-            }
-        });
     }
 
     // --- NAVIGATION LOGIC ---
@@ -795,12 +1271,85 @@
     }
 
     function setMobileSectionMode(sectionId) {
-        if (!IS_MOBILE) return;
         const root = document.documentElement;
-        root.classList.toggle('mobile-archive-open', sectionId === 'archive');
-        if (sectionId !== 'archive') {
+        const openingArchive = sectionId === 'archive';
+        root.classList.toggle('archive-board-open', openingArchive);
+        if (!openingArchive) {
             window.scrollTo(0, 0);
         }
+        if (typeof window.__syncLandingVideo === 'function') {
+            window.__syncLandingVideo(sectionId);
+        }
+    }
+
+    const TYPE_PUNC = [
+        '/', ',', '.', ':', ';', '*', '-', '_', '|', '+',
+        '(', ')', '[', ']', '<', '>', '{', '}',
+        '!', '?', '#', '%', '&', '=', '~', '^', '`', '"', "'", '\\', '@', '$'
+    ];
+    let archiveHintTypeToken = 0;
+
+    function sleepMs(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    async function typeLikeHuman(el, finalText, tokenRef) {
+        const my = tokenRef.token;
+        el.textContent = '';
+        for (let i = 0; i < finalText.length; i++) {
+            if (tokenRef.token !== my) return;
+            const ch = finalText[i];
+            const canTypo = ch !== '\n' && ch !== ' ' && i > 0 && Math.random() < 0.38;
+            if (canTypo) {
+                const junkLen = 1 + Math.floor(Math.random() * 4);
+                let junk = '';
+                for (let j = 0; j < junkLen; j++) {
+                    junk += TYPE_PUNC[Math.floor(Math.random() * TYPE_PUNC.length)];
+                }
+                for (let j = 0; j < junk.length; j++) {
+                    if (tokenRef.token !== my) return;
+                    el.textContent += junk[j];
+                    await sleepMs(35 + Math.random() * 45);
+                }
+                await sleepMs(90 + Math.random() * 140);
+                for (let j = 0; j < junk.length; j++) {
+                    if (tokenRef.token !== my) return;
+                    el.textContent = el.textContent.slice(0, -1);
+                    await sleepMs(30 + Math.random() * 35);
+                }
+            }
+            if (tokenRef.token !== my) return;
+            el.textContent += ch;
+            await sleepMs(ch === '\n' ? 220 : (40 + Math.random() * 55));
+        }
+    }
+
+    function showArchiveHint() {
+        const hint = document.getElementById('archive-hint');
+        if (!hint) return;
+        clearTimeout(showArchiveHint._timer);
+        archiveHintTypeToken += 1;
+        const tokenRef = { token: archiveHintTypeToken };
+        hint.textContent = '';
+        hint.setAttribute('aria-hidden', 'false');
+        hint.classList.add('is-visible');
+        typeLikeHuman(hint, 'dig through\nclick to open', tokenRef).then(() => {
+            if (tokenRef.token !== archiveHintTypeToken) return;
+            showArchiveHint._timer = setTimeout(() => {
+                hint.classList.remove('is-visible');
+                hint.setAttribute('aria-hidden', 'true');
+            }, 4500);
+        });
+    }
+
+    function hideArchiveHint() {
+        const hint = document.getElementById('archive-hint');
+        if (!hint) return;
+        archiveHintTypeToken += 1;
+        hint.classList.remove('is-visible');
+        hint.setAttribute('aria-hidden', 'true');
+        hint.textContent = '';
+        clearTimeout(showArchiveHint._timer);
     }
 
     function showSection(sectionId) {
@@ -818,7 +1367,15 @@
             
             if (sectionId === 'archive') {
                 restoreArchiveScroll();
+                showArchiveHint();
+            } else {
+                hideArchiveHint();
             }
+        }
+
+        // Always sync landing video (desktop + mobile)
+        if (typeof window.__syncLandingVideo === 'function') {
+            window.__syncLandingVideo(sectionId);
         }
         
         document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
@@ -837,8 +1394,7 @@
             savedArchiveScroll = parseInt(storedScroll, 10);
         }
 
-        if (IS_DESKTOP) initDraggable();
-        else initMobileArchiveScroll();
+        initArchiveBoard();
 
         let sectionToShow = 'landing';
         const hash = window.location.hash.substring(1);
@@ -849,6 +1405,14 @@
         }
 
         showSection(sectionToShow);
+    });
+
+    // Re-roll composition when returning from bfcache (mobile/desktop)
+    window.addEventListener('pageshow', function(e) {
+        if (!e.persisted) return;
+        if (typeof window.__randomizeArchiveComposition === 'function') {
+            window.__randomizeArchiveComposition();
+        }
     });
 
     // Start punctuation as soon as the page is interactive (first 3s)
