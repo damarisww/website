@@ -183,8 +183,11 @@
         .archive-slot-7 { --top: 2350px; --left: 0px; --width: 100%; z-index: 2; }
         .archive-slot-2 { --top: 3100px; --left: 50px; --width: 100%; z-index: 10; }
         .archive-slot-5 { --top: 3600px; --right: 50px; --width: 100%; z-index: 4; }
-        .archive-slot-10 { --top: 4450px; --left: 200px; --width: 80%; z-index: 1; }
         .archive-slot-8 { --top: 1000px; --left: 500px; --width: 40%; z-index: 9; }
+        .archive-slot-10 { --top: 4000px; --left: 120px; --width: 55%; z-index: 5; }
+        .archive-slot-11 { --top: 4200px; --right: 80px; --width: 45%; z-index: 6; }
+        .archive-slot-12 { --top: 4500px; --left: 200px; --width: 55%; z-index: 7; }
+        .archive-slot-13 { --top: 4800px; --right: 120px; --width: 50%; z-index: 8; }
 
         .project-img, .project-video { height: auto; display: block; border: none; pointer-events: none; }
         .project-description { line-height: 1.2; grid-column: 1 / 10; }
@@ -264,7 +267,8 @@
             cursor: grabbing;
             z-index: 1000 !important;
         }
-        html.archive-board-open .archive-free-layout a.project-item .project-img {
+        html.archive-board-open .archive-free-layout a.project-item .project-img,
+        html.archive-board-open .archive-free-layout a.project-item .project-video {
             width: 100% !important;
             max-width: none;
             height: auto;
@@ -272,12 +276,20 @@
             margin: 0 !important;
             pointer-events: none;
         }
+        .project-video::-webkit-media-controls,
+        .project-video::-webkit-media-controls-enclosure,
+        .project-video::-webkit-media-controls-panel,
+        .project-video::-webkit-media-controls-start-playback-button,
+        .project-video::-webkit-media-controls-overlay-play-button {
+            display: none !important;
+            -webkit-appearance: none;
+        }
 
         @media (min-width: 1025px) {
             html.archive-board-open .archive-free-layout {
-                width: 2000px;
-                height: 2800px;
-                min-height: 2800px;
+                width: 3600px;
+                height: 2400px;
+                min-height: 2400px;
             }
             html.archive-board-open .archive-free-layout a.project-item {
                 width: 420px;
@@ -332,26 +344,32 @@
 
         #site-content { width: 100%; height: 100%; }
 
-        .project-img {
+        .project-img,
+        .project-video {
             transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
         @media (hover: hover) {
-            .project-item:hover .project-img {
+            .project-item:hover .project-img,
+            .project-item:hover .project-video {
                 transform: scale(1.04);
             }
         }
         
-        .project-item.dragging .project-img {
+        .project-item.dragging .project-img,
+        .project-item.dragging .project-video {
             transform: scale(1.04); 
         }
 
         /* Keep freeform dragging smooth (no hover scale fighting the drag) */
-        html.archive-board-open .project-img {
+        html.archive-board-open .project-img,
+        html.archive-board-open .project-video {
             transition: none !important;
         }
         html.archive-board-open .project-item:hover .project-img,
-        html.archive-board-open .project-item.dragging .project-img {
+        html.archive-board-open .project-item:hover .project-video,
+        html.archive-board-open .project-item.dragging .project-img,
+        html.archive-board-open .project-item.dragging .project-video {
             transform: none;
         }
         html.archive-board-open .archive-free-layout a.project-item.dragging {
@@ -515,9 +533,22 @@
                 <img class="project-img" style="width: 100%;" src="bilder/londonbildmaterial/cover.webp" alt="shades" loading="lazy" decoding="async">
             </a>
 
-            <a href="squares.html" class="project-item archive-slot-10" style="--width: 80%; --height: auto;">
-                <img class="project-img" style="width: 50%;" src="bilder/quadrate/cover.webp" alt="squares" loading="lazy" decoding="async">
+            <a href="untitled.html" class="project-item archive-slot-10" style="--width: 55%; --height: auto;">
+                <video class="project-video" style="width: 100%;" src="bilder/untitled/5.mp4" autoplay muted loop playsinline webkit-playsinline disablePictureInPicture preload="metadata" aria-label="untitled"></video>
             </a>
+
+            <a href="datestamp.html" class="project-item archive-slot-11" style="--width: 45%; --height: auto;">
+                <img class="project-img" style="width: 100%;" src="bilder/objekte/datestamp/cover.webp?v=20260729t" alt="datestamp" width="1618" height="1090" loading="eager" decoding="async">
+            </a>
+
+            <a href="diamond.html" class="project-item archive-slot-12" style="--width: 55%; --height: auto;">
+                <img class="project-img" style="width: 100%;" src="bilder/diamond/cover.webp?v=20260729" alt="diamond" width="2000" height="1454" loading="lazy" decoding="async">
+            </a>
+
+            <a href="photogallery.html" class="project-item archive-slot-13" style="--width: 50%; --height: auto;">
+                <img class="project-img" style="width: 100%;" src="bilder/photogallery/cover.webp?v=20260729p" alt="photogallery" width="2000" height="1500" loading="lazy" decoding="async">
+            </a>
+
         </div>
     </div>
 
@@ -636,7 +667,52 @@
                 img.setAttribute('src', src.replace(/^bilder\//, 'bilder-mobile/'));
             }
         });
+        document.querySelectorAll('#archive-content-wrapper video.project-video').forEach(video => {
+            const src = video.getAttribute('src') || '';
+            if (src.startsWith('bilder/')) {
+                video.setAttribute('src', src.replace(/^bilder\//, 'bilder-mobile/'));
+            }
+        });
     }
+
+    // Keep archive cover videos looping (muted / playsinline for autoplay)
+    (function initArchiveCoverVideos() {
+        const videos = document.querySelectorAll('#archive-content-wrapper video.project-video');
+        if (!videos.length) return;
+
+        function playCover(video) {
+            video.muted = true;
+            video.defaultMuted = true;
+            video.volume = 0;
+            video.loop = true;
+            video.playsInline = true;
+            video.controls = false;
+            video.setAttribute('muted', 'muted');
+            video.setAttribute('playsinline', '');
+            video.setAttribute('webkit-playsinline', '');
+            video.setAttribute('loop', '');
+            video.removeAttribute('controls');
+            video.disablePictureInPicture = true;
+            const p = video.play();
+            if (p && typeof p.catch === 'function') p.catch(function() {});
+        }
+
+        videos.forEach(function(video) {
+            playCover(video);
+            video.addEventListener('loadeddata', function() { playCover(video); }, { once: true });
+            video.addEventListener('canplay', function() { playCover(video); });
+            video.addEventListener('ended', function() {
+                video.currentTime = 0;
+                playCover(video);
+            });
+        });
+
+        function unlockArchiveVideos() {
+            videos.forEach(playCover);
+        }
+        document.addEventListener('touchstart', unlockArchiveVideos, { passive: true, once: true });
+        document.addEventListener('click', unlockArchiveVideos, { once: true });
+    })();
     
     // --- PUNCTUATION ANIMATION ---
     // Mobile uses short separators so the nav never overlaps.
@@ -867,7 +943,9 @@
             cancelIntroZoom();
 
             const veil = document.getElementById('archive-intro-veil');
-            const endScale = Math.min(1.02, Math.max(0.82, window.innerWidth / 1550));
+            // Freeform board: settle zoomed-out on the cluster center —
+            // covers continue past the edges; dig further by zooming/panning.
+            const endScale = Math.min(1.02, Math.max(0.82, window.innerWidth / 1550)) / 1.4 / 1.4;
             const startScale = endScale * 3.6;
             const focus = getCompositionFocus();
             const cx = window.innerWidth / 2;
@@ -954,19 +1032,50 @@
         }
 
         function getCompositionFocus() {
-            let sx = 0, sy = 0, n = 0;
+            const b = getItemsBounds();
+            if (!b) return { x: 560, y: 520 };
+            return { x: (b.minX + b.maxX) / 2, y: (b.minY + b.maxY) / 2 };
+        }
+
+        function getItemsBounds() {
+            let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+            let n = 0;
             items.forEach(item => {
                 const l = parseFloat(item.style.left);
                 const t = parseFloat(item.style.top);
                 const w = parseFloat(item.style.width) || 300;
-                if (Number.isFinite(l) && Number.isFinite(t)) {
-                    sx += l + w * 0.5;
-                    sy += t + w * 0.55;
-                    n += 1;
-                }
+                if (!Number.isFinite(l) || !Number.isFinite(t)) return;
+                const h = Math.max(item.offsetHeight || 0, w * mediaAspect(item));
+                minX = Math.min(minX, l);
+                minY = Math.min(minY, t);
+                maxX = Math.max(maxX, l + w);
+                maxY = Math.max(maxY, t + h);
+                n += 1;
             });
-            if (!n) return { x: 560, y: 520 };
-            return { x: sx / n, y: sy / n };
+            if (!n) return null;
+            return { minX, minY, maxX, maxY, w: maxX - minX, h: maxY - minY };
+        }
+
+        function fitCompositionToView(padding) {
+            const pad = padding == null ? 0.1 : padding;
+            const b = getItemsBounds();
+            const vw = window.innerWidth;
+            const vh = window.innerHeight;
+            if (!b || b.w < 40 || b.h < 40) {
+                const s = Math.min(1.02, Math.max(0.82, vw / 1550)) / 1.4 / 1.4;
+                return { scale: s, tx: 48, ty: 56 };
+            }
+            const availW = Math.max(200, vw * (1 - pad * 2));
+            const availH = Math.max(200, vh * (1 - pad * 2));
+            let s = Math.min(availW / b.w, availH / b.h);
+            s = Math.min(MAX_SCALE, Math.max(MIN_SCALE, s));
+            const cx = (b.minX + b.maxX) / 2;
+            const cy = (b.minY + b.maxY) / 2;
+            return {
+                scale: s,
+                tx: vw / 2 - cx * s,
+                ty: vh / 2 - cy * s
+            };
         }
 
         function overlapRatio(a, b) {
@@ -981,40 +1090,66 @@
             return inter / Math.min(a.w * a.h, b.w * b.h);
         }
 
+        function mediaAspect(item) {
+            const media = item.querySelector('img.project-img, video.project-video');
+            let aspect = 1.15;
+            if (!media) return aspect;
+            if (media.tagName === 'IMG' && media.naturalWidth > 0 && media.naturalHeight > 0) {
+                return media.naturalHeight / media.naturalWidth;
+            }
+            if (media.tagName === 'VIDEO' && media.videoWidth > 0 && media.videoHeight > 0) {
+                return media.videoHeight / media.videoWidth;
+            }
+            const attrW = parseFloat(media.getAttribute('width'));
+            const attrH = parseFloat(media.getAttribute('height'));
+            if (attrW > 0 && attrH > 0) return attrH / attrW;
+            return aspect;
+        }
+
         function randomizeComposition() {
-            const boardW = IS_MOBILE ? 1400 : 2000;
-            const boardH = IS_MOBILE ? 2400 : 2800;
+            // Freeform board: loose scatter, light overlaps, room to dig through
+            const boardW = IS_MOBILE ? 1400 : 2800;
+            const boardH = IS_MOBILE ? 2000 : 2000;
             const widths = IS_MOBILE
-                ? [200, 230, 260, 280, 300, 320, 340, 360, 380]
-                : [300, 340, 380, 420, 460, 500, 540, 580];
-            // Allow light edge overlap, but not covers sitting on top of each other
-            const maxOverlap = 0.28;
+                ? [200, 230, 260, 280, 300, 320, 340, 360]
+                : [300, 340, 380, 420, 460, 500, 540];
+            const maxOverlap = 0.32;
             const placed = [];
 
             sessionStorage.removeItem(STORAGE_KEY);
 
-            items.forEach((item, index) => {
+            // Bias toward a central field so the first view feels inhabited,
+            // but allow outliers past the edges for zooming out / panning.
+            const coreW = IS_MOBILE ? boardW * 0.72 : boardW * 0.62;
+            const coreH = IS_MOBILE ? boardH * 0.62 : boardH * 0.62;
+            const coreX = (boardW - coreW) / 2;
+            const coreY = (boardH - coreH) / 2;
+
+            items.forEach((item) => {
                 let w = widths[Math.floor(Math.random() * widths.length)];
-                // London cover reads tiny — keep it larger in every composition
                 if ((item.getAttribute('href') || '').indexOf('london.html') !== -1) {
                     w = Math.round(w * 1.5);
                 }
-                const estH = w * (0.9 + Math.random() * 0.45);
-                let left = 40;
-                let top = 40;
+
+                const aspect = mediaAspect(item);
+                const estH = w * aspect;
                 let chosen = null;
 
                 for (let attempt = 0; attempt < 70; attempt++) {
-                    const next = {
-                        left: 30 + Math.random() * Math.max(40, boardW - w - 60),
-                        top: 30 + Math.random() * Math.max(40, boardH - estH - 60),
-                        w,
-                        h: estH
-                    };
+                    // ~70% in the core, ~30% further out (off first viewport)
+                    const inCore = Math.random() < 0.7;
+                    const left = inCore
+                        ? coreX + Math.random() * Math.max(40, coreW - w)
+                        : 30 + Math.random() * Math.max(40, boardW - w - 60);
+                    const top = inCore
+                        ? coreY + Math.random() * Math.max(40, coreH - estH)
+                        : 30 + Math.random() * Math.max(40, boardH - estH - 60);
+
+                    const next = { left, top, w, h: estH };
                     const heaviest = placed.reduce((max, p) => Math.max(max, overlapRatio(p, next)), 0);
                     if (heaviest <= maxOverlap) {
                         chosen = next;
-                        // Prefer placements that kiss an edge at least once after a few items
+                        // Prefer a light kiss sometimes for a lived-in pile
                         if (placed.length >= 2 && heaviest > 0.04) break;
                         if (placed.length < 2 || attempt > 25 || Math.random() < 0.35) break;
                     }
@@ -1022,20 +1157,17 @@
 
                 if (!chosen) {
                     chosen = {
-                        left: 30 + Math.random() * Math.max(40, boardW - w - 60),
-                        top: 30 + Math.random() * Math.max(40, boardH - estH - 60),
+                        left: coreX + Math.random() * Math.max(40, coreW - w),
+                        top: coreY + Math.random() * Math.max(40, coreH - estH),
                         w,
                         h: estH
                     };
                 }
 
-                left = chosen.left;
-                top = chosen.top;
                 placed.push(chosen);
-
-                item.style.setProperty('width', w + 'px', 'important');
-                item.style.left = Math.round(left) + 'px';
-                item.style.top = Math.round(top) + 'px';
+                item.style.setProperty('width', chosen.w + 'px', 'important');
+                item.style.left = Math.round(chosen.left) + 'px';
+                item.style.top = Math.round(chosen.top) + 'px';
                 item.style.right = 'auto';
                 item.style.bottom = 'auto';
                 item.style.zIndex = String(1 + Math.floor(Math.random() * 10));

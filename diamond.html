@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>damaris</title>
+    <title>diamond</title>
     <style>
         /* --- GLOBAL STYLES --- */
         html { width: 100%; height: 100%; background-color: #000; }
@@ -123,7 +123,7 @@
             font-family: 'Cascade Mono', monospace;
             font-weight: bold; /* MATCHED PROFILE */
             font-size: 10pt; 
-            text-shadow:
+           text-shadow:
   0 1px 2px rgba(0,0,0,0.35),
   0 0 4px rgba(0,0,0,0.15);
             user-select: none; 
@@ -155,7 +155,7 @@
             font-weight: bold; /* MATCHED PROFILE */
             font-size: 10pt;
             color: #ffffff;
-            text-shadow:
+           text-shadow:
   0 1px 2px rgba(0,0,0,0.35),
   0 0 4px rgba(0,0,0,0.15);
             opacity: 0; /* Hidden until first movement */
@@ -334,12 +334,12 @@
     <div class="project-page-content">
         <div class="project-content-wrapper" id="floating-text-container">
             <div class="project-description">
-                <p>Squares in Sequence /// 40 × 40 // 2023 <br><br>
-                Based on black and white squares, this series was developed according to rules that are both strict and playful. At its core lies the question of how one image influences the next and how the entire series functions as a coherent whole. Considering which components remain constant and which vary led to logical, comprehensible progressions.<br> <br>
+                <p>60th wedding anniversary card /// 2026 <br><br>
+                Diamond wedding anniversary. Sixty years of marriage. A card I made for my grandparents' anniversary gathering. I used the same paper found in their wedding album, sewn together with red thread.<br> <br>
                 <span class="close-trigger" id="close-text-btn">close text</span></p>
             </div>
         </div>
-        <div class="slideshow-container" id="slider-squares.html"></div>
+        <div class="slideshow-container" id="slider-diamond.html"></div>
     </div>
 
     <script>
@@ -604,10 +604,11 @@
             }
         }
         
-        const projectId = 'squares.html'; 
-        const folderName = 'quadrate';
+        const projectId = 'diamond.html'; 
+        const folderName = 'diamond';
 
         const mediaBase = IS_MOBILE ? 'bilder-mobile' : 'bilder';
+        const mediaVersion = '20260729';
 
         function setInstruction(text) {
             if (!cursorInstruction) return;
@@ -644,8 +645,8 @@
 
             for (let i = 1; i <= maxImages; i++) {
                 const slideDiv = slidePlaceholders[i - 1];
-                const imagePath = `${mediaBase}/${folderName}/${i}.webp`;
-                const videoPath = `${mediaBase}/${folderName}/${i}.mp4`;
+                const imagePath = `${mediaBase}/${folderName}/${i}.webp?v=${mediaVersion}`;
+                const videoPath = `${mediaBase}/${folderName}/${i}.mp4?v=${mediaVersion}`;
                 const img = document.createElement('img');
                 img.src = imagePath;
                 img.decoding = 'async';
